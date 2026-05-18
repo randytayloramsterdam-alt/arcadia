@@ -1,4 +1,0 @@
-repository "disco copy/disco copy@33261685770889@cloud"
-  path "/"
-    br "/main"
-    co "/main"
