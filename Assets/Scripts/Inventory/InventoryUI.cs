@@ -151,7 +151,8 @@ public class InventoryUI : MonoBehaviour
 
     void Update()
     {
-        // Don't handle backpack input during 360 inspect
+        // Don't handle backpack input during intro or 360 inspect
+        if (IntroNarrative.IsPlaying) return;
         if (inspectController != null && inspectController.IsInspecting)
             return;
 

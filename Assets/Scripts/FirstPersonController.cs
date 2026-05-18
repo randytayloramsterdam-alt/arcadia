@@ -48,6 +48,10 @@ public class FirstPersonController : MonoBehaviour
         if (mainCam != null && mainCam.GetComponent<WeaponHolder>() == null)
             mainCam.gameObject.AddComponent<WeaponHolder>();
 
+        // Ensure IntroNarrative exists for the opening text sequence
+        if (GetComponent<IntroNarrative>() == null)
+            gameObject.AddComponent<IntroNarrative>();
+
         // Create two alternating AudioSources so footsteps can overlap naturally
         stepSources = new AudioSource[2];
         for (int i = 0; i < 2; i++)
@@ -83,6 +87,14 @@ public class FirstPersonController : MonoBehaviour
         cameraTransform.localRotation = Quaternion.Euler(-90f, 0f, 0f);
         verticalRotation = -90f;
 
+        // If no IntroNarrative is present, start the old intro automatically.
+        // Otherwise IntroNarrative will call BeginIntroSequence() when it finishes.
+        if (GetComponent<IntroNarrative>() == null)
+            StartCoroutine(IntroSequence());
+    }
+
+    public void BeginIntroSequence()
+    {
         StartCoroutine(IntroSequence());
     }
 

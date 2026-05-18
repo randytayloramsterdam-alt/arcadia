@@ -118,6 +118,7 @@ public class InteractionSystem : MonoBehaviour
 
     void Update()
     {
+        if (IntroNarrative.IsPlaying) return;
         if (inspecting != null)
         {
             HandleInspecting();
