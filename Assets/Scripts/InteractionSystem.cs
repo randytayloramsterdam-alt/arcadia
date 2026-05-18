@@ -174,13 +174,18 @@ public class InteractionSystem : MonoBehaviour
         fpsController.SetControlEnabled(false);
 
         // Show subtitle text at bottom
-        if (!string.IsNullOrEmpty(target.description))
+        bool shouldShow = target.showDescription;
+        if (shouldShow && !string.IsNullOrEmpty(target.description))
         {
             subtitleText.text = target.description;
             subtitlePanel.gameObject.SetActive(true);
         }
 
         target.OnStartInteract();
+
+        // 如果是 ComputerInteractable，它自己处理相机过渡，跳过 InteractionSystem 的过渡
+        if (target is ComputerInteractable)
+            return;
 
         Vector3 dir = (target.transform.position - cam.transform.position).normalized;
         targetCamRot = Quaternion.LookRotation(dir);
@@ -218,6 +223,13 @@ public class InteractionSystem : MonoBehaviour
         fpsController.SetControlEnabled(true);
         subtitlePanel.gameObject.SetActive(false);
         StartCoroutine(TransitionFOV(defaultFOV));
+    }
+
+    // ComputerInteractable 调用此方法告知电脑交互已完全结束
+    // （包括 UI 退出和相机返回），无需再次按 E
+    public void NotifyComputerInteractDone()
+    {
+        inspecting = null;
     }
 
     IEnumerator TransitionFOV(float targetFOV)

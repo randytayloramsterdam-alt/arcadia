@@ -5,6 +5,10 @@ public class CollectibleItem : InteractableObject
     public InventoryItem itemData;
     public AudioClip collectSound;
 
+    // 重新声明 description 以在 Inspector 中显示
+    [TextArea]
+    public new string description;
+
     public override void OnStopInteract()
     {
         base.OnStopInteract();
