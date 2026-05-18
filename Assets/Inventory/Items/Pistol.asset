@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdd90b0de1a4c14ebd53786ecb4d218, type: 3}
+  m_Name: Pistol
+  m_EditorClassIdentifier:
+  itemName: Pistol
+  description: A standard issue 9mm handgun. Reliable and accurate. Right-click to
+    aim down iron sights, left-click to fire, R to reload.
+  inspectPrefab: {fileID: 0}
+  isWeapon: 1
+  equipPrefab: {fileID: 0}
+  maxAmmo: 7
+  reserveAmmo: 21
+  damage: 25
+  fireRate: 0.15
+  reloadTime: 1.6
+  adsFOV: 40
+  adsPosition: {x: 0, y: -0.18, z: 0.35}
+  fireSound: {fileID: 0}
+  reloadSound: {fileID: 0}
+  emptySound: {fileID: 0}
