@@ -965,7 +965,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &572986214
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1083,7 +1083,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &722668194
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1380,7 +1380,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &833985482
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1904,11 +1904,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78a62f7f52e0c2345bb96317af9c4eb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bgColor: {r: 0.05, g: 0.05, b: 0.08, a: 0.97}
-  borderColor: {r: 0.35, g: 0.35, b: 0.4, a: 1}
-  textColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
-  buttonColor: {r: 0.12, g: 0.12, b: 0.14, a: 1}
-  buttonHoverColor: {r: 0.22, g: 0.22, b: 0.25, a: 1}
+  computerUICanvas: {fileID: 572986213}
+  exitButton: {fileID: 1927401097}
   openSound: {fileID: 0}
   closeSound: {fileID: 0}
 --- !u!4 &1090594668
@@ -3462,7 +3459,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1927401096
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4730,7 +4727,7 @@ SceneRoots:
   - {fileID: 1957957877}
   - {fileID: 1536611013}
   - {fileID: 1777144236}
-  - {fileID: 572986217}
   - {fileID: 1248935137}
   - {fileID: 1172233658}
   - {fileID: 1065545043}
+  - {fileID: 572986217}
