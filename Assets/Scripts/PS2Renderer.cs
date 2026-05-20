@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,6 +7,10 @@ public class PS2Renderer : MonoBehaviour
     [Header("Resolution")]
     public int renderWidth = 640;
     public int renderHeight = 480;
+
+    [Header("Post-Processing")]
+    [Tooltip("Screen-space ambient occlusion on top of the low-res image.")]
+    public bool enableSSAO = true;
 
     [Header("Lighting")]
     [Tooltip("Disable the main directional light (sun) so the scene relies on placed indoor lights only.")]
@@ -24,8 +29,10 @@ public class PS2Renderer : MonoBehaviour
     public bool disableFog = true;
 
     private Camera cam;
-    private RenderTexture rt;
+    private RenderTexture rtCamera;
+    private RenderTexture rtFinal;
     private Canvas canvas;
+    private SSAOEffect ssao;
 
     void Awake()
     {
@@ -38,6 +45,15 @@ public class PS2Renderer : MonoBehaviour
         SetupDisplayCamera();
         ApplyLightingSettings();
         ApplyQualitySettings();
+
+        // SSAO
+        ssao = GetComponent<SSAOEffect>();
+        if (ssao == null && enableSSAO)
+            ssao = gameObject.AddComponent<SSAOEffect>();
+        if (ssao != null)
+            ssao.enabled = enableSSAO;
+
+        StartCoroutine(PostProcessLoop());
     }
 
     void SetupRenderTexture()
@@ -46,10 +62,35 @@ public class PS2Renderer : MonoBehaviour
         float screenAspect = (float)Screen.width / Screen.height;
         int h = Mathf.RoundToInt(w / screenAspect);
 
-        rt = new RenderTexture(w, h, 16);
-        rt.filterMode = FilterMode.Point;
-        rt.antiAliasing = 1;
-        cam.targetTexture = rt;
+        // Intermediate RT: camera renders here at low resolution
+        rtCamera = new RenderTexture(w, h, 16);
+        rtCamera.filterMode = FilterMode.Point;
+        rtCamera.antiAliasing = 1;
+        cam.targetTexture = rtCamera;
+
+        // Final RT: displayed on screen (after post-processing)
+        rtFinal = new RenderTexture(w, h, 16);
+        rtFinal.filterMode = FilterMode.Point;
+        rtFinal.antiAliasing = 1;
+    }
+
+    IEnumerator PostProcessLoop()
+    {
+        while (true)
+        {
+            yield return new WaitForEndOfFrame();
+
+            bool hasSSAO = ssao != null && ssao.enabled && ssao.Material != null;
+            if (hasSSAO)
+            {
+                ssao.ApplyMaterialParameters();
+                Graphics.Blit(rtCamera, rtFinal, ssao.Material, 0);
+            }
+            else
+            {
+                Graphics.Blit(rtCamera, rtFinal);
+            }
+        }
     }
 
     void SetupDisplayCanvas()
@@ -62,7 +103,7 @@ public class PS2Renderer : MonoBehaviour
         var rawObj = new GameObject("Display");
         rawObj.transform.SetParent(canvasObj.transform, false);
         var img = rawObj.AddComponent<RawImage>();
-        img.texture = rt;
+        img.texture = rtFinal;
         img.raycastTarget = false;
 
         var rt2 = rawObj.GetComponent<RectTransform>();
@@ -73,7 +114,7 @@ public class PS2Renderer : MonoBehaviour
 
         var fitter = rawObj.AddComponent<AspectRatioFitter>();
         fitter.aspectMode = AspectRatioFitter.AspectMode.FitInParent;
-        fitter.aspectRatio = (float)rt.width / rt.height;
+        fitter.aspectRatio = (float)rtFinal.width / rtFinal.height;
     }
 
     void SetupDisplayCamera()
@@ -120,10 +161,17 @@ public class PS2Renderer : MonoBehaviour
 
     void OnDestroy()
     {
-        if (rt != null)
+        StopAllCoroutines();
+
+        if (rtCamera != null)
         {
-            rt.Release();
-            rt = null;
+            rtCamera.Release();
+            rtCamera = null;
+        }
+        if (rtFinal != null)
+        {
+            rtFinal.Release();
+            rtFinal = null;
         }
         if (cam != null)
             cam.targetTexture = null;
