@@ -1634,7 +1634,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0a54d9a7ae62624ea365eeec3e4f473, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseUrl: http://127.0.0.1:8000
+  baseUrl: https://arcadia-backend-73i5.onrender.com
   chatEndpoint: /chat
 --- !u!4 &617989791 stripped
 Transform:
