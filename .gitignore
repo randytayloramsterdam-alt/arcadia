@@ -6,10 +6,15 @@
 [Bb]uilds/
 [Ll]ogs/
 [Uu]ser[Ss]ettings/
-MemoryCaptures/
+[Mm]emory[Cc]aptures/
+sysinfo.txt
+
+# Unity Version Control / Plastic SCM
+.plastic/
+plastic.workspace
 
 # Asset meta data should be tracked
-# !*.meta  (we do track .meta files)
+# IMPORTANT: Do not ignore .meta files
 
 # IDE / OS
 .idea/
@@ -17,26 +22,44 @@ MemoryCaptures/
 .vscode/
 *.csproj
 *.sln
+*.suo
 *.user
 *.userosscache
-*.suo
 *.userprefs
+*.pidb
+*.booproj
 Thumbs.db
 .DS_Store
 Desktop.ini
 
-# Unity packages (managed by Package Manager)
-# Track the manifest, but not the cache
-/[Pp]ackages/*
-!/[Pp]ackages/manifest.json
-!/[Pp]ackages/packages-lock.json
+# Unity packages
+# Track package manifest and lock file.
+# Do not ignore Packages by default, because embedded/local packages may live here.
+# If your team only uses Package Manager registry packages, you can ignore package caches separately if needed.
 
 # Crashlytics
 crashlytics-build.properties
 
-# Large binary directories (optional - uncomment if needed)
-# Assets/StreamingAssets/
+# Build outputs
+*.apk
+*.aab
+*.app
+*.exe
+*.x86
+*.x86_64
 
-# Autosaves
+# Unity package exports
+*.unitypackage
+
+# Autosaves / temp files
 *.autosave
 *.tmp
+*.bak
+
+# Local API keys / private config
+Assets/StreamingAssets/local_api_config.json
+Assets/StreamingAssets/local_api_config.json.meta
+Assets/StreamingAssets/secrets.json
+Assets/StreamingAssets/secrets.json.meta
+.env
+.env.*
