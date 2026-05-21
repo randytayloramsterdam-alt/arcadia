@@ -13,10 +13,6 @@ public class RadioController : InteractableObject
     [Tooltip("退出交互后音频是否循环播放")]
     public bool loopAfterInteract = true;
 
-    // 重新声明 description 以在 Inspector 中显示
-    [TextArea]
-    public new string description;
-
     private bool hasPlayed;
 
     void Awake()

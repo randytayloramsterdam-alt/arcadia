@@ -613,7 +613,6 @@ MonoBehaviour:
   interactionPoint: {fileID: 0}
   itemData: {fileID: 0}
   collectSound: {fileID: 0}
-  description: "\u5E73\u5E73\u65E0\u5947\u7684\u6863\u6848\u888B\uFF0C\u6211\u73B0\u5728\u6CA1\u5FC3\u60C5\u770B\u8FD9\u4E2A"
 --- !u!64 &135893908
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1222,8 +1221,6 @@ MonoBehaviour:
   interactionPoint: {fileID: 0}
   itemData: {fileID: 11400000, guid: b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e8, type: 2}
   collectSound: {fileID: 8300000, guid: 537872bc9b6e7d743b52fedcd3954b0b, type: 3}
-  description: a old knife,don't know what it is for,but maybe it can cut through
-    something
 --- !u!65 &245670614
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2117,15 +2114,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1056935800271645153, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.607051
+      value: -4.23
       objectReference: {fileID: 0}
     - target: {fileID: 1056935800271645153, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.0219693
+      value: 1.907
       objectReference: {fileID: 0}
     - target: {fileID: 1056935800271645153, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.7605295
+      value: 4.005
       objectReference: {fileID: 0}
     - target: {fileID: 1056935800271645153, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3462,7 +3459,6 @@ MonoBehaviour:
   interactionPoint: {fileID: 0}
   itemData: {fileID: 0}
   collectSound: {fileID: 0}
-  description: "\u6211\u5BF9\u827A\u672F\u54C1\u6CA1\u6709\u5174\u8DA3\uFF0C\u800C\u4E14\u8FD9\u4E5F\u79F0\u4E0D\u4E0A\u827A\u672F\u54C1\u3002"
 --- !u!65 &1498075351
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4979,7 +4975,6 @@ MonoBehaviour:
   interactionPoint: {fileID: 0}
   itemData: {fileID: 11400000, guid: 3eab17c9a62a0524eb8e0db78c2998ea, type: 2}
   collectSound: {fileID: 8300000, guid: 537872bc9b6e7d743b52fedcd3954b0b, type: 3}
-  description: A mysterious card with strange markings.
 --- !u!4 &2009633677 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5345985916878269872, guid: ca7635266d9b19940afe839dd8148230, type: 3}
@@ -5171,7 +5166,6 @@ MonoBehaviour:
   interactionPoint: {fileID: 0}
   itemData: {fileID: 0}
   collectSound: {fileID: 0}
-  description: "\u5C01\u76AE\u6709\u7740\u5947\u602A\u7684\u8D28\u611F\uFF0C\u6C89\u7538\u7538\u5730\u5F88\u6709\u5206\u91CF\u3002\u91CC\u9762\u7684\u5185\u5BB9\u547C\u4E4B\u6B32\u51FA\u3002"
 --- !u!64 &2084231950
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -5574,7 +5568,6 @@ MonoBehaviour:
   interactionPoint: {fileID: 0}
   itemData: {fileID: 11400000, guid: a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d7, type: 2}
   collectSound: {fileID: 8300000, guid: 537872bc9b6e7d743b52fedcd3954b0b, type: 3}
-  description: 
 --- !u!65 &2125273541
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5935,7 +5928,6 @@ MonoBehaviour:
   interactionPoint: {fileID: 0}
   audioSource: {fileID: 3000000007}
   loopAfterInteract: 1
-  description: A very old radio, nothing special.
 --- !u!1 &4000000001
 GameObject:
   m_ObjectHideFlags: 0
@@ -6029,11 +6021,6 @@ SceneRoots:
   - {fileID: 1886310752}
   - {fileID: 234105543}
   - {fileID: 89669253}
-  - {fileID: 1712781036}
-  - {fileID: 434062463}
-  - {fileID: 2106625098}
-  - {fileID: 169594837}
-  - {fileID: 13631279}
   - {fileID: 99349028}
   - {fileID: 856948862}
   - {fileID: 1128602013}
