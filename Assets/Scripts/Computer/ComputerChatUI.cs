@@ -23,6 +23,8 @@ public class ComputerChatUI : MonoBehaviour
     [Range(0.01f, 0.12f)] public float bootLineDelay = 0.045f;
     public Color bootTextColor = new Color(0.43f, 0.66f, 1f, 1f);
     public Color screenBackgroundColor = new Color(0.005f, 0.012f, 0.014f, 1f);
+    public Color completeScreenTextColor = new Color(0.06f, 0.19f, 0.36f, 1f);
+    public Color completeScreenBackgroundColor = new Color(0.70f, 0.78f, 0.80f, 1f);
     public string prompt = "ARC>";
     public string systemName = "ARCADIA LIFE SCIENCES TERMINAL";
 
@@ -238,10 +240,52 @@ public class ComputerChatUI : MonoBehaviour
         EnableInput(false);
         ClearTerminal();
 
-        yield return TypeLine("\u2588");
-        yield return WaitBoot(0.45f);
+        float stepDuration = Mathf.Max(0.35f, bootDuration / 5f);
 
-        string[] biosLines =
+        yield return BootStepPowerOn(stepDuration);
+        yield return BootStepMemoryCheck(stepDuration);
+        yield return BootStepFloppyRead(stepDuration);
+        yield return BootStepDrawingLogo(stepDuration);
+        yield return BootStepFinalizing(stepDuration);
+        yield return BootStepComplete(stepDuration);
+
+        ApplyScreenPalette(bootTextColor, screenBackgroundColor);
+        ClearTerminal();
+        AppendLogo();
+        AppendLine("");
+        AppendLine(systemName);
+        AppendLine("SECURE TERMINAL READY.");
+        AppendLine("TYPE HELP FOR LOCAL COMMANDS.");
+        AppendPrompt();
+
+        bootComplete = true;
+        EnableInput(true);
+        FocusInput();
+    }
+
+    private IEnumerator BootStepPowerOn(float duration)
+    {
+        ApplyScreenPalette(bootTextColor, screenBackgroundColor);
+        ClearTerminal();
+
+        float endTime = Time.unscaledTime + duration;
+        bool visible = true;
+        while (Time.unscaledTime < endTime)
+        {
+            terminalLines.Clear();
+            terminalLines.Add("");
+            terminalLines.Add("");
+            terminalLines.Add("    " + (visible ? "\u2588" : ""));
+            RefreshTerminalText();
+            visible = !visible;
+            yield return WaitBoot(0.16f);
+        }
+    }
+
+    private IEnumerator BootStepMemoryCheck(float duration)
+    {
+        ApplyScreenPalette(bootTextColor, screenBackgroundColor);
+        string[] lines =
         {
             "*** ARCADIA BIOS v1.0 ***",
             "64K RAM SYSTEM",
@@ -253,6 +297,19 @@ public class ComputerChatUI : MonoBehaviour
             "KERNAL ROM: OK",
             "",
             "READY.",
+            "\u2588"
+        };
+
+        yield return ShowTimedLines(lines, duration, 0.035f);
+    }
+
+    private IEnumerator BootStepFloppyRead(float duration)
+    {
+        ApplyScreenPalette(bootTextColor, screenBackgroundColor);
+        ClearTerminal();
+
+        string[] lines =
+        {
             "LOAD \"ARCADIA.SYS\",8,1",
             "SEARCHING FOR DEVICE 8",
             "DRIVE 8: FOUND",
@@ -260,41 +317,133 @@ public class ComputerChatUI : MonoBehaviour
             "LOADING..."
         };
 
-        foreach (string line in biosLines)
+        foreach (string line in lines)
         {
-            yield return TypeLine(line);
+            AppendLine(line);
+            yield return WaitBoot(0.055f);
         }
 
-        yield return DrawProgressBar(26, Mathf.Max(0.55f, bootDuration * 0.18f));
-        yield return WaitBoot(0.15f);
+        AppendLine("[--------------------------]");
+        int progressLineIndex = terminalLines.Count - 1;
+        float endTime = Time.unscaledTime + Mathf.Max(0.1f, duration - 0.28f);
+        int width = 26;
+        int frame = 0;
+        while (Time.unscaledTime < endTime)
+        {
+            float t = Mathf.InverseLerp(endTime - duration + 0.28f, endTime, Time.unscaledTime);
+            int filledCount = Mathf.Clamp(Mathf.RoundToInt(t * width), 0, width);
+            string filled = new string('#', filledCount);
+            string empty = new string('-', width - filledCount);
+            ReplaceLine(progressLineIndex, "[" + filled + empty + "]");
+
+            if (frame % 3 == 0)
+            {
+                AppendLine(RandomGlitchBand(frame));
+                TrimTerminalLines();
+            }
+
+            frame++;
+            yield return WaitBoot(0.055f);
+        }
+    }
+
+    private IEnumerator BootStepDrawingLogo(float duration)
+    {
+        ApplyScreenPalette(bootTextColor, screenBackgroundColor);
         ClearTerminal();
 
-        string[] logoLines =
+        string[] lines =
         {
-            "       /\\",
-            "      /  \\        ARCADIA",
-            "     / /\\ \\       LIFE SCIENCES",
-            "    /_/__\\_\\",
-            "      ||||",
-            "      ||||       VITAM EX PROFUNDIS",
-            "                 LIFE FROM THE DEPTHS"
+            "        /\\",
+            "       /  \\",
+            "      / /\\ \\        ARCA",
+            "     /_/  \\_\\       ___ ___",
+            "        ||",
+            "        ||"
         };
 
-        foreach (string line in logoLines)
+        yield return ShowTimedLines(lines, duration, 0.018f);
+    }
+
+    private IEnumerator BootStepFinalizing(float duration)
+    {
+        ApplyScreenPalette(bootTextColor, screenBackgroundColor);
+        ClearTerminal();
+
+        string[] lines =
         {
-            yield return TypeLine(line, bootLineDelay * 0.65f);
+            "        /\\",
+            "       /  \\        ARCADIA",
+            "      / /\\ \\       LIFE SCIENCES",
+            "     /_/__\\_\\",
+            "        ||",
+            "        ||        \"VITAM EX PROFUNDIS\"",
+            "                 (LIFE FROM THE DEPTHS)",
+            "",
+            "====--__--====__---___--====",
+            "____----____--__----_____---"
+        };
+
+        foreach (string line in lines)
+        {
+            AppendLine(line);
+            yield return WaitBoot(0.035f);
         }
 
-        yield return WaitBoot(0.35f);
-        AppendLine("");
-        yield return TypeLine(systemName);
-        yield return TypeLine("SECURE TERMINAL READY.");
-        yield return TypeLine("TYPE HELP FOR LOCAL COMMANDS.");
-        AppendPrompt();
+        float endTime = Time.unscaledTime + Mathf.Max(0.05f, duration - lines.Length * 0.035f);
+        int frame = 0;
+        while (Time.unscaledTime < endTime)
+        {
+            ReplaceOrAppendLastLine(RandomGlitchBand(frame));
+            frame++;
+            yield return WaitBoot(0.08f);
+        }
+    }
 
-        bootComplete = true;
-        EnableInput(true);
-        FocusInput();
+    private IEnumerator BootStepComplete(float duration)
+    {
+        ApplyScreenPalette(completeScreenTextColor, completeScreenBackgroundColor);
+        ClearTerminal();
+
+        string[] lines =
+        {
+            "",
+            "        /\\",
+            "       /  \\        ARCADIA",
+            "      / /\\ \\       LIFE SCIENCES",
+            "     /_/__\\_\\",
+            "        ||",
+            "        ||",
+            "",
+            "\"VITAM EX PROFUNDIS\"",
+            "(LIFE FROM THE DEPTHS)",
+            "",
+            "SYSTEM READY."
+        };
+
+        foreach (string line in lines)
+        {
+            AppendLine(line);
+        }
+
+        yield return WaitBoot(duration);
+    }
+
+    private IEnumerator ShowTimedLines(string[] lines, float duration, float charDelay)
+    {
+        ClearTerminal();
+        float startTime = Time.unscaledTime;
+
+        foreach (string line in lines)
+        {
+            yield return TypeLine(line, charDelay);
+        }
+
+        float elapsed = Time.unscaledTime - startTime;
+        if (elapsed < duration)
+        {
+            yield return WaitBoot(duration - elapsed);
+        }
     }
 
     private IEnumerator DrawProgressBar(int width, float duration)
@@ -385,6 +534,18 @@ public class ComputerChatUI : MonoBehaviour
         RefreshTerminalText();
     }
 
+    private void ReplaceLine(int index, string line)
+    {
+        if (index < 0 || index >= terminalLines.Count)
+        {
+            ReplaceOrAppendLastLine(line);
+            return;
+        }
+
+        terminalLines[index] = line;
+        RefreshTerminalText();
+    }
+
     private void RemoveLastLineIf(string line)
     {
         if (terminalLines.Count == 0)
@@ -422,6 +583,66 @@ public class ComputerChatUI : MonoBehaviour
         }
 
         chatOutputText.text = string.Join(Environment.NewLine, terminalLines);
+    }
+
+    private string RandomGlitchBand(int frame)
+    {
+        string[] bands =
+        {
+            "~~~~~___~~~~________~~~~~~___",
+            "____----____--__----_____---",
+            "====--__--====__---___--====",
+            "----_____----~~~~~_____-----"
+        };
+
+        return bands[Mathf.Abs(frame) % bands.Length];
+    }
+
+    private void ApplyScreenPalette(Color textColor, Color backgroundColor)
+    {
+        if (chatOutputText != null)
+        {
+            chatOutputText.color = textColor;
+        }
+
+        if (chatInputField != null)
+        {
+            chatInputField.caretColor = textColor;
+            chatInputField.selectionColor = new Color(textColor.r, textColor.g, textColor.b, 0.28f);
+
+            if (chatInputField.textComponent != null)
+            {
+                chatInputField.textComponent.color = textColor;
+            }
+
+            TMP_Text placeholder = chatInputField.placeholder as TMP_Text;
+            if (placeholder != null)
+            {
+                placeholder.color = new Color(textColor.r, textColor.g, textColor.b, 0.42f);
+            }
+        }
+
+        Graphic[] graphics = GetComponentsInChildren<Graphic>(true);
+        foreach (Graphic graphic in graphics)
+        {
+            if (graphic == chatOutputText || graphic == scanlineImage || graphic == vignetteImage)
+            {
+                continue;
+            }
+
+            Image image = graphic as Image;
+            if (image == null)
+            {
+                continue;
+            }
+
+            bool isInput = chatInputField != null && image.gameObject == chatInputField.gameObject;
+            bool isButton = sendButton != null && image.gameObject == sendButton.gameObject;
+            if (!isInput && !isButton)
+            {
+                image.color = backgroundColor;
+            }
+        }
     }
 
     private void EnableInput(bool enabled)
