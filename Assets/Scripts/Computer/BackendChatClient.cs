@@ -39,7 +39,7 @@ public class BackendChatClient : MonoBehaviour
             request.uploadHandler = new UploadHandlerRaw(bodyRaw);
             request.downloadHandler = new DownloadHandlerBuffer();
 
-            yield return request.Send();
+            yield return request.SendWebRequest();
 
             // 检查网络错误
             if (request.result != UnityWebRequest.Result.Success)
@@ -82,6 +82,6 @@ public class BackendChatClient : MonoBehaviour
     [Serializable]
     private class ChatResponse
     {
-        public string reply;
+        public string reply = string.Empty;
     }
 }
