@@ -135,6 +135,7 @@ GameObject:
   - component: {fileID: 100003}
   - component: {fileID: 100004}
   - component: {fileID: 100005}
+  - component: {fileID: 100006}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -201,9 +202,9 @@ MonoBehaviour:
   mouseSensitivity: 2
   maxLookAngle: 80
   walkClip: {fileID: 0}
-  stepDistance: 2
+  stepDistance: 1.35
   minInputThreshold: 0.15
-  stepVolume: 0.7
+  stepVolume: 0.42
   lyingDuration: 0.7
   standUpDuration: 2.4
 --- !u!114 &100004
@@ -256,6 +257,23 @@ MonoBehaviour:
   subtitleBgColor: {r: 0, g: 0, b: 0, a: 0.75}
   subtitleTextColor: {r: 1, g: 1, b: 1, a: 1}
   subtitleFontSize: 16
+--- !u!114 &100006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fdabf8b88ef40c4a9b52db6bce8aa2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controller: {fileID: 100003}
+  fluorescentHumVolume: 0.22
+  buildingRumbleVolume: 0.13
+  carpetStepVolume: 0.42
+  carpetStepDistance: 1.35
 --- !u!1 &200000
 GameObject:
   m_ObjectHideFlags: 0
@@ -422,17 +440,16 @@ MonoBehaviour:
   ceilingHeight: 3.15
   deskColumns: 6
   deskRowsPerChunk: 3
+  centerAisleWidth: 3.2
+  fullDetailChunkRadius: 7
+  litChunkInterval: 2
+  realtimeLightsPerLitChunk: 2
+  addDeskColliders: 1
   applyFogAndAmbient: 1
   fogColor: {r: 0.46, g: 0.42, b: 0.25, a: 1}
   fogDensity: 0.014
   glowingScreenChance: 0.23
   missingChairChance: 0.08
-  buildDistanceFogPlanes: 0
-  fogPlaneCount: 13
-  fogStartDistance: 42
-  fogSpacing: 18
-  fogPlaneMaxAlpha: 0.18
-  fogPlaneWidthPadding: 5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

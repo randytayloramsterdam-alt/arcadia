@@ -42,8 +42,17 @@ public static class EndlessOfficeSceneBuilder
         FirstPersonController firstPerson = player.AddComponent<FirstPersonController>();
         firstPerson.moveSpeed = 2.9f;
         firstPerson.mouseSensitivity = 2f;
+        firstPerson.stepDistance = 1.35f;
+        firstPerson.stepVolume = 0.42f;
         firstPerson.lyingDuration = 0.7f;
         firstPerson.standUpDuration = 2.4f;
+
+        OfficeAudioAmbience ambience = player.AddComponent<OfficeAudioAmbience>();
+        ambience.controller = firstPerson;
+        ambience.fluorescentHumVolume = 0.22f;
+        ambience.buildingRumbleVolume = 0.13f;
+        ambience.carpetStepVolume = 0.42f;
+        ambience.carpetStepDistance = 1.35f;
 
         IntroNarrative intro = player.AddComponent<IntroNarrative>();
         intro.sentences = new[]
@@ -91,6 +100,9 @@ public static class EndlessOfficeSceneBuilder
         generator.chunkLength = 18f;
         generator.chunksAhead = 18;
         generator.chunksBehind = 3;
+        generator.fullDetailChunkRadius = 7;
+        generator.litChunkInterval = 2;
+        generator.realtimeLightsPerLitChunk = 2;
         generator.officeWidth = 34f;
         generator.ceilingHeight = 3.15f;
         generator.deskColumns = 6;
