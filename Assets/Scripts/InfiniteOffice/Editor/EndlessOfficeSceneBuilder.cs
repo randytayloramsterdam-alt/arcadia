@@ -80,15 +80,6 @@ public static class EndlessOfficeSceneBuilder
         ps2.ambientColor = new Color(0.18f, 0.16f, 0.1f);
         ps2.ambientIntensity = 0.35f;
 
-        OfficeVolumetricFog volumetricFog = cameraObject.AddComponent<OfficeVolumetricFog>();
-        volumetricFog.layerCount = 16;
-        volumetricFog.startDistance = 34f;
-        volumetricFog.layerSpacing = 16f;
-        volumetricFog.layerWidth = 76f;
-        volumetricFog.layerHeight = 13f;
-        volumetricFog.frustumCoverage = 1.18f;
-        volumetricFog.maxLayerAlpha = 0.085f;
-
         return player;
     }
 
