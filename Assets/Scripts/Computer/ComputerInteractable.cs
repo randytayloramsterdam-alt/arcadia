@@ -19,9 +19,6 @@ public class ComputerInteractable : InteractableObject
     [Tooltip("拖入 ComputerUIController 组件")]
     public ComputerUIController computerUIController;
 
-    [Tooltip("交互时是否在屏幕下方显示 description 文本")]
-    public new bool showDescription = false;
-
     private Camera mainCam;
     private FirstPersonController fpsController;
     private InteractionSystem interactionSystem;
@@ -29,6 +26,11 @@ public class ComputerInteractable : InteractableObject
     private Quaternion originalRotation;
     private bool isFocused;
     private bool hasOpenedUI;
+
+    void Reset()
+    {
+        showDescription = false;
+    }
 
     void Start()
     {

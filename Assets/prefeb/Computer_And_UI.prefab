@@ -1616,4 +1616,3 @@ MonoBehaviour:
   transitionDuration: 0.8
   transitionSpeed: 6
   computerUIController: {fileID: 2285829078224884009}
-  showDescription: 0
