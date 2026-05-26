@@ -419,7 +419,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &582542732
 Transform:
   m_ObjectHideFlags: 0
@@ -782,6 +782,8 @@ MonoBehaviour:
   initialModuleCount: 6
   preSpawnAheadCount: 4
   spawnCheckInterval: 0.5
+  lightAheadCount: 2
+  lightBehindCount: 1
 --- !u!4 &1251122452
 Transform:
   m_ObjectHideFlags: 0

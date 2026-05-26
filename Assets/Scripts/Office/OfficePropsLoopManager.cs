@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Text;
 using UnityEngine;
 
 public class OfficePropsLoopManager : MonoBehaviour
@@ -24,8 +25,16 @@ public class OfficePropsLoopManager : MonoBehaviour
 
     public float spawnCheckInterval = 0.5f;
 
+    [Header("Lighting Range")]
+    [Tooltip("玩家前方保持开灯的模块数量（distance >= 0 且 <= lightAheadCount 时开灯）")]
+    public int lightAheadCount = 3;
+
+    [Tooltip("玩家后方保持开灯的模块数量（distance < 0 且 >= -lightBehindCount 时开灯）")]
+    public int lightBehindCount = 1;
+
     private int highestModuleIndex;
-    private System.Collections.Generic.Dictionary<int, GameObject> spawnedModules = new System.Collections.Generic.Dictionary<int, GameObject>();
+    private int lastPlayerModuleIndex = -1;
+    private System.Collections.Generic.Dictionary<int, OfficePropModule> spawnedModules = new System.Collections.Generic.Dictionary<int, OfficePropModule>();
 
     void Start()
     {
@@ -38,6 +47,10 @@ public class OfficePropsLoopManager : MonoBehaviour
         highestModuleIndex = -1;
         for (int i = 0; i < initialModuleCount; i++)
             SpawnModule(i);
+
+        // 立即同步灯光状态，避免第一帧所有模块默认亮着
+        CheckAndSpawn();
+        UpdateLights();
     }
 
     void OnEnable()
@@ -56,6 +69,7 @@ public class OfficePropsLoopManager : MonoBehaviour
         {
             yield return new WaitForSeconds(spawnCheckInterval);
             CheckAndSpawn();
+            UpdateLights();
         }
     }
 
@@ -67,7 +81,6 @@ public class OfficePropsLoopManager : MonoBehaviour
         float playerX = player.position.x;
         int playerModuleIndex = GetModuleIndex(playerX);
 
-        // 玩家前方需要存在的最大 moduleIndex
         int neededHighestIndex = playerModuleIndex + preSpawnAheadCount;
 
         while (highestModuleIndex < neededHighestIndex)
@@ -99,6 +112,54 @@ public class OfficePropsLoopManager : MonoBehaviour
             module.Initialize(moduleIndex);
 
         Debug.Log($"[OfficePropsLoopManager] Spawn: moduleIndex={moduleIndex}, prefab={prefab.name}, finalPosition={position}");
-        spawnedModules.Add(moduleIndex, moduleObj);
+
+        // 先生成时把灯关掉，避免 prefab 默认灯开着闪一帧
+        if (module != null)
+            module.SetLightsActive(false);
+
+        spawnedModules.Add(moduleIndex, module);
+    }
+
+    void UpdateLights()
+    {
+        if (player == null)
+            return;
+
+        int currentPlayerModuleIndex = GetModuleIndex(player.position.x);
+
+        if (currentPlayerModuleIndex != lastPlayerModuleIndex)
+        {
+            lastPlayerModuleIndex = currentPlayerModuleIndex;
+            Debug.Log($"[OfficePropsLoopManager] Player entered moduleIndex={currentPlayerModuleIndex}");
+        }
+
+        var lightsOnBuilder = new StringBuilder();
+
+        foreach (var kvp in spawnedModules)
+        {
+            int moduleIndex = kvp.Key;
+            OfficePropModule module = kvp.Value;
+
+            int distance = moduleIndex - currentPlayerModuleIndex;
+            bool shouldBeOn = distance >= -lightBehindCount && distance <= lightAheadCount;
+
+            module.SetLightsActive(shouldBeOn);
+
+            if (shouldBeOn)
+            {
+                lightsOnBuilder.Append($"moduleIndex={moduleIndex}, ");
+            }
+        }
+
+        string lightsOnStr = lightsOnBuilder.ToString();
+        if (lightsOnStr.Length > 0)
+        {
+            lightsOnStr = lightsOnStr.TrimEnd(',', ' ');
+            Debug.Log($"[OfficePropsLoopManager] Player at moduleIndex={currentPlayerModuleIndex}. Lights ON: {lightsOnStr}");
+        }
+        else
+        {
+            Debug.Log($"[OfficePropsLoopManager] Player at moduleIndex={currentPlayerModuleIndex}. All lights OFF.");
+        }
     }
 }
