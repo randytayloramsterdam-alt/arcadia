@@ -14,6 +14,16 @@ public class OfficePropModule : MonoBehaviour
     private bool lightsActive;
     private bool hasInitializedLightState;
 
+    [Header("Visibility")]
+    [Tooltip("物品内容根物体（用于隐藏/显示整个模块内容）")]
+    public GameObject contentRoot;
+
+    private bool contentVisible;
+    private bool hasInitializedVisibilityState;
+
+    [Header("Debug")]
+    public bool enableDebugLogs = false;
+
     private GameObject[] childObjects;
 
     void Awake()
@@ -26,7 +36,8 @@ public class OfficePropModule : MonoBehaviour
     public void Initialize(int index)
     {
         moduleIndex = index;
-        Debug.Log($"[OfficePropModule] Initialized: moduleIndex={index}, position={transform.position}");
+        if (enableDebugLogs)
+            Debug.Log($"[OfficePropModule] Initialized: moduleIndex={index}, position={transform.position}");
     }
 
     public void SetVisible(bool visible)
@@ -37,7 +48,6 @@ public class OfficePropModule : MonoBehaviour
 
     public void SetLightsActive(bool active)
     {
-        // 第一次调用时强制执行，不跳过
         if (hasInitializedLightState && lightsActive == active)
             return;
 
@@ -64,11 +74,35 @@ public class OfficePropModule : MonoBehaviour
 
         if (!hasLights)
         {
-            Debug.LogWarning($"[OfficePropModule] moduleIndex={moduleIndex} has no lighting references configured (lightsRoot and moduleLights are null/empty).");
+            if (enableDebugLogs)
+                Debug.LogWarning($"[OfficePropModule] moduleIndex={moduleIndex} has no lighting references configured (lightsRoot and moduleLights are null/empty).");
         }
         else
         {
-            Debug.Log($"[OfficePropModule] moduleIndex={moduleIndex} lights {(active ? "ON" : "OFF")}");
+            if (enableDebugLogs)
+                Debug.Log($"[OfficePropModule] moduleIndex={moduleIndex} lights {(active ? "ON" : "OFF")}");
         }
+    }
+
+    public void SetContentVisible(bool visible)
+    {
+        if (hasInitializedVisibilityState && contentVisible == visible)
+            return;
+
+        hasInitializedVisibilityState = true;
+        contentVisible = visible;
+
+        if (contentRoot != null)
+        {
+            contentRoot.SetActive(visible);
+        }
+        else
+        {
+            if (enableDebugLogs)
+                Debug.LogWarning($"[OfficePropModule] moduleIndex={moduleIndex} has no contentRoot configured (contentRoot is null).");
+        }
+
+        if (enableDebugLogs)
+            Debug.Log($"[OfficePropModule] moduleIndex={moduleIndex} content {(visible ? "VISIBLE" : "HIDDEN")}");
     }
 }

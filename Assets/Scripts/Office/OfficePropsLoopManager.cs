@@ -20,7 +20,7 @@ public class OfficePropsLoopManager : MonoBehaviour
     [Tooltip("游戏开始时一次性生成多少个模块")]
     public int initialModuleCount = 6;
 
-    [Tooltip("玩家当前所在模块前方，始终至少提前生成多少个模块。例如玩家在 moduleIndex=3，preSpawnAheadCount=4，则至少生成到 moduleIndex=7")]
+    [Tooltip("玩家当前所在模块前方，始终至少提前生成多少个模块")]
     public int preSpawnAheadCount = 4;
 
     public float spawnCheckInterval = 0.5f;
@@ -31,6 +31,16 @@ public class OfficePropsLoopManager : MonoBehaviour
 
     [Tooltip("玩家后方保持开灯的模块数量（distance < 0 且 >= -lightBehindCount 时开灯）")]
     public int lightBehindCount = 1;
+
+    [Header("Visibility Range")]
+    [Tooltip("玩家前方保持物体显示的模块数量（distance >= 0 且 <= visibleAheadCount 时显示）")]
+    public int visibleAheadCount = 5;
+
+    [Tooltip("玩家后方保持物体显示的模块数量（distance < 0 且 >= -visibleBehindCount 时显示）")]
+    public int visibleBehindCount = 2;
+
+    [Header("Debug")]
+    public bool enableDebugLogs = false;
 
     private int highestModuleIndex;
     private int lastPlayerModuleIndex = -1;
@@ -48,9 +58,8 @@ public class OfficePropsLoopManager : MonoBehaviour
         for (int i = 0; i < initialModuleCount; i++)
             SpawnModule(i);
 
-        // 立即同步灯光状态，避免第一帧所有模块默认亮着
         CheckAndSpawn();
-        UpdateLights();
+        UpdateAllModuleStates();
     }
 
     void OnEnable()
@@ -69,7 +78,7 @@ public class OfficePropsLoopManager : MonoBehaviour
         {
             yield return new WaitForSeconds(spawnCheckInterval);
             CheckAndSpawn();
-            UpdateLights();
+            UpdateAllModuleStates();
         }
     }
 
@@ -109,31 +118,40 @@ public class OfficePropsLoopManager : MonoBehaviour
         GameObject moduleObj = Instantiate(prefab, position, rotation, modulesRoot);
         var module = moduleObj.GetComponent<OfficePropModule>();
         if (module != null)
+        {
             module.Initialize(moduleIndex);
+            module.enableDebugLogs = enableDebugLogs;
+        }
 
-        Debug.Log($"[OfficePropsLoopManager] Spawn: moduleIndex={moduleIndex}, prefab={prefab.name}, finalPosition={position}");
+        if (enableDebugLogs)
+            Debug.Log($"[OfficePropsLoopManager] Spawn: moduleIndex={moduleIndex}, prefab={prefab.name}, finalPosition={position}");
 
-        // 先生成时把灯关掉，避免 prefab 默认灯开着闪一帧
         if (module != null)
+        {
             module.SetLightsActive(false);
+            module.SetContentVisible(false);
+        }
 
         spawnedModules.Add(moduleIndex, module);
     }
 
-    void UpdateLights()
+    void UpdateAllModuleStates()
     {
         if (player == null)
             return;
 
         int currentPlayerModuleIndex = GetModuleIndex(player.position.x);
 
-        if (currentPlayerModuleIndex != lastPlayerModuleIndex)
+        bool playerChangedModule = currentPlayerModuleIndex != lastPlayerModuleIndex;
+        if (playerChangedModule)
         {
             lastPlayerModuleIndex = currentPlayerModuleIndex;
-            Debug.Log($"[OfficePropsLoopManager] Player entered moduleIndex={currentPlayerModuleIndex}");
+            if (enableDebugLogs)
+                Debug.Log($"[OfficePropsLoopManager] Player entered moduleIndex={currentPlayerModuleIndex}");
         }
 
         var lightsOnBuilder = new StringBuilder();
+        var visibleBuilder = new StringBuilder();
 
         foreach (var kvp in spawnedModules)
         {
@@ -141,25 +159,37 @@ public class OfficePropsLoopManager : MonoBehaviour
             OfficePropModule module = kvp.Value;
 
             int distance = moduleIndex - currentPlayerModuleIndex;
-            bool shouldBeOn = distance >= -lightBehindCount && distance <= lightAheadCount;
 
-            module.SetLightsActive(shouldBeOn);
+            // 灯光
+            bool shouldLightOn = distance >= -lightBehindCount && distance <= lightAheadCount;
+            module.SetLightsActive(shouldLightOn);
+            if (shouldLightOn)
+                lightsOnBuilder.Append($"m{moduleIndex}, ");
 
-            if (shouldBeOn)
+            // 物体显示
+            bool shouldBeVisible = distance >= -visibleBehindCount && distance <= visibleAheadCount;
+            module.SetContentVisible(shouldBeVisible);
+            if (shouldBeVisible)
+                visibleBuilder.Append($"m{moduleIndex}, ");
+        }
+
+        string lightsOnStr = lightsOnBuilder.ToString().TrimEnd(',', ' ');
+        string visibleStr = visibleBuilder.ToString().TrimEnd(',', ' ');
+
+        if (playerChangedModule)
+        {
+            if (enableDebugLogs)
             {
-                lightsOnBuilder.Append($"moduleIndex={moduleIndex}, ");
-            }
-        }
+                if (lightsOnStr.Length > 0)
+                    Debug.Log($"[OfficePropsLoopManager] Lights ON (m{currentPlayerModuleIndex}): {lightsOnStr}");
+                else
+                    Debug.Log($"[OfficePropsLoopManager] Player at m{currentPlayerModuleIndex}. All lights OFF.");
 
-        string lightsOnStr = lightsOnBuilder.ToString();
-        if (lightsOnStr.Length > 0)
-        {
-            lightsOnStr = lightsOnStr.TrimEnd(',', ' ');
-            Debug.Log($"[OfficePropsLoopManager] Player at moduleIndex={currentPlayerModuleIndex}. Lights ON: {lightsOnStr}");
-        }
-        else
-        {
-            Debug.Log($"[OfficePropsLoopManager] Player at moduleIndex={currentPlayerModuleIndex}. All lights OFF.");
+                if (visibleStr.Length > 0)
+                    Debug.Log($"[OfficePropsLoopManager] Content VISIBLE (m{currentPlayerModuleIndex}): {visibleStr}");
+                else
+                    Debug.Log($"[OfficePropsLoopManager] Player at m{currentPlayerModuleIndex}. All content HIDDEN.");
+            }
         }
     }
 }

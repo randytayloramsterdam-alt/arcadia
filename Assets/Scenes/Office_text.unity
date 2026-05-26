@@ -784,6 +784,9 @@ MonoBehaviour:
   spawnCheckInterval: 0.5
   lightAheadCount: 2
   lightBehindCount: 1
+  visibleAheadCount: 3
+  visibleBehindCount: 2
+  enableDebugLogs: 0
 --- !u!4 &1251122452
 Transform:
   m_ObjectHideFlags: 0
@@ -1320,6 +1323,10 @@ PrefabInstance:
       value: OfficePropModule_Prototype_Text
       objectReference: {fileID: 0}
     - target: {fileID: 761066572822049151, guid: d3d2cb489b7c07e49967c8b0c168ecec, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1506163491822498307, guid: d3d2cb489b7c07e49967c8b0c168ecec, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
