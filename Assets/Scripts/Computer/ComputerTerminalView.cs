@@ -11,6 +11,16 @@ public class ComputerTerminalView : MonoBehaviour
     public TMP_Text outputText;
     public TMP_InputField inputField;
     public Button sendButton;
+    public RectTransform contentRect;
+    public RectTransform outputTextRect;
+
+    [Header("Scroll Settings")]
+    public ScrollRect terminalScrollRect;
+    public bool autoScrollToBottom = true;
+    public bool smoothAutoScroll = true;
+    public bool forceInstantScrollSameFrame = true;
+    [Range(1f, 60f)] public float autoScrollSpeed = 12f;
+    [Range(1f, 120f)] public float mouseWheelScrollSensitivity = 40f;
 
     [Header("Terminal Settings")]
     public string currentPrompt = "ARCADIA:\\>";
@@ -21,8 +31,25 @@ public class ComputerTerminalView : MonoBehaviour
     public bool enableDebugLogs = false;
 
     private readonly List<string> terminalLines = new List<string>();
+    private Coroutine scrollRoutine;
 
     public IReadOnlyList<string> TerminalLines => terminalLines;
+
+    private void Awake()
+    {
+        ApplyScrollSettings();
+    }
+
+    private void OnValidate()
+    {
+        ApplyScrollSettings();
+    }
+
+    private void ApplyScrollSettings()
+    {
+        if (terminalScrollRect != null)
+            terminalScrollRect.scrollSensitivity = mouseWheelScrollSensitivity;
+    }
 
     public void Clear()
     {
@@ -60,6 +87,77 @@ public class ComputerTerminalView : MonoBehaviour
         if (outputText == null)
             return;
         outputText.text = string.Join(Environment.NewLine, terminalLines);
+
+        if (!autoScrollToBottom || terminalScrollRect == null)
+            return;
+
+        if (smoothAutoScroll)
+        {
+            ScrollToBottomNextFrame();
+        }
+        else if (forceInstantScrollSameFrame)
+        {
+            ForceScrollToBottomImmediate();
+        }
+        else
+        {
+            ScrollToBottomNextFrame();
+        }
+    }
+
+    private void ScrollToBottomNextFrame()
+    {
+        if (terminalScrollRect == null)
+            return;
+
+        if (scrollRoutine != null)
+        {
+            StopCoroutine(scrollRoutine);
+            scrollRoutine = null;
+        }
+
+        scrollRoutine = StartCoroutine(SmoothScrollRoutine());
+    }
+
+    private void ForceScrollToBottomImmediate()
+    {
+        if (terminalScrollRect == null)
+            return;
+
+        Canvas.ForceUpdateCanvases();
+
+        if (outputTextRect != null)
+            LayoutRebuilder.ForceRebuildLayoutImmediate(outputTextRect);
+        if (contentRect != null)
+            LayoutRebuilder.ForceRebuildLayoutImmediate(contentRect);
+
+        Canvas.ForceUpdateCanvases();
+
+        terminalScrollRect.verticalNormalizedPosition = 0f;
+        terminalScrollRect.velocity = Vector2.zero;
+    }
+
+    private IEnumerator SmoothScrollRoutine()
+    {
+        yield return null;
+        Canvas.ForceUpdateCanvases();
+
+        if (!smoothAutoScroll)
+        {
+            terminalScrollRect.verticalNormalizedPosition = 0f;
+            yield break;
+        }
+
+        float threshold = 0.001f;
+        while (terminalScrollRect.verticalNormalizedPosition > threshold)
+        {
+            float target = 0f;
+            float current = terminalScrollRect.verticalNormalizedPosition;
+            terminalScrollRect.verticalNormalizedPosition = Mathf.Lerp(current, target, Time.unscaledDeltaTime * autoScrollSpeed);
+            yield return null;
+        }
+
+        terminalScrollRect.verticalNormalizedPosition = 0f;
     }
 
     public void ReplaceLastLine(string line)

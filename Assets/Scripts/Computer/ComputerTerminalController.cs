@@ -56,6 +56,8 @@ public class ComputerTerminalController : MonoBehaviour
     private void OnBootComplete()
     {
         bootComplete = true;
+        currentLayer = TerminalLayer.Root;
+        terminalView.SetPrompt("ARCADIA:\\>");
         ShowRootMenu();
     }
 
@@ -69,131 +71,105 @@ public class ComputerTerminalController : MonoBehaviour
         if (!bootComplete || terminalView == null)
             return;
 
-        string input = terminalView.GetInputText().Trim();
+        string rawInput = terminalView.GetInputText();
         terminalView.ClearInput();
 
-        if (string.IsNullOrEmpty(input))
+        if (string.IsNullOrEmpty(rawInput))
         {
             terminalView.AppendPrompt();
             terminalView.FocusInput();
             return;
         }
 
-        terminalView.AppendLine(CurrentPrompt + " " + input);
-        ProcessCommand(input);
-    }
+        string displayLine = CurrentPrompt + " " + rawInput.Trim();
+        terminalView.AppendLine(displayLine);
 
-    private void ProcessCommand(string input)
-    {
-        string raw = input.Trim();
-        string command = raw.ToUpperInvariant();
-        string[] parts = command.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        string normalized = rawInput.Trim().ToUpperInvariant();
+        string[] parts = normalized.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
         string verb = parts.Length > 0 ? parts[0] : "";
+        string arg = parts.Length > 1 ? parts[1] : "";
+        string normalizedCommand = string.Join(" ", parts);
 
-        switch (currentLayer)
-        {
-            case TerminalLayer.Root:
-                ProcessRootCommand(verb, parts, raw);
-                break;
-            case TerminalLayer.Mail:
-                ProcessMailCommand(verb, parts, raw);
-                break;
-            case TerminalLayer.Diary:
-                ProcessDiaryCommand(verb, parts, raw);
-                break;
-        }
+        ProcessGlobalCommand(verb, arg, normalizedCommand);
     }
 
-    private void ProcessRootCommand(string verb, string[] parts, string raw)
+    private void ProcessGlobalCommand(string verb, string arg, string normalizedCommand)
     {
-        switch (verb)
+        switch (normalizedCommand)
         {
-            case "HELP":
-                terminalView.AppendLine("AVAILABLE COMMANDS:");
-                terminalView.AppendLine("  HELP     - SHOW THIS LIST");
-                terminalView.AppendLine("  DIR/LIST - SHOW AVAILABLE SYSTEMS");
-                terminalView.AppendLine("  MAIL     - OPEN MAIL SYSTEM");
-                terminalView.AppendLine("  DIARY    - OPEN DIARY SYSTEM");
-                terminalView.AppendLine("  CLEAR    - CLEAR SCREEN");
-                terminalView.AppendLine("  EXIT     - CLOSE TERMINAL");
-                terminalView.AppendPrompt();
-                break;
-
-            case "DIR":
-            case "LIST":
-                ShowRootMenu();
-                break;
-
             case "MAIL":
             case "CD MAIL":
             case "OPEN MAIL":
                 EnterMail();
-                break;
+                return;
 
             case "DIARY":
             case "CD DIARY":
             case "OPEN DIARY":
                 EnterDiary();
-                break;
+                return;
 
             case "CLEAR":
             case "CLS":
                 terminalView.Clear();
                 terminalView.AppendPrompt();
                 terminalView.FocusInput();
-                break;
+                return;
 
             case "EXIT":
             case "QUIT":
                 ExitComputer();
-                break;
+                return;
 
             case "BACK":
             case "RETURN":
-                terminalView.AppendLine("ROOT DIRECTORY");
-                terminalView.AppendPrompt();
-                terminalView.FocusInput();
-                break;
+                HandleBack();
+                return;
+        }
 
-            default:
-                BadCommand();
+        switch (currentLayer)
+        {
+            case TerminalLayer.Root:
+                ProcessRootCommand(verb, arg, normalizedCommand);
+                break;
+            case TerminalLayer.Mail:
+                ProcessMailCommand(verb, arg, normalizedCommand);
+                break;
+            case TerminalLayer.Diary:
+                ProcessDiaryCommand(verb, arg, normalizedCommand);
                 break;
         }
     }
 
-    private void ProcessMailCommand(string verb, string[] parts, string raw)
+    private void HandleBack()
     {
-        switch (verb)
+        switch (currentLayer)
         {
-            case "HELP":
-                terminalView.AppendLine("MAIL COMMANDS:");
-                terminalView.AppendLine("  DIR/LIST - SHOW CONTACTS");
-                terminalView.AppendLine("  BACK     - RETURN TO ROOT");
-                terminalView.AppendLine("  CLEAR    - CLEAR SCREEN");
-                terminalView.AppendLine("  EXIT     - CLOSE TERMINAL");
+            case TerminalLayer.Root:
                 terminalView.AppendPrompt();
+                terminalView.FocusInput();
                 break;
+            case TerminalLayer.Mail:
+            case TerminalLayer.Diary:
+                currentLayer = TerminalLayer.Root;
+                terminalView.SetPrompt("ARCADIA:\\>");
+                terminalView.AppendPrompt();
+                terminalView.FocusInput();
+                break;
+        }
+    }
 
+    private void ProcessRootCommand(string verb, string arg, string normalizedCommand)
+    {
+        switch (normalizedCommand)
+        {
             case "DIR":
             case "LIST":
-                ShowMailContactList();
+                AppendRootSystems();
                 break;
 
-            case "BACK":
-            case "RETURN":
-                EnterRoot();
-                break;
-
-            case "CLEAR":
-            case "CLS":
-                terminalView.Clear();
-                terminalView.AppendPrompt();
-                terminalView.FocusInput();
-                break;
-
-            case "EXIT":
-            case "QUIT":
-                ExitComputer();
+            case "HELP":
+                AppendRootHelp();
                 break;
 
             default:
@@ -202,39 +178,109 @@ public class ComputerTerminalController : MonoBehaviour
         }
     }
 
-    private void ProcessDiaryCommand(string verb, string[] parts, string raw)
+    private void ProcessMailCommand(string verb, string arg, string normalizedCommand)
     {
-        switch (verb)
+        switch (normalizedCommand)
         {
+            case "DIR":
+            case "LIST":
+                AppendMailContacts();
+                break;
+
             case "HELP":
-                terminalView.AppendLine("DIARY COMMANDS:");
-                terminalView.AppendLine("  BACK  - RETURN TO ROOT");
-                terminalView.AppendLine("  CLEAR - CLEAR SCREEN");
-                terminalView.AppendLine("  EXIT  - CLOSE TERMINAL");
-                terminalView.AppendPrompt();
-                break;
-
-            case "BACK":
-            case "RETURN":
-                EnterRoot();
-                break;
-
-            case "CLEAR":
-            case "CLS":
-                terminalView.Clear();
-                terminalView.AppendPrompt();
-                terminalView.FocusInput();
-                break;
-
-            case "EXIT":
-            case "QUIT":
-                ExitComputer();
+                AppendMailHelp();
                 break;
 
             default:
                 BadCommand();
                 break;
         }
+    }
+
+    private void ProcessDiaryCommand(string verb, string arg, string normalizedCommand)
+    {
+        switch (normalizedCommand)
+        {
+            case "DIR":
+            case "LIST":
+                AppendDiaryUnavailable();
+                break;
+
+            case "HELP":
+                AppendDiaryHelp();
+                break;
+
+            default:
+                BadCommand();
+                break;
+        }
+    }
+
+    private void AppendRootHelp()
+    {
+        terminalView.AppendLine("AVAILABLE COMMANDS:");
+        terminalView.AppendLine("  HELP     - SHOW THIS LIST");
+        terminalView.AppendLine("  DIR/LIST - SHOW AVAILABLE SYSTEMS");
+        terminalView.AppendLine("  MAIL     - OPEN MAIL SYSTEM");
+        terminalView.AppendLine("  DIARY    - OPEN DIARY SYSTEM");
+        terminalView.AppendLine("  CLEAR    - CLEAR SCREEN");
+        terminalView.AppendLine("  EXIT     - CLOSE TERMINAL");
+        terminalView.AppendPrompt();
+        terminalView.FocusInput();
+    }
+
+    private void AppendMailHelp()
+    {
+        terminalView.AppendLine("MAIL COMMANDS:");
+        terminalView.AppendLine("  DIR/LIST - SHOW CONTACTS");
+        terminalView.AppendLine("  BACK     - RETURN TO ROOT");
+        terminalView.AppendLine("  CLEAR    - CLEAR SCREEN");
+        terminalView.AppendLine("  EXIT     - CLOSE TERMINAL");
+        terminalView.AppendPrompt();
+        terminalView.FocusInput();
+    }
+
+    private void AppendDiaryHelp()
+    {
+        terminalView.AppendLine("DIARY COMMANDS:");
+        terminalView.AppendLine("  BACK  - RETURN TO ROOT");
+        terminalView.AppendLine("  CLEAR - CLEAR SCREEN");
+        terminalView.AppendLine("  EXIT  - CLOSE TERMINAL");
+        terminalView.AppendPrompt();
+        terminalView.FocusInput();
+    }
+
+    private void AppendRootSystems()
+    {
+        terminalView.AppendLine("");
+        terminalView.AppendLine("AVAILABLE SYSTEMS:");
+        terminalView.AppendLine("");
+        terminalView.AppendLine("  MAIL      SYS");
+        terminalView.AppendLine("  DIARY     SYS");
+        terminalView.AppendPrompt();
+        terminalView.FocusInput();
+    }
+
+    private void AppendMailContacts()
+    {
+        terminalView.AppendLine("");
+        terminalView.AppendLine("MAIL CONTACTS");
+        terminalView.AppendLine("");
+        terminalView.AppendLine("[001] A. MORRISON          READ        LAST: 1983-10-04");
+        terminalView.AppendLine("[002] L. CARTER            UNREAD      LAST: 1983-10-05");
+        terminalView.AppendLine("[003] E. BENSON            UNREAD      LAST: 1983-10-07");
+        terminalView.AppendLine("[004] M. KELLER            READ        LAST: 1983-09-29");
+        terminalView.AppendLine("[005] J. REED              READ        LAST: 1983-09-18");
+        terminalView.AppendPrompt();
+        terminalView.FocusInput();
+    }
+
+    private void AppendDiaryUnavailable()
+    {
+        terminalView.AppendLine("");
+        terminalView.AppendLine("DIARY SYSTEM NOT AVAILABLE.");
+        terminalView.AppendPrompt();
+        terminalView.FocusInput();
     }
 
     private void ShowRootMenu()
@@ -252,9 +298,11 @@ public class ComputerTerminalController : MonoBehaviour
         terminalView.FocusInput();
     }
 
-    private void ShowMailContactList()
+    private void EnterMail()
     {
-        terminalView.Clear();
+        currentLayer = TerminalLayer.Mail;
+        terminalView.SetPrompt("ARCADIA:\\MAIL>");
+        terminalView.AppendLine("");
         terminalView.AppendLine("MAIL CONTACTS");
         terminalView.AppendLine("");
         terminalView.AppendLine("[001] A. MORRISON          READ        LAST: 1983-10-04");
@@ -266,28 +314,14 @@ public class ComputerTerminalController : MonoBehaviour
         terminalView.FocusInput();
     }
 
-    private void EnterMail()
-    {
-        currentLayer = TerminalLayer.Mail;
-        terminalView.SetPrompt("ARCADIA:\\MAIL>");
-        ShowMailContactList();
-    }
-
     private void EnterDiary()
     {
         currentLayer = TerminalLayer.Diary;
         terminalView.SetPrompt("ARCADIA:\\DIARY>");
-        terminalView.Clear();
+        terminalView.AppendLine("");
         terminalView.AppendLine("DIARY SYSTEM NOT AVAILABLE.");
         terminalView.AppendPrompt();
         terminalView.FocusInput();
-    }
-
-    private void EnterRoot()
-    {
-        currentLayer = TerminalLayer.Root;
-        terminalView.SetPrompt("ARCADIA:\\>");
-        ShowRootMenu();
     }
 
     private void BadCommand()
@@ -316,5 +350,4 @@ public class ComputerTerminalController : MonoBehaviour
             };
         }
     }
-
 }
