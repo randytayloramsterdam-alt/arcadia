@@ -1247,11 +1247,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: fe809255c75484947843dbaf265e3ae2, type: 3}
   m_PrefabInstance: {fileID: 245670611}
   m_PrefabAsset: {fileID: 0}
---- !u!224 &269517417 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5974396258155492681, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-  m_PrefabInstance: {fileID: 856948862}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &294711942
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2296,18 +2291,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 188632342283091209, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 188632342283091209, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 188632342283091209, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 449131035994217647, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_Value
       value: 1
@@ -2376,6 +2359,30 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5632331333164112383, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5632331333164112383, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5632331333164112383, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5632331333164112383, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5632331333164112383, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5632331333164112383, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5974396258155492681, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -2399,22 +2406,6 @@ PrefabInstance:
     - target: {fileID: 5974396258155492681, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7654846767866409815, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: contentRect
-      value: 
-      objectReference: {fileID: 1961261794}
-    - target: {fileID: 7654846767866409815, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: outputTextRect
-      value: 
-      objectReference: {fileID: 269517417}
-    - target: {fileID: 7654846767866409815, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: smoothAutoScroll
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7654846767866409815, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: forceInstantScrollSameFrame
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5153,11 +5144,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 231505481245917479, guid: 65db84698347b9f4c882445b5a189877, type: 3}
---- !u!224 &1961261794 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4011958697348869500, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-  m_PrefabInstance: {fileID: 856948862}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1989199093 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 4029d0a11baa60c439d7f8a8cd834d7e, type: 3}

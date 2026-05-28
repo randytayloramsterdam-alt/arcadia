@@ -13,6 +13,9 @@ public class ComputerTerminalController : MonoBehaviour
     public ComputerUIController computerUIController;
     public ComputerBootSequence bootSequence;
 
+    [Header("Focus Settings")]
+    public bool keepInputFocused = true;
+
     [Header("Debug")]
     public bool enableDebugLogs = false;
 
@@ -38,12 +41,29 @@ public class ComputerTerminalController : MonoBehaviour
             bootSequence.OnBootComplete -= OnBootComplete;
     }
 
+    private void Update()
+    {
+        if (!keepInputFocused || computerUIController == null || !computerUIController.IsOpen)
+            return;
+        if (terminalView == null || terminalView.inputField == null)
+            return;
+        if (!terminalView.inputField.interactable)
+            return;
+
+        GameObject selected = UnityEngine.EventSystems.EventSystem.current?.currentSelectedGameObject;
+        if (selected != terminalView.inputField.gameObject)
+            terminalView.FocusInput();
+    }
+
     private void Start()
     {
         if (terminalView != null && terminalView.inputField != null)
         {
             terminalView.inputField.onSubmit.RemoveListener(OnInputSubmitted);
             terminalView.inputField.onSubmit.AddListener(OnInputSubmitted);
+
+            terminalView.inputField.onValueChanged.RemoveListener(OnInputValueChanged);
+            terminalView.inputField.onValueChanged.AddListener(OnInputValueChanged);
         }
 
         if (terminalView != null && terminalView.sendButton != null)
@@ -59,6 +79,14 @@ public class ComputerTerminalController : MonoBehaviour
         currentLayer = TerminalLayer.Root;
         terminalView.SetPrompt("ARCADIA:\\>");
         ShowRootMenu();
+        terminalView.UpdateLiveInputLine(terminalView.currentPrompt, "");
+    }
+
+    private void OnInputValueChanged(string value)
+    {
+        if (!bootComplete || terminalView == null)
+            return;
+        terminalView.UpdateLiveInputLine(CurrentPrompt, value);
     }
 
     private void OnInputSubmitted(string _)
@@ -73,10 +101,11 @@ public class ComputerTerminalController : MonoBehaviour
 
         string rawInput = terminalView.GetInputText();
         terminalView.ClearInput();
+        terminalView.ClearLiveInputLine();
 
         if (string.IsNullOrEmpty(rawInput))
         {
-            terminalView.AppendPrompt();
+            terminalView.UpdateLiveInputLine(CurrentPrompt, "");
             terminalView.FocusInput();
             return;
         }
@@ -112,7 +141,7 @@ public class ComputerTerminalController : MonoBehaviour
             case "CLEAR":
             case "CLS":
                 terminalView.Clear();
-                terminalView.AppendPrompt();
+                terminalView.UpdateLiveInputLine(CurrentPrompt, "");
                 terminalView.FocusInput();
                 return;
 
@@ -146,14 +175,14 @@ public class ComputerTerminalController : MonoBehaviour
         switch (currentLayer)
         {
             case TerminalLayer.Root:
-                terminalView.AppendPrompt();
+                terminalView.UpdateLiveInputLine(terminalView.currentPrompt, "");
                 terminalView.FocusInput();
                 break;
             case TerminalLayer.Mail:
             case TerminalLayer.Diary:
                 currentLayer = TerminalLayer.Root;
                 terminalView.SetPrompt("ARCADIA:\\>");
-                terminalView.AppendPrompt();
+                terminalView.UpdateLiveInputLine(terminalView.currentPrompt, "");
                 terminalView.FocusInput();
                 break;
         }
@@ -225,7 +254,7 @@ public class ComputerTerminalController : MonoBehaviour
         terminalView.AppendLine("  DIARY    - OPEN DIARY SYSTEM");
         terminalView.AppendLine("  CLEAR    - CLEAR SCREEN");
         terminalView.AppendLine("  EXIT     - CLOSE TERMINAL");
-        terminalView.AppendPrompt();
+        terminalView.UpdateLiveInputLine(CurrentPrompt, "");
         terminalView.FocusInput();
     }
 
@@ -236,7 +265,7 @@ public class ComputerTerminalController : MonoBehaviour
         terminalView.AppendLine("  BACK     - RETURN TO ROOT");
         terminalView.AppendLine("  CLEAR    - CLEAR SCREEN");
         terminalView.AppendLine("  EXIT     - CLOSE TERMINAL");
-        terminalView.AppendPrompt();
+        terminalView.UpdateLiveInputLine(CurrentPrompt, "");
         terminalView.FocusInput();
     }
 
@@ -246,7 +275,7 @@ public class ComputerTerminalController : MonoBehaviour
         terminalView.AppendLine("  BACK  - RETURN TO ROOT");
         terminalView.AppendLine("  CLEAR - CLEAR SCREEN");
         terminalView.AppendLine("  EXIT  - CLOSE TERMINAL");
-        terminalView.AppendPrompt();
+        terminalView.UpdateLiveInputLine(CurrentPrompt, "");
         terminalView.FocusInput();
     }
 
@@ -257,7 +286,7 @@ public class ComputerTerminalController : MonoBehaviour
         terminalView.AppendLine("");
         terminalView.AppendLine("  MAIL      SYS");
         terminalView.AppendLine("  DIARY     SYS");
-        terminalView.AppendPrompt();
+        terminalView.UpdateLiveInputLine(CurrentPrompt, "");
         terminalView.FocusInput();
     }
 
@@ -271,7 +300,7 @@ public class ComputerTerminalController : MonoBehaviour
         terminalView.AppendLine("[003] E. BENSON            UNREAD      LAST: 1983-10-07");
         terminalView.AppendLine("[004] M. KELLER            READ        LAST: 1983-09-29");
         terminalView.AppendLine("[005] J. REED              READ        LAST: 1983-09-18");
-        terminalView.AppendPrompt();
+        terminalView.UpdateLiveInputLine(CurrentPrompt, "");
         terminalView.FocusInput();
     }
 
@@ -279,7 +308,7 @@ public class ComputerTerminalController : MonoBehaviour
     {
         terminalView.AppendLine("");
         terminalView.AppendLine("DIARY SYSTEM NOT AVAILABLE.");
-        terminalView.AppendPrompt();
+        terminalView.UpdateLiveInputLine(CurrentPrompt, "");
         terminalView.FocusInput();
     }
 
@@ -294,7 +323,7 @@ public class ComputerTerminalController : MonoBehaviour
         terminalView.AppendLine("  DIARY     SYS");
         terminalView.AppendLine("");
         terminalView.AppendLine("TYPE HELP FOR COMMAND LIST.");
-        terminalView.AppendPrompt();
+        terminalView.UpdateLiveInputLine(CurrentPrompt, "");
         terminalView.FocusInput();
     }
 
@@ -310,7 +339,7 @@ public class ComputerTerminalController : MonoBehaviour
         terminalView.AppendLine("[003] E. BENSON            UNREAD      LAST: 1983-10-07");
         terminalView.AppendLine("[004] M. KELLER            READ        LAST: 1983-09-29");
         terminalView.AppendLine("[005] J. REED              READ        LAST: 1983-09-18");
-        terminalView.AppendPrompt();
+        terminalView.UpdateLiveInputLine("ARCADIA:\\MAIL>", "");
         terminalView.FocusInput();
     }
 
@@ -320,14 +349,14 @@ public class ComputerTerminalController : MonoBehaviour
         terminalView.SetPrompt("ARCADIA:\\DIARY>");
         terminalView.AppendLine("");
         terminalView.AppendLine("DIARY SYSTEM NOT AVAILABLE.");
-        terminalView.AppendPrompt();
+        terminalView.UpdateLiveInputLine("ARCADIA:\\DIARY>", "");
         terminalView.FocusInput();
     }
 
     private void BadCommand()
     {
         terminalView.AppendLine("BAD COMMAND OR FILE NAME.");
-        terminalView.AppendPrompt();
+        terminalView.UpdateLiveInputLine(CurrentPrompt, "");
         terminalView.FocusInput();
     }
 

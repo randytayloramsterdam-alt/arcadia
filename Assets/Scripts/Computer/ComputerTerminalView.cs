@@ -13,6 +13,7 @@ public class ComputerTerminalView : MonoBehaviour
     public Button sendButton;
     public RectTransform contentRect;
     public RectTransform outputTextRect;
+    public TMP_Text liveInputLineText;
 
     [Header("Scroll Settings")]
     public ScrollRect terminalScrollRect;
@@ -21,6 +22,15 @@ public class ComputerTerminalView : MonoBehaviour
     public bool forceInstantScrollSameFrame = true;
     [Range(1f, 60f)] public float autoScrollSpeed = 12f;
     [Range(1f, 120f)] public float mouseWheelScrollSensitivity = 40f;
+
+    [Header("Inline Input Settings")]
+    public bool useInlineInputLine = true;
+    public string cursorSymbol = "█";
+    public bool showBlinkingCursor = true;
+    [Range(0.1f, 2f)] public float cursorBlinkInterval = 0.5f;
+
+    [Header("Input Field Visuals")]
+    public bool hideInputFieldVisuals = true;
 
     [Header("Terminal Settings")]
     public string currentPrompt = "ARCADIA:\\>";
@@ -32,12 +42,38 @@ public class ComputerTerminalView : MonoBehaviour
 
     private readonly List<string> terminalLines = new List<string>();
     private Coroutine scrollRoutine;
+    private bool cursorVisible = true;
+    private float cursorBlinkTimer;
+    private string cachedPrompt = "";
+    private string cachedInput = "";
 
     public IReadOnlyList<string> TerminalLines => terminalLines;
 
     private void Awake()
     {
         ApplyScrollSettings();
+        if (hideInputFieldVisuals)
+            ApplyHiddenInputFieldVisuals();
+    }
+
+    private void OnEnable()
+    {
+        if (hideInputFieldVisuals)
+            ApplyHiddenInputFieldVisuals();
+    }
+
+    private void Update()
+    {
+        if (showBlinkingCursor && useInlineInputLine && liveInputLineText != null)
+        {
+            cursorBlinkTimer += Time.unscaledDeltaTime;
+            if (cursorBlinkTimer >= cursorBlinkInterval)
+            {
+                cursorBlinkTimer -= cursorBlinkInterval;
+                cursorVisible = !cursorVisible;
+                RefreshLiveInputLine();
+            }
+        }
     }
 
     private void OnValidate()
@@ -49,6 +85,65 @@ public class ComputerTerminalView : MonoBehaviour
     {
         if (terminalScrollRect != null)
             terminalScrollRect.scrollSensitivity = mouseWheelScrollSensitivity;
+    }
+
+    public void ApplyHiddenInputFieldVisuals()
+    {
+        if (inputField == null)
+            return;
+
+        Image backgroundImage = inputField.GetComponent<Image>();
+        if (backgroundImage != null)
+            backgroundImage.color = new Color(backgroundImage.color.r, backgroundImage.color.g, backgroundImage.color.b, 0f);
+
+        if (inputField.textComponent != null)
+        {
+            Color tc = inputField.textComponent.color;
+            inputField.textComponent.color = new Color(tc.r, tc.g, tc.b, 0f);
+        }
+
+        TMP_Text placeholder = inputField.placeholder as TMP_Text;
+        if (placeholder != null)
+        {
+            Color ph = placeholder.color;
+            placeholder.color = new Color(ph.r, ph.g, ph.b, 0f);
+        }
+    }
+
+    public void SetLiveInputVisible(bool visible)
+    {
+        if (liveInputLineText != null)
+            liveInputLineText.gameObject.SetActive(visible);
+    }
+
+    public void UpdateLiveInputLine(string prompt, string input)
+    {
+        if (!useInlineInputLine || liveInputLineText == null)
+            return;
+
+        cachedPrompt = prompt;
+        cachedInput = input;
+
+        RefreshLiveInputLine();
+    }
+
+    private void RefreshLiveInputLine()
+    {
+        if (liveInputLineText == null || !useInlineInputLine)
+            return;
+
+        string display = cachedPrompt + " " + cachedInput;
+        bool showCursor = showBlinkingCursor ? cursorVisible : true;
+        if (showCursor)
+            display += cursorSymbol;
+
+        liveInputLineText.text = display;
+    }
+
+    public void ClearLiveInputLine()
+    {
+        if (liveInputLineText != null)
+            liveInputLineText.text = "";
     }
 
     public void Clear()
@@ -145,19 +240,18 @@ public class ComputerTerminalView : MonoBehaviour
         if (!smoothAutoScroll)
         {
             terminalScrollRect.verticalNormalizedPosition = 0f;
-            yield break;
         }
-
-        float threshold = 0.001f;
-        while (terminalScrollRect.verticalNormalizedPosition > threshold)
+        else
         {
-            float target = 0f;
-            float current = terminalScrollRect.verticalNormalizedPosition;
-            terminalScrollRect.verticalNormalizedPosition = Mathf.Lerp(current, target, Time.unscaledDeltaTime * autoScrollSpeed);
-            yield return null;
+            float threshold = 0.001f;
+            while (terminalScrollRect.verticalNormalizedPosition > threshold)
+            {
+                float current = terminalScrollRect.verticalNormalizedPosition;
+                terminalScrollRect.verticalNormalizedPosition = Mathf.Lerp(current, 0f, Time.unscaledDeltaTime * autoScrollSpeed);
+                yield return null;
+            }
+            terminalScrollRect.verticalNormalizedPosition = 0f;
         }
-
-        terminalScrollRect.verticalNormalizedPosition = 0f;
     }
 
     public void ReplaceLastLine(string line)
@@ -201,6 +295,9 @@ public class ComputerTerminalView : MonoBehaviour
             inputField.interactable = enabled;
         if (sendButton != null)
             sendButton.interactable = enabled;
+
+        if (useInlineInputLine && liveInputLineText != null)
+            liveInputLineText.gameObject.SetActive(enabled);
     }
 
     public void FocusInput()
@@ -208,7 +305,10 @@ public class ComputerTerminalView : MonoBehaviour
         if (inputField == null || !inputField.interactable)
             return;
         inputField.ActivateInputField();
-        inputField.Select();
+        int len = inputField.text.Length;
+        inputField.caretPosition = len;
+        inputField.selectionAnchorPosition = len;
+        inputField.selectionFocusPosition = len;
     }
 
     public void ClearInput()
