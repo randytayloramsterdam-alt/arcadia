@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3774100867000045564}
   - component: {fileID: 938263147496402669}
   - component: {fileID: 4246690370803259690}
+  - component: {fileID: 7853560280062743148}
   m_Layer: 5
   m_Name: ComputerPanel
   m_TagString: Untagged
@@ -75,6 +76,31 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &7853560280062743148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 581581012374290135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcef1f3e33118be4a8da72c0326b6ad8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outputText: {fileID: 5911394051237721892}
+  inputField: {fileID: 2396721343008935703}
+  sendButton: {fileID: 5430368251563918803}
+  playBootOnEnable: 1
+  skipBoot: 0
+  bootDuration: 5
+  bootLineDelay: 0.045
+  bootTextColor: {r: 0.43, g: 0.66, b: 1, a: 1}
+  screenBackgroundColor: {r: 0.005, g: 0.012, b: 0.014, a: 1}
+  completeScreenTextColor: {r: 0.06, g: 0.19, b: 0.36, a: 1}
+  completeScreenBackgroundColor: {r: 0.7, g: 0.78, b: 0.8, a: 1}
+  systemName: ARCADIA LIFE SCIENCES TERMINAL
+  enableDebugLogs: 0
 --- !u!1 &1364295231636429936
 GameObject:
   m_ObjectHideFlags: 0
@@ -609,6 +635,18 @@ MonoBehaviour:
   chatClient: {fileID: 312863822577312133}
   processingText: PROCESSING...
   emptyInputWarning: Input cannot be empty.
+  bootSequence: {fileID: 0}
+  bootOnEnable: 0
+  enableCrtOverlay: 1
+  scanlineAlpha: 0.16
+  vignetteAlpha: 0.35
+  flickerAmount: 0.035
+  crtJitter: 0.65
+  maxTerminalLines: 80
+  bootTextColor: {r: 0.43, g: 0.66, b: 1, a: 1}
+  screenBackgroundColor: {r: 0.005, g: 0.012, b: 0.014, a: 1}
+  prompt: ARC>
+  enableDebugLogs: 0
 --- !u!1 &5216674899730755145
 GameObject:
   m_ObjectHideFlags: 0
