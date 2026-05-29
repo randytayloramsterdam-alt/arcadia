@@ -156,6 +156,11 @@ public class InventoryUI : MonoBehaviour
         if (inspectController != null && inspectController.IsInspecting)
             return;
 
+        // Don't handle B key while computer UI is open
+        var computerUI = FindObjectOfType<ComputerUIController>();
+        if (computerUI != null && computerUI.IsOpen)
+            return;
+
         if (Input.GetKeyDown(KeyCode.B))
         {
             Debug.Log("[InventoryUI] B pressed, toggling backpack. isOpen=" + isOpen);
