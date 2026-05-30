@@ -12,6 +12,7 @@ public class ComputerTerminalController : MonoBehaviour
     [Header("Computer System")]
     public ComputerUIController computerUIController;
     public ComputerBootSequence bootSequence;
+    public ComputerMailSystem mailSystem;
 
     [Header("Focus Settings")]
     public bool keepInputFocused = true;
@@ -23,11 +24,15 @@ public class ComputerTerminalController : MonoBehaviour
     {
         Root,
         Mail,
-        Diary
+        Diary,
+        MailContact,
+        MailMessage
     }
 
     private TerminalLayer currentLayer = TerminalLayer.Root;
     private bool bootComplete;
+    private string currentContactId = "";
+    private string currentMessageId = "";
 
     private void OnEnable()
     {
@@ -57,6 +62,9 @@ public class ComputerTerminalController : MonoBehaviour
 
     private void Start()
     {
+        if (mailSystem != null)
+            mailSystem.Initialize();
+
         if (terminalView != null && terminalView.inputField != null)
         {
             terminalView.inputField.onSubmit.RemoveListener(OnInputSubmitted);
@@ -77,9 +85,10 @@ public class ComputerTerminalController : MonoBehaviour
     {
         bootComplete = true;
         currentLayer = TerminalLayer.Root;
+        currentContactId = "";
+        currentMessageId = "";
         terminalView.SetPrompt("ARCADIA:\\>");
         ShowRootMenu();
-        terminalView.UpdateLiveInputLine(terminalView.currentPrompt, "");
     }
 
     private void OnInputValueChanged(string value)
@@ -164,6 +173,12 @@ public class ComputerTerminalController : MonoBehaviour
             case TerminalLayer.Mail:
                 ProcessMailCommand(verb, arg, normalizedCommand);
                 break;
+            case TerminalLayer.MailContact:
+                ProcessMailContactCommand(verb, arg, normalizedCommand);
+                break;
+            case TerminalLayer.MailMessage:
+                ProcessMailMessageCommand(verb, arg, normalizedCommand);
+                break;
             case TerminalLayer.Diary:
                 ProcessDiaryCommand(verb, arg, normalizedCommand);
                 break;
@@ -178,12 +193,23 @@ public class ComputerTerminalController : MonoBehaviour
                 terminalView.UpdateLiveInputLine(terminalView.currentPrompt, "");
                 terminalView.FocusInput();
                 break;
+
             case TerminalLayer.Mail:
             case TerminalLayer.Diary:
                 currentLayer = TerminalLayer.Root;
+                currentContactId = "";
+                currentMessageId = "";
                 terminalView.SetPrompt("ARCADIA:\\>");
-                terminalView.UpdateLiveInputLine(terminalView.currentPrompt, "");
+                terminalView.UpdateLiveInputLine("ARCADIA:\\>", "");
                 terminalView.FocusInput();
+                break;
+
+            case TerminalLayer.MailContact:
+                EnterMail();
+                break;
+
+            case TerminalLayer.MailMessage:
+                EnterMailContact(currentContactId);
                 break;
         }
     }
@@ -213,11 +239,71 @@ public class ComputerTerminalController : MonoBehaviour
         {
             case "DIR":
             case "LIST":
-                AppendMailContacts();
+                AppendMailContactList();
                 break;
 
             case "HELP":
                 AppendMailHelp();
+                break;
+
+            default:
+                if (mailSystem != null && mailSystem.GetContact(normalizedCommand) != null)
+                {
+                    EnterMailContact(normalizedCommand);
+                }
+                else if (mailSystem != null && mailSystem.GetContact(arg) != null)
+                {
+                    EnterMailContact(arg);
+                }
+                else
+                {
+                    BadCommand();
+                }
+                break;
+        }
+    }
+
+    private void ProcessMailContactCommand(string verb, string arg, string normalizedCommand)
+    {
+        switch (normalizedCommand)
+        {
+            case "DIR":
+            case "LIST":
+                AppendMessageList();
+                break;
+
+            case "HELP":
+                AppendMailContactHelp();
+                break;
+
+            default:
+                if (IsMessageId(verb))
+                {
+                    EnterMailMessage(currentContactId, verb);
+                }
+                else if (IsMessageId(arg))
+                {
+                    EnterMailMessage(currentContactId, arg);
+                }
+                else
+                {
+                    BadCommand();
+                }
+                break;
+        }
+    }
+
+    private void ProcessMailMessageCommand(string verb, string arg, string normalizedCommand)
+    {
+        switch (normalizedCommand)
+        {
+            case "DIR":
+            case "LIST":
+                AppendMessageBody();
+                break;
+
+            case "HELP":
+                AppendMailMessageHelp();
                 break;
 
             default:
@@ -245,6 +331,125 @@ public class ComputerTerminalController : MonoBehaviour
         }
     }
 
+    private bool IsMessageId(string id)
+    {
+        if (string.IsNullOrEmpty(id))
+            return false;
+        var contact = mailSystem != null ? mailSystem.GetContact(currentContactId) : null;
+        if (contact == null)
+            return false;
+        foreach (var msg in contact.messages)
+        {
+            if (msg.id == id)
+                return true;
+        }
+        return false;
+    }
+
+    private void EnterMail()
+    {
+        currentLayer = TerminalLayer.Mail;
+        currentContactId = "";
+        currentMessageId = "";
+        terminalView.SetPrompt("ARCADIA:\\MAIL>");
+        AppendMailContactList();
+    }
+
+    private void EnterDiary()
+    {
+        currentLayer = TerminalLayer.Diary;
+        currentContactId = "";
+        currentMessageId = "";
+        terminalView.SetPrompt("ARCADIA:\\DIARY>");
+        AppendDiaryUnavailable();
+    }
+
+    private void EnterMailContact(string contactId)
+    {
+        if (mailSystem == null || mailSystem.GetContact(contactId) == null)
+        {
+            BadCommand();
+            return;
+        }
+
+        currentLayer = TerminalLayer.MailContact;
+        currentContactId = contactId;
+        currentMessageId = "";
+        string contactName = mailSystem.GetContactName(contactId);
+        terminalView.SetPrompt($"ARCADIA:\\MAIL\\{contactName}>");
+        AppendMessageList();
+    }
+
+    private void EnterMailMessage(string contactId, string messageId)
+    {
+        if (mailSystem == null || mailSystem.GetMessage(contactId, messageId) == null)
+        {
+            BadCommand();
+            return;
+        }
+
+        currentLayer = TerminalLayer.MailMessage;
+        currentMessageId = messageId;
+        string contactName = mailSystem.GetContactName(contactId);
+        terminalView.SetPrompt($"ARCADIA:\\MAIL\\{contactName}\\{messageId}>");
+        AppendMessageBody();
+
+        mailSystem.MarkMessageRead(contactId, messageId);
+    }
+
+    private void AppendMailContactList()
+    {
+        if (mailSystem == null)
+        {
+            terminalView.AppendLine("MAIL SYSTEM NOT AVAILABLE.");
+            terminalView.UpdateLiveInputLine(CurrentPrompt, "");
+            terminalView.FocusInput();
+            return;
+        }
+
+        string output = mailSystem.RenderContactList();
+        string[] lines = output.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+        foreach (var line in lines)
+            terminalView.AppendLine(line);
+
+        terminalView.UpdateLiveInputLine(CurrentPrompt, "");
+        terminalView.FocusInput();
+    }
+
+    private void AppendMessageList()
+    {
+        if (mailSystem == null || string.IsNullOrEmpty(currentContactId))
+        {
+            BadCommand();
+            return;
+        }
+
+        string output = mailSystem.RenderMessageList(currentContactId);
+        string[] lines = output.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+        foreach (var line in lines)
+            terminalView.AppendLine(line);
+
+        terminalView.UpdateLiveInputLine(CurrentPrompt, "");
+        terminalView.FocusInput();
+    }
+
+    private void AppendMessageBody()
+    {
+        if (mailSystem == null || string.IsNullOrEmpty(currentContactId) || string.IsNullOrEmpty(currentMessageId))
+        {
+            BadCommand();
+            return;
+        }
+
+        string output = mailSystem.RenderMessageBody(currentContactId, currentMessageId);
+        string[] lines = output.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+        foreach (var line in lines)
+            terminalView.AppendLine(line);
+
+        terminalView.UpdateLiveInputLine(CurrentPrompt, "");
+        terminalView.FocusInput();
+    }
+
     private void AppendRootHelp()
     {
         terminalView.AppendLine("AVAILABLE COMMANDS:");
@@ -261,8 +466,32 @@ public class ComputerTerminalController : MonoBehaviour
     private void AppendMailHelp()
     {
         terminalView.AppendLine("MAIL COMMANDS:");
-        terminalView.AppendLine("  DIR/LIST - SHOW CONTACTS");
-        terminalView.AppendLine("  BACK     - RETURN TO ROOT");
+        terminalView.AppendLine("  DIR/LIST   - SHOW CONTACTS");
+        terminalView.AppendLine("  [ID]       - OPEN CONTACT");
+        terminalView.AppendLine("  BACK       - RETURN TO ROOT");
+        terminalView.AppendLine("  CLEAR      - CLEAR SCREEN");
+        terminalView.AppendLine("  EXIT       - CLOSE TERMINAL");
+        terminalView.UpdateLiveInputLine(CurrentPrompt, "");
+        terminalView.FocusInput();
+    }
+
+    private void AppendMailContactHelp()
+    {
+        terminalView.AppendLine("CONTACT COMMANDS:");
+        terminalView.AppendLine("  DIR/LIST    - SHOW MESSAGES");
+        terminalView.AppendLine("  [MSG ID]    - OPEN MESSAGE");
+        terminalView.AppendLine("  BACK        - RETURN TO MAIL");
+        terminalView.AppendLine("  CLEAR       - CLEAR SCREEN");
+        terminalView.AppendLine("  EXIT        - CLOSE TERMINAL");
+        terminalView.UpdateLiveInputLine(CurrentPrompt, "");
+        terminalView.FocusInput();
+    }
+
+    private void AppendMailMessageHelp()
+    {
+        terminalView.AppendLine("MESSAGE COMMANDS:");
+        terminalView.AppendLine("  DIR/LIST - RE-DISPLAY MESSAGE");
+        terminalView.AppendLine("  BACK     - RETURN TO CONTACT");
         terminalView.AppendLine("  CLEAR    - CLEAR SCREEN");
         terminalView.AppendLine("  EXIT     - CLOSE TERMINAL");
         terminalView.UpdateLiveInputLine(CurrentPrompt, "");
@@ -290,20 +519,6 @@ public class ComputerTerminalController : MonoBehaviour
         terminalView.FocusInput();
     }
 
-    private void AppendMailContacts()
-    {
-        terminalView.AppendLine("");
-        terminalView.AppendLine("MAIL CONTACTS");
-        terminalView.AppendLine("");
-        terminalView.AppendLine("[001] A. MORRISON          READ        LAST: 1983-10-04");
-        terminalView.AppendLine("[002] L. CARTER            UNREAD      LAST: 1983-10-05");
-        terminalView.AppendLine("[003] E. BENSON            UNREAD      LAST: 1983-10-07");
-        terminalView.AppendLine("[004] M. KELLER            READ        LAST: 1983-09-29");
-        terminalView.AppendLine("[005] J. REED              READ        LAST: 1983-09-18");
-        terminalView.UpdateLiveInputLine(CurrentPrompt, "");
-        terminalView.FocusInput();
-    }
-
     private void AppendDiaryUnavailable()
     {
         terminalView.AppendLine("");
@@ -323,33 +538,7 @@ public class ComputerTerminalController : MonoBehaviour
         terminalView.AppendLine("  DIARY     SYS");
         terminalView.AppendLine("");
         terminalView.AppendLine("TYPE HELP FOR COMMAND LIST.");
-        terminalView.UpdateLiveInputLine(CurrentPrompt, "");
-        terminalView.FocusInput();
-    }
-
-    private void EnterMail()
-    {
-        currentLayer = TerminalLayer.Mail;
-        terminalView.SetPrompt("ARCADIA:\\MAIL>");
-        terminalView.AppendLine("");
-        terminalView.AppendLine("MAIL CONTACTS");
-        terminalView.AppendLine("");
-        terminalView.AppendLine("[001] A. MORRISON          READ        LAST: 1983-10-04");
-        terminalView.AppendLine("[002] L. CARTER            UNREAD      LAST: 1983-10-05");
-        terminalView.AppendLine("[003] E. BENSON            UNREAD      LAST: 1983-10-07");
-        terminalView.AppendLine("[004] M. KELLER            READ        LAST: 1983-09-29");
-        terminalView.AppendLine("[005] J. REED              READ        LAST: 1983-09-18");
-        terminalView.UpdateLiveInputLine("ARCADIA:\\MAIL>", "");
-        terminalView.FocusInput();
-    }
-
-    private void EnterDiary()
-    {
-        currentLayer = TerminalLayer.Diary;
-        terminalView.SetPrompt("ARCADIA:\\DIARY>");
-        terminalView.AppendLine("");
-        terminalView.AppendLine("DIARY SYSTEM NOT AVAILABLE.");
-        terminalView.UpdateLiveInputLine("ARCADIA:\\DIARY>", "");
+        terminalView.UpdateLiveInputLine(terminalView.currentPrompt, "");
         terminalView.FocusInput();
     }
 
@@ -375,6 +564,8 @@ public class ComputerTerminalController : MonoBehaviour
                 TerminalLayer.Root => "ARCADIA:\\>",
                 TerminalLayer.Mail => "ARCADIA:\\MAIL>",
                 TerminalLayer.Diary => "ARCADIA:\\DIARY>",
+                TerminalLayer.MailContact => $"ARCADIA:\\MAIL\\{mailSystem?.GetContactName(currentContactId)}>",
+                TerminalLayer.MailMessage => $"ARCADIA:\\MAIL\\{mailSystem?.GetContactName(currentContactId)}\\{currentMessageId}>",
                 _ => "ARCADIA:\\>"
             };
         }
