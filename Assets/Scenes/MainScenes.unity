@@ -2291,6 +2291,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 74958316026948751, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: m_margin.z
+      value: -673.8955
+      objectReference: {fileID: 0}
+    - target: {fileID: 188632342283091209, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 188632342283091209, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 188632342283091209, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -17
+      objectReference: {fileID: 0}
+    - target: {fileID: 449131035994217647, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: m_Value
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1056935800271645153, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4.23
@@ -2331,9 +2351,97 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3300206389555445647, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3300206389555445647, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3300206389555445647, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4670098085902529221, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_Name
       value: Computer_And_UI
+      objectReference: {fileID: 0}
+    - target: {fileID: 4670098085902529221, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4706478390962714197, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4874637344341509288, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 101.97
+      objectReference: {fileID: 0}
+    - target: {fileID: 4874637344341509288, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5632331333164112383, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5632331333164112383, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5632331333164112383, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 189.16998
+      objectReference: {fileID: 0}
+    - target: {fileID: 5632331333164112383, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 20.11
+      objectReference: {fileID: 0}
+    - target: {fileID: 5632331333164112383, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 104.58499
+      objectReference: {fileID: 0}
+    - target: {fileID: 5632331333164112383, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -81.915
+      objectReference: {fileID: 0}
+    - target: {fileID: 5974396258155492681, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5974396258155492681, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5974396258155492681, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 189.16998
+      objectReference: {fileID: 0}
+    - target: {fileID: 5974396258155492681, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 61.86
+      objectReference: {fileID: 0}
+    - target: {fileID: 5974396258155492681, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5974396258155492681, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7654846767866409815, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: autoScrollSpeed
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 7654846767866409815, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: smoothAutoScroll
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7654846767866409815, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: forceInstantScrollSameFrame
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3317,10 +3425,20 @@ MonoBehaviour:
   gravity: -9.81
   mouseSensitivity: 1.28
   maxLookAngle: 80
-  walkClip: {fileID: 8300000, guid: acc95882e0280f843b986fe2c35bd448, type: 3}
-  stepDistance: 2
-  minInputThreshold: 0.15
+  walkClips:
+  - {fileID: 8300000, guid: cb2f9f91243d18e4faf86f51aa4bcbac, type: 3}
+  - {fileID: 8300000, guid: ca8424e53a017f94680daa9c1481cfdb, type: 3}
+  - {fileID: 8300000, guid: 262c0dd91336d8e4b84dfbcbba479b8f, type: 3}
+  walkClipVolumes:
+  - 0.55
+  - 0.8
+  - 0.9
   stepVolume: 0.54
+  stepDistance: 1.9
+  minInputThreshold: 0.15
+  enableCameraShake: 1
+  cameraShakeAmplitude: 0.04
+  cameraShakeDuration: 0.15
   lyingDuration: 3
   standUpDuration: 7
 --- !u!143 &1234567895
@@ -6497,13 +6615,5 @@ SceneRoots:
   - {fileID: 465448529}
   - {fileID: 784924992}
   - {fileID: 1695741723}
-<<<<<<< HEAD
-<<<<<<< HEAD
-  - {fileID: 1856409580}
-  - {fileID: 703581026}
-=======
   - {fileID: 485005339}
   - {fileID: 1415651772}
->>>>>>> 7cffc9fff8e9fa8856e295294a8758846542a781
-=======
->>>>>>> parent of fd3f980 (办公室场景)

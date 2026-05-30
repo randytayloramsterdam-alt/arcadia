@@ -45,7 +45,8 @@ public class OfficeAudioAmbience : MonoBehaviour
             return;
         }
 
-        controller.walkClip = carpetStepClip;
+        controller.walkClips = new AudioClip[] { carpetStepClip, carpetStepClip, carpetStepClip };
+        controller.walkClipVolumes = new float[] { 1f, 1f, 1f };
         controller.stepDistance = carpetStepDistance;
         controller.stepVolume = carpetStepVolume;
     }

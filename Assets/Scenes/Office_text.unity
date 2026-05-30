@@ -977,10 +977,20 @@ MonoBehaviour:
   gravity: -9.81
   mouseSensitivity: 1.28
   maxLookAngle: 80
-  walkClip: {fileID: 8300000, guid: acc95882e0280f843b986fe2c35bd448, type: 3}
-  stepDistance: 2
+  walkClips:
+  - {fileID: 8300000, guid: 867731a636467ff4082edc84e1bbf148, type: 3}
+  - {fileID: 8300000, guid: ebf068492e1c36b4885b6fadb18b2306, type: 3}
+  - {fileID: 8300000, guid: b7b44a0f137e44e498635ba74696c9f7, type: 3}
+  walkClipVolumes:
+  - 0.7
+  - 0.8
+  - 0.9
+  stepVolume: 0.7
+  stepDistance: 1.9
   minInputThreshold: 0.15
-  stepVolume: 0.54
+  enableCameraShake: 1
+  cameraShakeAmplitude: 0.04
+  cameraShakeDuration: 0.15
   lyingDuration: 3
   standUpDuration: 7
 --- !u!41 &1935904470
