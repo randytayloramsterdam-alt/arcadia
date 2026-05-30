@@ -1970,24 +1970,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4afa93223158b0741865f310d07b612a, type: 3}
   m_PrefabInstance: {fileID: 38911411}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &751862615 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 581581012374290135, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-  m_PrefabInstance: {fileID: 856948862}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &751862622
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 751862615}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 57163affd568d0043bdc7a9af387135c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  contacts: []
 --- !u!1001 &776399579
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2349,10 +2331,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4364257883094981511, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: mailSystem
-      value: 
-      objectReference: {fileID: 751862622}
     - target: {fileID: 4670098085902529221, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_Name
       value: Computer_And_UI
@@ -2360,10 +2338,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 581581012374290135, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 751862622}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
 --- !u!1001 &937644065
 PrefabInstance:

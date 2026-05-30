@@ -14,6 +14,9 @@ public class ComputerTerminalController : MonoBehaviour
     public ComputerBootSequence bootSequence;
     public ComputerMailSystem mailSystem;
 
+    [Header("AI Chat")]
+    public BackendChatClient backendChatClient;
+
     [Header("Focus Settings")]
     public bool keepInputFocused = true;
 
@@ -385,20 +388,39 @@ public class ComputerTerminalController : MonoBehaviour
             return;
         }
 
-        var msg = mailSystem.AddSentMessage(currentContactId, body);
+        mailSystem.AddSentMessage(currentContactId, body);
         string contactName = mailSystem.GetContactName(currentContactId);
 
-        terminalView.AppendLine("OUTGOING MESSAGE CREATED.");
-        terminalView.AppendLine("");
-        terminalView.AppendLine($"TO      : {contactName}");
-        terminalView.AppendLine($"FROM    : LOCAL USER");
-        terminalView.AppendLine($"DATE    : {mailSystem.currentMailDate}");
-        terminalView.AppendLine($"SUBJECT : {msg.subject}");
-        terminalView.AppendLine("");
-        terminalView.AppendLine("TRANSMISSION STATUS: SENT");
-        terminalView.AppendLine("");
-
         AppendMessageList();
+
+        if (contactName == "E. BENSON" && backendChatClient != null)
+        {
+            StartCoroutine(HandleAIReplyInBackground(currentContactId, contactName, body));
+        }
+    }
+
+    private IEnumerator HandleAIReplyInBackground(string contactId, string contactName, string body)
+    {
+        bool success = false;
+        string replyText = "";
+
+        yield return backendChatClient.SendMessage(body,
+            reply => {
+                replyText = reply;
+                success = true;
+            },
+            error => {
+                if (enableDebugLogs)
+                    Debug.LogWarning("[ComputerTerminal] AI reply failed: " + error);
+            });
+
+        if (!success)
+            yield break;
+
+        mailSystem.AddIncomingMessage(contactId, contactName, replyText);
+
+        if (currentLayer == TerminalLayer.MailContact && currentContactId == contactId)
+            AppendMessageList();
     }
 
     private void EnterMail()

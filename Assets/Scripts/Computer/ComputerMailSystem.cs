@@ -222,6 +222,34 @@ public class ComputerMailSystem : MonoBehaviour
         return msg;
     }
 
+    public MailMessageData AddIncomingMessage(string contactId, string fromName, string body)
+    {
+        var contact = GetContact(contactId);
+        if (contact == null)
+            return null;
+
+        int nextId = contact.messages.Count + 1;
+        string id = nextId.ToString("D3");
+
+        string subject = body.Length > 24 ? body.Substring(0, 24) + "..." : body;
+        if (string.IsNullOrWhiteSpace(subject))
+            subject = "NO SUBJECT";
+
+        var msg = new MailMessageData
+        {
+            id = id,
+            date = currentMailDate,
+            from = fromName,
+            to = "LOCAL USER",
+            status = "UNREAD",
+            subject = subject,
+            body = body
+        };
+
+        contact.messages.Add(msg);
+        return msg;
+    }
+
     public string RenderContactList()
     {
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
