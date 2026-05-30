@@ -128,10 +128,14 @@ public class ComputerTerminalController : MonoBehaviour
         string arg = parts.Length > 1 ? parts[1] : "";
         string normalizedCommand = string.Join(" ", parts);
 
-        ProcessGlobalCommand(verb, arg, normalizedCommand);
+        string sendBody = "";
+        if (normalizedCommand.StartsWith("SEND "))
+            sendBody = rawInput.Substring(5).Trim();
+
+        ProcessGlobalCommand(verb, arg, normalizedCommand, sendBody);
     }
 
-    private void ProcessGlobalCommand(string verb, string arg, string normalizedCommand)
+    private void ProcessGlobalCommand(string verb, string arg, string normalizedCommand, string sendBody = "")
     {
         switch (normalizedCommand)
         {
@@ -174,7 +178,7 @@ public class ComputerTerminalController : MonoBehaviour
                 ProcessMailCommand(verb, arg, normalizedCommand);
                 break;
             case TerminalLayer.MailContact:
-                ProcessMailContactCommand(verb, arg, normalizedCommand);
+                ProcessMailContactCommand(verb, arg, normalizedCommand, sendBody);
                 break;
             case TerminalLayer.MailMessage:
                 ProcessMailMessageCommand(verb, arg, normalizedCommand);
@@ -263,8 +267,27 @@ public class ComputerTerminalController : MonoBehaviour
         }
     }
 
-    private void ProcessMailContactCommand(string verb, string arg, string normalizedCommand)
+    private void ProcessMailContactCommand(string verb, string arg, string normalizedCommand, string sendBody = "")
     {
+        if (verb == "SEND")
+        {
+            if (string.IsNullOrWhiteSpace(sendBody))
+            {
+                terminalView.AppendLine("EMPTY MESSAGE BUFFER.");
+                terminalView.UpdateLiveInputLine(CurrentPrompt, "");
+                terminalView.FocusInput();
+                return;
+            }
+            HandleSend(sendBody);
+            return;
+        }
+
+        if (normalizedCommand.StartsWith("SEND "))
+        {
+            HandleSend(sendBody);
+            return;
+        }
+
         switch (normalizedCommand)
         {
             case "DIR":
@@ -344,6 +367,38 @@ public class ComputerTerminalController : MonoBehaviour
                 return true;
         }
         return false;
+    }
+
+    private void HandleSend(string body)
+    {
+        if (string.IsNullOrEmpty(body))
+        {
+            terminalView.AppendLine("EMPTY MESSAGE BUFFER.");
+            terminalView.UpdateLiveInputLine(CurrentPrompt, "");
+            terminalView.FocusInput();
+            return;
+        }
+
+        if (mailSystem == null || string.IsNullOrEmpty(currentContactId))
+        {
+            BadCommand();
+            return;
+        }
+
+        var msg = mailSystem.AddSentMessage(currentContactId, body);
+        string contactName = mailSystem.GetContactName(currentContactId);
+
+        terminalView.AppendLine("OUTGOING MESSAGE CREATED.");
+        terminalView.AppendLine("");
+        terminalView.AppendLine($"TO      : {contactName}");
+        terminalView.AppendLine($"FROM    : LOCAL USER");
+        terminalView.AppendLine($"DATE    : {mailSystem.currentMailDate}");
+        terminalView.AppendLine($"SUBJECT : {msg.subject}");
+        terminalView.AppendLine("");
+        terminalView.AppendLine("TRANSMISSION STATUS: SENT");
+        terminalView.AppendLine("");
+
+        AppendMessageList();
     }
 
     private void EnterMail()

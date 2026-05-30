@@ -191,11 +191,14 @@ public class ComputerMailSystem : MonoBehaviour
             msg.status = "READ";
     }
 
-    public void AddSentMessage(string contactId, string body)
+    [Header("Mail Settings")]
+    public string currentMailDate = "1983-10-07";
+
+    public MailMessageData AddSentMessage(string contactId, string body)
     {
         var contact = GetContact(contactId);
         if (contact == null)
-            return;
+            return null;
 
         int nextId = contact.messages.Count + 1;
         string id = nextId.ToString("D3");
@@ -207,7 +210,7 @@ public class ComputerMailSystem : MonoBehaviour
         var msg = new MailMessageData
         {
             id = id,
-            date = "--/--/----",
+            date = currentMailDate,
             from = "LOCAL USER",
             to = contact.name,
             status = "SENT",
@@ -216,6 +219,7 @@ public class ComputerMailSystem : MonoBehaviour
         };
 
         contact.messages.Add(msg);
+        return msg;
     }
 
     public string RenderContactList()
