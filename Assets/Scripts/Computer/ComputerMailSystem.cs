@@ -254,6 +254,24 @@ public class ComputerMailSystem : MonoBehaviour
     [Header("Mail Settings")]
     public string currentMailDate = "1983-10-07";
 
+    [Header("Mail Layout Settings")]
+    public int contactNameWidth = 23;
+    public int contactStatusWidth = 8;
+
+    public int messageFromWidth = 12;
+    public int messageStatusWidth = 8;
+    public int subjectIndentSpaces = 6;
+
+    public int messageSeparatorLength = 53;
+    public bool showBlankLineBetweenMessages = true;
+    public bool showMessageMarkedAsReadNotice = false;
+
+    [Header("Mail Highlight Settings")]
+    public bool useRichTextHighlight = true;
+    public string unreadHighlightColorHex = "#08FFFF";
+    public bool highlightUnreadContacts = true;
+    public bool highlightUnreadMessages = true;
+
     public MailMessageData AddSentMessage(string contactId, string body)
     {
         var contact = GetContact(contactId);
@@ -310,6 +328,40 @@ public class ComputerMailSystem : MonoBehaviour
         return msg;
     }
 
+    private string FitText(string text, int width)
+    {
+        if (string.IsNullOrEmpty(text))
+            return Spaces(width);
+        if (width <= 0)
+            return "";
+        if (text.Length <= width)
+            return text.PadRight(width);
+        if (width <= 3)
+            return text.Substring(0, width);
+        return text.Substring(0, width - 3) + "...";
+    }
+
+    private string Spaces(int count)
+    {
+        if (count <= 0)
+            return "";
+        return new string(' ', count);
+    }
+
+    private string SeparatorLine()
+    {
+        return new string('-', messageSeparatorLength);
+    }
+
+    private string Colorize(string text, string colorHex)
+    {
+        if (!useRichTextHighlight)
+            return text;
+        if (string.IsNullOrWhiteSpace(colorHex))
+            return text;
+        return $"<color={colorHex}>{text}</color>";
+    }
+
     public string RenderContactList()
     {
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
@@ -320,7 +372,11 @@ public class ComputerMailSystem : MonoBehaviour
         {
             string status = ComputeContactStatus(contact.id);
             string lastDate = ComputeContactLastDate(contact.id);
-            string line = $"[{contact.id}] {contact.name,-23} {status,-8} LAST: {lastDate}";
+            string name = FitText(contact.name, contactNameWidth);
+            string stat = FitText(status, contactStatusWidth);
+            string line = $"[{contact.id}] {name} {stat} LAST: {lastDate}";
+            if (highlightUnreadContacts && status == "UNREAD")
+                line = Colorize(line, unreadHighlightColorHex);
             sb.AppendLine(line);
         }
 
@@ -337,12 +393,20 @@ public class ComputerMailSystem : MonoBehaviour
         sb.AppendLine($"CONTACT: {contact.name}");
         sb.AppendLine("");
 
-        foreach (var msg in contact.messages)
+        for (int i = 0; i < contact.messages.Count; i++)
         {
-            string from = msg.from.Length > 12 ? msg.from.Substring(0, 12) : msg.from;
-            string line = $"[{msg.id}] {msg.date}    FROM: {from,-12} {msg.status}";
-            sb.AppendLine(line);
-            sb.AppendLine($"      SUBJECT: {msg.subject}");
+            var msg = contact.messages[i];
+            string from = FitText(msg.from, messageFromWidth);
+            string stat = FitText(msg.status, messageStatusWidth);
+            string headerLine = $"[{msg.id}] {msg.date}    FROM: {from} {stat}";
+            string subjectLine = Spaces(subjectIndentSpaces) + $"SUBJECT: {msg.subject}";
+            string block = headerLine + "\n" + subjectLine;
+            if (highlightUnreadMessages && msg.status == "UNREAD")
+                block = Colorize(block, unreadHighlightColorHex);
+            sb.AppendLine(block);
+
+            if (showBlankLineBetweenMessages && i < contact.messages.Count - 1)
+                sb.AppendLine("");
         }
 
         return sb.ToString().TrimEnd('\n', '\r');
@@ -354,8 +418,6 @@ public class ComputerMailSystem : MonoBehaviour
         if (msg == null)
             return "";
 
-        bool wasUnread = msg.status == "UNREAD";
-
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
         sb.AppendLine($"MESSAGE {messageId}");
         sb.AppendLine("");
@@ -365,12 +427,12 @@ public class ComputerMailSystem : MonoBehaviour
         sb.AppendLine($"STATUS  : {msg.status}");
         sb.AppendLine($"SUBJECT : {msg.subject}");
         sb.AppendLine("");
-        sb.AppendLine("-----------------------------------------------------");
+        sb.AppendLine(SeparatorLine());
         sb.AppendLine(msg.body);
-        sb.AppendLine("-----------------------------------------------------");
+        sb.AppendLine(SeparatorLine());
         sb.AppendLine("");
 
-        if (wasUnread)
+        if (showMessageMarkedAsReadNotice && msg.status == "UNREAD")
             sb.AppendLine("MESSAGE MARKED AS READ.");
 
         return sb.ToString().TrimEnd('\n', '\r');

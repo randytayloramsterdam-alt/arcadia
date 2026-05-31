@@ -140,6 +140,7 @@ public class ComputerTerminalView : MonoBehaviour
             outputText.color = terminalTextColor;
             outputText.lineSpacing = terminalLineSpacing;
             outputText.characterSpacing = terminalCharacterSpacing;
+            outputText.richText = true;
         }
 
         if (liveInputLineText != null)
@@ -149,6 +150,7 @@ public class ComputerTerminalView : MonoBehaviour
             liveInputLineText.color = liveInputTextColor;
             liveInputLineText.lineSpacing = terminalLineSpacing;
             liveInputLineText.characterSpacing = terminalCharacterSpacing;
+            liveInputLineText.richText = true;
         }
 
         if (backgroundImages != null)
@@ -392,14 +394,48 @@ public class ComputerTerminalView : MonoBehaviour
             yield break;
         }
 
+        if (line.IndexOf('<') < 0)
+        {
+            terminalLines.Add("");
+            TrimLines();
+            for (int i = 0; i < line.Length; i++)
+            {
+                terminalLines[terminalLines.Count - 1] += line[i];
+                Refresh();
+                yield return new WaitForSecondsRealtime(charDelay);
+            }
+        }
+        else
+        {
+            yield return TypeLineRichText(line, charDelay);
+        }
+    }
+
+    private IEnumerator TypeLineRichText(string line, float charDelay)
+    {
         terminalLines.Add("");
         TrimLines();
 
-        for (int i = 0; i < line.Length; i++)
+        int i = 0;
+        while (i < line.Length)
         {
+            if (line[i] == '<')
+            {
+                int close = line.IndexOf('>', i);
+                if (close >= 0)
+                {
+                    string tag = line.Substring(i, close - i + 1);
+                    terminalLines[terminalLines.Count - 1] += tag;
+                    i = close + 1;
+                    Refresh();
+                    continue;
+                }
+            }
+
             terminalLines[terminalLines.Count - 1] += line[i];
             Refresh();
             yield return new WaitForSecondsRealtime(charDelay);
+            i++;
         }
     }
 

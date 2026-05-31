@@ -2293,15 +2293,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 188632342283091209, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 188632342283091209, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 188632342283091209, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_SizeDelta.x
-      value: -17
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 449131035994217647, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_Value
@@ -2349,15 +2349,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3300206389555445647, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3300206389555445647, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.989813
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3300206389555445647, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchorMin.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4364257883094981511, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: rootWelcomeText
+      value: "<color=#08FFFF>ARCADIA TERMINAL READY.</color>\n\nAVAILABLE SYSTEMS:\n 
+        MAIL      SYS\n  DIARY     SYS\n\nTYPE HELP FOR COMMAND LIST."
       objectReference: {fileID: 0}
     - target: {fileID: 4670098085902529221, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_Name
@@ -2365,11 +2370,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4706478390962714197, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4874637344341509288, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 86.36
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4874637344341509288, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -2377,51 +2382,127 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5632331333164112383, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5632331333164112383, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5632331333164112383, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 193.16998
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5632331333164112383, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 20.01
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5632331333164112383, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 104.58499
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5632331333164112383, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -72.354996
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5974396258155492681, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5974396258155492681, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5974396258155492681, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 193.16998
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5974396258155492681, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 58.35
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5974396258155492681, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5974396258155492681, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -4
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: logoLines.Array.data[0]
+      value: <color=#08FFFF>        /\</color>
+      objectReference: {fileID: 0}
+    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: logoLines.Array.data[1]
+      value: <color=#08FFFF>       /  \</color>        ARCADIA
+      objectReference: {fileID: 0}
+    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: logoLines.Array.data[2]
+      value: <color=#08FFFF>      / /\ \</color>       LIFE SCIENCES
+      objectReference: {fileID: 0}
+    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: logoLines.Array.data[3]
+      value: <color=#08FFFF>     /_/  \_\</color>      TERMINAL DIVISION
+      objectReference: {fileID: 0}
+    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: completeLines.Array.data[0]
+      value: <color=#08FFFF>        /\</color>
+      objectReference: {fileID: 0}
+    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: completeLines.Array.data[1]
+      value: <color=#08FFFF>       /  \</color>        ARCADIA
+      objectReference: {fileID: 0}
+    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: completeLines.Array.data[2]
+      value: <color=#08FFFF>      / /\ \</color>       LIFE SCIENCES
+      objectReference: {fileID: 0}
+    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: completeLines.Array.data[3]
+      value: <color=#08FFFF>     /_/  \_\</color>
+      objectReference: {fileID: 0}
+    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: finalizingLines.Array.data[0]
+      value: <color=#08FFFF>        /\</color>
+      objectReference: {fileID: 0}
+    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: finalizingLines.Array.data[1]
+      value: <color=#08FFFF>       /  \</color>        ARCADIA
+      objectReference: {fileID: 0}
+    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: finalizingLines.Array.data[2]
+      value: <color=#08FFFF>      / /\ \</color>       LIFE SCIENCES
+      objectReference: {fileID: 0}
+    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: finalizingLines.Array.data[3]
+      value: <color=#08FFFF>     /_/  \_\</color>
+      objectReference: {fileID: 0}
+    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: memoryCheckLines.Array.data[3]
+      value: 'MEMORY TEST : <color=#08FFFF>0000-9FFF OK</color>'
+      objectReference: {fileID: 0}
+    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: memoryCheckLines.Array.data[4]
+      value: 'ROM CHECK   : <color=#08FFFF>OK</color>'
+      objectReference: {fileID: 0}
+    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: memoryCheckLines.Array.data[5]
+      value: 'CRT ADAPTER : <color=#08FFFF>OK</color>'
+      objectReference: {fileID: 0}
+    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: memoryCheckLines.Array.data[6]
+      value: 'KEYBOARD    : <color=#08FFFF>DETECTED</color>'
+      objectReference: {fileID: 0}
+    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: memoryCheckLines.Array.data[8]
+      value: <color=#08FFFF>READY.</color>
+      objectReference: {fileID: 0}
+    - target: {fileID: 8579560852390436288, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: contactNameWidth
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 8579560852390436288, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: showMessageMarkedAsReadNotice
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
