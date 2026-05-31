@@ -17,6 +17,12 @@ public class ComputerTerminalController : MonoBehaviour
     [Header("AI Chat")]
     public BackendChatClient backendChatClient;
 
+    [Header("Mail Notification")]
+    public ComputerMailNotification mailNotification;
+
+    [Header("AI Reply Timing")]
+    public float minAIReplyDelay = 3f;
+
     [Header("Focus Settings")]
     public bool keepInputFocused = true;
 
@@ -414,6 +420,7 @@ public class ComputerTerminalController : MonoBehaviour
 
     private IEnumerator HandleAIReplyInBackground(string contactId, string contactName, string body)
     {
+        float startTime = Time.unscaledTime;
         bool success = false;
         string replyText = "";
 
@@ -430,7 +437,14 @@ public class ComputerTerminalController : MonoBehaviour
         if (!success)
             yield break;
 
+        float elapsed = Time.unscaledTime - startTime;
+        if (elapsed < minAIReplyDelay)
+            yield return new WaitForSecondsRealtime(minAIReplyDelay - elapsed);
+
         mailSystem.AddIncomingMessage(contactId, contactName, replyText);
+
+        if (mailNotification != null)
+            mailNotification.PlayNewMailNotification();
 
         if (currentLayer == TerminalLayer.MailContact && currentContactId == contactId)
             AppendMessageList();

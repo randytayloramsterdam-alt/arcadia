@@ -1738,6 +1738,155 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 694aff3cb269cfc4596ed7275a663445, type: 3}
   m_PrefabInstance: {fileID: 434062463}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &540602184
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 540602185}
+  - component: {fileID: 540602187}
+  - component: {fileID: 540602186}
+  m_Layer: 5
+  m_Name: MailNotification
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &540602185
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 540602184}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 764429132}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!82 &540602186
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 540602184}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &540602187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 540602184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc6f541a723c3bf48b063349971f95a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableNewMailSound: 1
+  audioSource: {fileID: 540602186}
+  newMailClip: {fileID: 8300000, guid: bbe086fdbe5a3a044a6a80c1fccdb9a0, type: 3}
+  newMailVolume: 0.5
 --- !u!4 &543637756 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 07c34e3519bbc5343806b2d2d541fad3, type: 3}
@@ -1969,6 +2118,11 @@ MeshCollider:
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4afa93223158b0741865f310d07b612a, type: 3}
   m_PrefabInstance: {fileID: 38911411}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &764429132 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 4947621090369747342, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+  m_PrefabInstance: {fileID: 856948862}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &776399579
 PrefabInstance:
@@ -2303,10 +2457,6 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 449131035994217647, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: m_Value
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 1056935800271645153, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4.23
@@ -2355,15 +2505,14 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3300206389555445647, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
+    - target: {fileID: 4364257883094981511, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: minAIReplyDelay
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4364257883094981511, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: rootWelcomeText
-      value: "<color=#08FFFF>ARCADIA TERMINAL READY.</color>\n\nAVAILABLE SYSTEMS:\n 
-        MAIL      SYS\n  DIARY     SYS\n\nTYPE HELP FOR COMMAND LIST."
-      objectReference: {fileID: 0}
+      propertyPath: mailNotification
+      value: 
+      objectReference: {fileID: 540602187}
     - target: {fileID: 4670098085902529221, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_Name
       value: Computer_And_UI
@@ -2376,10 +2525,6 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4874637344341509288, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0.000030517578
-      objectReference: {fileID: 0}
     - target: {fileID: 5632331333164112383, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -2426,87 +2571,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5974396258155492681, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: logoLines.Array.data[0]
-      value: <color=#08FFFF>        /\</color>
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: logoLines.Array.data[1]
-      value: <color=#08FFFF>       /  \</color>        ARCADIA
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: logoLines.Array.data[2]
-      value: <color=#08FFFF>      / /\ \</color>       LIFE SCIENCES
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: logoLines.Array.data[3]
-      value: <color=#08FFFF>     /_/  \_\</color>      TERMINAL DIVISION
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: completeLines.Array.data[0]
-      value: <color=#08FFFF>        /\</color>
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: completeLines.Array.data[1]
-      value: <color=#08FFFF>       /  \</color>        ARCADIA
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: completeLines.Array.data[2]
-      value: <color=#08FFFF>      / /\ \</color>       LIFE SCIENCES
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: completeLines.Array.data[3]
-      value: <color=#08FFFF>     /_/  \_\</color>
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: finalizingLines.Array.data[0]
-      value: <color=#08FFFF>        /\</color>
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: finalizingLines.Array.data[1]
-      value: <color=#08FFFF>       /  \</color>        ARCADIA
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: finalizingLines.Array.data[2]
-      value: <color=#08FFFF>      / /\ \</color>       LIFE SCIENCES
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: finalizingLines.Array.data[3]
-      value: <color=#08FFFF>     /_/  \_\</color>
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: memoryCheckLines.Array.data[3]
-      value: 'MEMORY TEST : <color=#08FFFF>0000-9FFF OK</color>'
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: memoryCheckLines.Array.data[4]
-      value: 'ROM CHECK   : <color=#08FFFF>OK</color>'
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: memoryCheckLines.Array.data[5]
-      value: 'CRT ADAPTER : <color=#08FFFF>OK</color>'
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: memoryCheckLines.Array.data[6]
-      value: 'KEYBOARD    : <color=#08FFFF>DETECTED</color>'
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: memoryCheckLines.Array.data[8]
-      value: <color=#08FFFF>READY.</color>
-      objectReference: {fileID: 0}
-    - target: {fileID: 8579560852390436288, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: contactNameWidth
-      value: 24
-      objectReference: {fileID: 0}
-    - target: {fileID: 8579560852390436288, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: showMessageMarkedAsReadNotice
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 4947621090369747342, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 540602185}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
 --- !u!1001 &937644065
