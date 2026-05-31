@@ -97,6 +97,7 @@ MonoBehaviour:
   skipBoot: 0
   bootDuration: 3
   clearAfterBoot: 1
+  replayBootEveryOpen: 0
   bootSpeedMultiplier: 0.8
   bootCharDelay: 0.035
   bootTextColor: {r: 0.77254903, g: 0.7764706, b: 0.77254903, a: 1}
@@ -213,7 +214,7 @@ MonoBehaviour:
   mailSystem: {fileID: 8579560852390436288}
   backendChatClient: {fileID: 312863822577312133}
   mailNotification: {fileID: 2217479003439508266}
-  minAIReplyDelay: 5
+  minAIReplyDelay: 3
   keepInputFocused: 1
   enableDebugLogs: 0
   rootWelcomeText: "<color=#08FFFF>ARCADIA TERMINAL READY.</color>\n\nAVAILABLE SYSTEMS:\n 
@@ -1751,7 +1752,7 @@ RectTransform:
   m_Father: {fileID: 594661331015098455}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 0.989813}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -2460,7 +2461,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 3300206389555445647}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.989813
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

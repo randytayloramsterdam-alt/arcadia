@@ -45,6 +45,7 @@ public class ComputerTerminalController : MonoBehaviour
 
     private TerminalLayer currentLayer = TerminalLayer.Root;
     private bool bootComplete;
+    private bool mailInitialized = false;
     private string currentContactId = "";
     private string currentMessageId = "";
 
@@ -76,8 +77,7 @@ public class ComputerTerminalController : MonoBehaviour
 
     private void Start()
     {
-        if (mailSystem != null)
-            mailSystem.Initialize();
+        InitializeMailSystemIfNeeded();
 
         if (terminalView != null && terminalView.inputField != null)
         {
@@ -93,6 +93,15 @@ public class ComputerTerminalController : MonoBehaviour
             terminalView.sendButton.onClick.RemoveListener(OnSendClicked);
             terminalView.sendButton.onClick.AddListener(OnSendClicked);
         }
+    }
+
+    private void InitializeMailSystemIfNeeded()
+    {
+        if (mailInitialized)
+            return;
+        if (mailSystem != null)
+            mailSystem.Initialize();
+        mailInitialized = true;
     }
 
     private void OnBootComplete()

@@ -15,6 +15,7 @@ public class ComputerBootSequence : MonoBehaviour
     public bool skipBoot = false;
     public float bootDuration = 5f;
     public bool clearAfterBoot = true;
+    public bool replayBootEveryOpen = false;
 
     [Header("Speed Control")]
     [Range(0.1f, 5f)] public float bootSpeedMultiplier = 1f;
@@ -104,6 +105,7 @@ public class ComputerBootSequence : MonoBehaviour
 
     private Coroutine bootRoutine;
     private bool bootComplete;
+    private bool hasPlayedBootOnce = false;
 
     public bool IsBootComplete => bootComplete;
 
@@ -112,6 +114,12 @@ public class ComputerBootSequence : MonoBehaviour
         StopActiveRoutine();
 
         if (skipBoot || !playBootOnEnable)
+        {
+            StartCoroutine(CompleteBootNextFrame());
+            return;
+        }
+
+        if (!replayBootEveryOpen && hasPlayedBootOnce)
         {
             StartCoroutine(CompleteBootNextFrame());
             return;
@@ -142,6 +150,7 @@ public class ComputerBootSequence : MonoBehaviour
     private void CompleteBoot()
     {
         bootComplete = true;
+        hasPlayedBootOnce = true;
         terminalView.ApplyVisualStyle();
         terminalView.EnableInput(true);
         terminalView.FocusInput();
