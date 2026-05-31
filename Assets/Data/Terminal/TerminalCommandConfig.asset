@@ -1,0 +1,88 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98324e35c267e144fa1a3a6064e8e7f8, type: 3}
+  m_Name: TerminalCommandConfig
+  m_EditorClassIdentifier: 
+  helpDescriptionWidth: 28
+  commands:
+  - commandId: 0
+    description: SHOW THIS LIST
+    aliases:
+    - HELP
+    showInHelp: 1
+  - commandId: 1
+    description: SHOW CURRENT CONTENT
+    aliases:
+    - DIR
+    - LIST
+    showInHelp: 0
+  - commandId: 2
+    description: OPEN MAIL SYSTEM
+    aliases:
+    - MAIL
+    - CD MAIL
+    - OPEN MAIL
+    showInHelp: 0
+  - commandId: 3
+    description: OPEN DIARY SYSTEM
+    aliases:
+    - DIARY
+    - CD DIARY
+    - OPEN DIARY
+    showInHelp: 0
+  - commandId: 4
+    description: RETURN TO PREVIOUS LEVEL
+    aliases:
+    - BACK
+    - RETURN
+    showInHelp: 0
+  - commandId: 5
+    description: CLEAR SCREEN
+    aliases:
+    - CLEAR
+    - CLS
+    showInHelp: 0
+  - commandId: 6
+    description: CLOSE TERMINAL
+    aliases:
+    - EXIT
+    - QUIT
+    showInHelp: 0
+  - commandId: 7
+    description: REFRESH CURRENT VIEW
+    aliases:
+    - REFRESH
+    - RELOAD
+    showInHelp: 0
+  - commandId: 8
+    description: RETURN TO ROOT
+    aliases:
+    - HOME
+    - ROOT
+    - MAIN
+    showInHelp: 0
+  - commandId: 9
+    description: OPEN ITEM
+    aliases:
+    - CD
+    - OPEN
+    showInHelp: 0
+  - commandId: 10
+    description: READ MESSAGE
+    aliases:
+    - READ
+    showInHelp: 0
+  - commandId: 11
+    description: SEND MESSAGE
+    aliases:
+    - SEND
+    showInHelp: 0

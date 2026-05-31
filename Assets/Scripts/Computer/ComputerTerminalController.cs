@@ -23,6 +23,9 @@ public class ComputerTerminalController : MonoBehaviour
     [Header("AI Reply Timing")]
     public float minAIReplyDelay = 3f;
 
+    [Header("Command Config")]
+    public TerminalCommandConfig commandConfig;
+
     [Header("Focus Settings")]
     public bool keepInputFocused = true;
 
@@ -78,6 +81,7 @@ public class ComputerTerminalController : MonoBehaviour
     private void Start()
     {
         InitializeMailSystemIfNeeded();
+        InitializeCommandConfig();
 
         if (terminalView != null && terminalView.inputField != null)
         {
@@ -93,6 +97,12 @@ public class ComputerTerminalController : MonoBehaviour
             terminalView.sendButton.onClick.RemoveListener(OnSendClicked);
             terminalView.sendButton.onClick.AddListener(OnSendClicked);
         }
+    }
+
+    private void InitializeCommandConfig()
+    {
+        if (commandConfig != null)
+            commandConfig.Initialize();
     }
 
     private void InitializeMailSystemIfNeeded()
@@ -160,45 +170,51 @@ public class ComputerTerminalController : MonoBehaviour
         string normalizedCommand = string.Join(" ", parts);
 
         string sendBody = "";
-        if (normalizedCommand.StartsWith("SEND "))
-            sendBody = rawInput.Substring(5).Trim();
+        if (StartsWithAlias(TerminalCommandId.SendMessage, normalizedCommand, out sendBody))
+            sendBody = rawInput.Substring(FindAliasPrefixLength(TerminalCommandId.SendMessage, normalized)).Trim();
 
         ProcessGlobalCommand(verb, arg, normalizedCommand, sendBody);
     }
 
     private void ProcessGlobalCommand(string verb, string arg, string normalizedCommand, string sendBody = "")
     {
-        switch (normalizedCommand)
+        if (MatchesCommand(TerminalCommandId.OpenMail, normalizedCommand))
         {
-            case "MAIL":
-            case "CD MAIL":
-            case "OPEN MAIL":
-                EnterMail();
-                return;
-
-            case "DIARY":
-            case "CD DIARY":
-            case "OPEN DIARY":
-                EnterDiary();
-                return;
-
-            case "CLEAR":
-            case "CLS":
-                ClearLiveInputLeadingBlank();
-                terminalView.Clear();
-                terminalView.UpdateLiveInputLine(CurrentPrompt, "");
-                terminalView.FocusInput();
-                return;
-
-            case "EXIT":
-            case "QUIT":
-                ExitComputer();
-                return;
-
-            case "BACK":
-            case "RETURN":
-                HandleBack();
-                return;
+            EnterMail();
+            return;
+        }
+        if (MatchesCommand(TerminalCommandId.OpenDiary, normalizedCommand))
+        {
+            EnterDiary();
+            return;
+        }
+        if (MatchesCommand(TerminalCommandId.Clear, normalizedCommand))
+        {
+            ClearLiveInputLeadingBlank();
+            terminalView.Clear();
+            terminalView.UpdateLiveInputLine(CurrentPrompt, "");
+            terminalView.FocusInput();
+            return;
+        }
+        if (MatchesCommand(TerminalCommandId.Exit, normalizedCommand))
+        {
+            ExitComputer();
+            return;
+        }
+        if (MatchesCommand(TerminalCommandId.Back, normalizedCommand))
+        {
+            HandleBack();
+            return;
+        }
+        if (MatchesCommand(TerminalCommandId.Refresh, normalizedCommand))
+        {
+            HandleRefresh();
+            return;
+        }
+        if (MatchesCommand(TerminalCommandId.GoRoot, normalizedCommand))
+        {
+            HandleGoRoot();
+            return;
         }
 
         switch (currentLayer)
@@ -221,6 +237,38 @@ public class ComputerTerminalController : MonoBehaviour
         }
     }
 
+    private void HandleRefresh()
+    {
+        switch (currentLayer)
+        {
+            case TerminalLayer.Root:
+                ShowRootMenu();
+                break;
+            case TerminalLayer.Mail:
+                AppendMailContactList();
+                break;
+            case TerminalLayer.Diary:
+                AppendDiaryUnavailable();
+                break;
+            case TerminalLayer.MailContact:
+                AppendMessageList();
+                break;
+            case TerminalLayer.MailMessage:
+                AppendMessageBody();
+                break;
+        }
+        FinishCommandOutput();
+    }
+
+    private void HandleGoRoot()
+    {
+        currentLayer = TerminalLayer.Root;
+        currentContactId = "";
+        currentMessageId = "";
+        terminalView.SetPrompt("ARCADIA:\\>");
+        FinishCommandOutput();
+    }
+
     private void HandleBack()
     {
         switch (currentLayer)
@@ -237,8 +285,7 @@ public class ComputerTerminalController : MonoBehaviour
                 currentContactId = "";
                 currentMessageId = "";
                 terminalView.SetPrompt("ARCADIA:\\>");
-                terminalView.UpdateLiveInputLine("ARCADIA:\\>", "");
-                terminalView.FocusInput();
+                FinishCommandOutput();
                 break;
 
             case TerminalLayer.MailContact:
@@ -253,50 +300,41 @@ public class ComputerTerminalController : MonoBehaviour
 
     private void ProcessRootCommand(string verb, string arg, string normalizedCommand)
     {
-        switch (normalizedCommand)
+        if (MatchesCommand(TerminalCommandId.List, normalizedCommand))
         {
-            case "DIR":
-            case "LIST":
-                AppendRootSystems();
-                break;
-
-            case "HELP":
-                AppendRootHelp();
-                break;
-
-            default:
-                BadCommand();
-                break;
+            AppendRootSystems();
+        }
+        else if (MatchesCommand(TerminalCommandId.Help, normalizedCommand))
+        {
+            AppendRootHelp();
+        }
+        else
+        {
+            BadCommand();
         }
     }
 
     private void ProcessMailCommand(string verb, string arg, string normalizedCommand)
     {
-        switch (normalizedCommand)
+        if (MatchesCommand(TerminalCommandId.List, normalizedCommand))
         {
-            case "DIR":
-            case "LIST":
-                AppendMailContactList();
-                break;
-
-            case "HELP":
-                AppendMailHelp();
-                break;
-
-            default:
-                if (mailSystem != null && mailSystem.GetContact(normalizedCommand) != null)
-                {
-                    EnterMailContact(normalizedCommand);
-                }
-                else if (mailSystem != null && mailSystem.GetContact(arg) != null)
-                {
-                    EnterMailContact(arg);
-                }
-                else
-                {
-                    BadCommand();
-                }
-                break;
+            AppendMailContactList();
+        }
+        else if (MatchesCommand(TerminalCommandId.Help, normalizedCommand))
+        {
+            AppendMailHelp();
+        }
+        else if (mailSystem != null && mailSystem.GetContact(normalizedCommand) != null)
+        {
+            EnterMailContact(normalizedCommand);
+        }
+        else if (mailSystem != null && mailSystem.GetContact(arg) != null)
+        {
+            EnterMailContact(arg);
+        }
+        else
+        {
+            BadCommand();
         }
     }
 
@@ -320,69 +358,57 @@ public class ComputerTerminalController : MonoBehaviour
             return;
         }
 
-        switch (normalizedCommand)
+        if (MatchesCommand(TerminalCommandId.List, normalizedCommand))
         {
-            case "DIR":
-            case "LIST":
-                AppendMessageList();
-                break;
-
-            case "HELP":
-                AppendMailContactHelp();
-                break;
-
-            default:
-                if (IsMessageId(verb))
-                {
-                    EnterMailMessage(currentContactId, verb);
-                }
-                else if (IsMessageId(arg))
-                {
-                    EnterMailMessage(currentContactId, arg);
-                }
-                else
-                {
-                    BadCommand();
-                }
-                break;
+            AppendMessageList();
+        }
+        else if (MatchesCommand(TerminalCommandId.Help, normalizedCommand))
+        {
+            AppendMailContactHelp();
+        }
+        else if (IsMessageId(verb))
+        {
+            EnterMailMessage(currentContactId, verb);
+        }
+        else if (IsMessageId(arg))
+        {
+            EnterMailMessage(currentContactId, arg);
+        }
+        else
+        {
+            BadCommand();
         }
     }
 
     private void ProcessMailMessageCommand(string verb, string arg, string normalizedCommand)
     {
-        switch (normalizedCommand)
+        if (MatchesCommand(TerminalCommandId.List, normalizedCommand))
         {
-            case "DIR":
-            case "LIST":
-                AppendMessageBody();
-                break;
-
-            case "HELP":
-                AppendMailMessageHelp();
-                break;
-
-            default:
-                BadCommand();
-                break;
+            AppendMessageBody();
+        }
+        else if (MatchesCommand(TerminalCommandId.Help, normalizedCommand))
+        {
+            AppendMailMessageHelp();
+        }
+        else
+        {
+            BadCommand();
         }
     }
 
     private void ProcessDiaryCommand(string verb, string arg, string normalizedCommand)
     {
-        switch (normalizedCommand)
+        if (MatchesCommand(TerminalCommandId.List, normalizedCommand))
         {
-            case "DIR":
-            case "LIST":
-                AppendDiaryUnavailable();
-                break;
-
-            case "HELP":
-                AppendDiaryHelp();
-                break;
-
-            default:
-                BadCommand();
-                break;
+            AppendDiaryUnavailable();
+        }
+        else if (MatchesCommand(TerminalCommandId.Help, normalizedCommand))
+        {
+            AppendDiaryHelp();
+        }
+        else
+        {
+            BadCommand();
         }
     }
 
@@ -561,55 +587,135 @@ public class ComputerTerminalController : MonoBehaviour
 
     private void AppendRootHelp()
     {
-        terminalView.AppendLine("AVAILABLE COMMANDS:");
-        terminalView.AppendLine("  HELP     - SHOW THIS LIST");
-        terminalView.AppendLine("  DIR/LIST - SHOW AVAILABLE SYSTEMS");
-        terminalView.AppendLine("  MAIL     - OPEN MAIL SYSTEM");
-        terminalView.AppendLine("  DIARY    - OPEN DIARY SYSTEM");
-        terminalView.AppendLine("  CLEAR    - CLEAR SCREEN");
-        terminalView.AppendLine("  EXIT     - CLOSE TERMINAL");
+        int width = commandConfig != null ? commandConfig.helpDescriptionWidth : 28;
+        terminalView.AppendLine("AVAILABLE COMMANDS");
+        terminalView.AppendLine("");
+
+        AppendHelpLine(TerminalCommandId.Help);
+        AppendHelpLine(TerminalCommandId.List);
+        AppendHelpLine(TerminalCommandId.OpenMail);
+        AppendHelpLine(TerminalCommandId.OpenDiary);
+        AppendHelpLine(TerminalCommandId.Refresh);
+        AppendHelpLine(TerminalCommandId.GoRoot);
+        AppendHelpLine(TerminalCommandId.Clear);
+        AppendHelpLine(TerminalCommandId.Exit);
+
         FinishCommandOutput();
     }
 
     private void AppendMailHelp()
     {
-        terminalView.AppendLine("MAIL COMMANDS:");
-        terminalView.AppendLine("  DIR/LIST   - SHOW CONTACTS");
-        terminalView.AppendLine("  [ID]       - OPEN CONTACT");
-        terminalView.AppendLine("  BACK       - RETURN TO ROOT");
-        terminalView.AppendLine("  CLEAR      - CLEAR SCREEN");
-        terminalView.AppendLine("  EXIT       - CLOSE TERMINAL");
+        terminalView.AppendLine("MAIL COMMANDS");
+        terminalView.AppendLine("");
+
+        AppendHelpLine(TerminalCommandId.Help);
+        AppendHelpLine(TerminalCommandId.List);
+        AppendHelpLine(TerminalCommandId.OpenItem);
+        AppendHelpLine(TerminalCommandId.Refresh);
+        AppendHelpLine(TerminalCommandId.GoRoot);
+        AppendHelpLine(TerminalCommandId.Back);
+        AppendHelpLine(TerminalCommandId.Clear);
+        AppendHelpLine(TerminalCommandId.Exit);
+
         FinishCommandOutput();
     }
 
     private void AppendMailContactHelp()
     {
-        terminalView.AppendLine("CONTACT COMMANDS:");
-        terminalView.AppendLine("  DIR/LIST    - SHOW MESSAGES");
-        terminalView.AppendLine("  [MSG ID]    - OPEN MESSAGE");
-        terminalView.AppendLine("  BACK        - RETURN TO MAIL");
-        terminalView.AppendLine("  CLEAR       - CLEAR SCREEN");
-        terminalView.AppendLine("  EXIT        - CLOSE TERMINAL");
+        terminalView.AppendLine("CONTACT COMMANDS");
+        terminalView.AppendLine("");
+
+        AppendHelpLine(TerminalCommandId.Help);
+        AppendHelpLine(TerminalCommandId.List);
+        AppendHelpLine(TerminalCommandId.OpenItem);
+        AppendHelpLine(TerminalCommandId.ReadMessage);
+        AppendHelpLine(TerminalCommandId.SendMessage);
+        AppendHelpLine(TerminalCommandId.Refresh);
+        AppendHelpLine(TerminalCommandId.GoRoot);
+        AppendHelpLine(TerminalCommandId.Back);
+        AppendHelpLine(TerminalCommandId.Clear);
+        AppendHelpLine(TerminalCommandId.Exit);
+
         FinishCommandOutput();
     }
 
     private void AppendMailMessageHelp()
     {
-        terminalView.AppendLine("MESSAGE COMMANDS:");
-        terminalView.AppendLine("  DIR/LIST - RE-DISPLAY MESSAGE");
-        terminalView.AppendLine("  BACK     - RETURN TO CONTACT");
-        terminalView.AppendLine("  CLEAR    - CLEAR SCREEN");
-        terminalView.AppendLine("  EXIT     - CLOSE TERMINAL");
+        terminalView.AppendLine("MESSAGE COMMANDS");
+        terminalView.AppendLine("");
+
+        AppendHelpLine(TerminalCommandId.Help);
+        AppendHelpLine(TerminalCommandId.List);
+        AppendHelpLine(TerminalCommandId.Refresh);
+        AppendHelpLine(TerminalCommandId.GoRoot);
+        AppendHelpLine(TerminalCommandId.Back);
+        AppendHelpLine(TerminalCommandId.Clear);
+        AppendHelpLine(TerminalCommandId.Exit);
+
         FinishCommandOutput();
     }
 
     private void AppendDiaryHelp()
     {
-        terminalView.AppendLine("DIARY COMMANDS:");
-        terminalView.AppendLine("  BACK  - RETURN TO ROOT");
-        terminalView.AppendLine("  CLEAR - CLEAR SCREEN");
-        terminalView.AppendLine("  EXIT  - CLOSE TERMINAL");
+        terminalView.AppendLine("DIARY COMMANDS");
+        terminalView.AppendLine("");
+
+        AppendHelpLine(TerminalCommandId.Help);
+        AppendHelpLine(TerminalCommandId.List);
+        AppendHelpLine(TerminalCommandId.Refresh);
+        AppendHelpLine(TerminalCommandId.GoRoot);
+        AppendHelpLine(TerminalCommandId.Back);
+        AppendHelpLine(TerminalCommandId.Clear);
+        AppendHelpLine(TerminalCommandId.Exit);
+
         FinishCommandOutput();
+    }
+
+    private void AppendHelpLine(TerminalCommandId id)
+    {
+        AppendHelpLine(id, currentLayer);
+    }
+
+    private void AppendHelpLine(TerminalCommandId id, TerminalLayer layer)
+    {
+        var entry = commandConfig != null ? commandConfig.GetEntry(id) : null;
+        string desc = entry != null ? entry.description : id.ToString().ToUpper();
+        string aliases = commandConfig != null ? commandConfig.GetAliasDisplay(id) : "";
+        int width = commandConfig != null ? commandConfig.helpDescriptionWidth : 28;
+
+        desc = GetHelpDescription(id, layer, desc);
+        aliases = GetHelpAliasDisplay(id, layer, aliases);
+
+        if (string.IsNullOrEmpty(aliases))
+        {
+            terminalView.AppendLine(desc);
+            return;
+        }
+
+        string padded = desc.PadRight(width);
+        terminalView.AppendLine(padded + aliases);
+    }
+
+    private string GetHelpDescription(TerminalCommandId id, TerminalLayer layer, string defaultDesc)
+    {
+        if (layer == TerminalLayer.Mail && id == TerminalCommandId.OpenItem)
+            return "OPEN CONTACT";
+        if (layer == TerminalLayer.MailContact && id == TerminalCommandId.OpenItem)
+            return "OPEN MESSAGE";
+        return defaultDesc;
+    }
+
+    private string GetHelpAliasDisplay(TerminalCommandId id, TerminalLayer layer, string defaultAliases)
+    {
+        if (layer == TerminalLayer.Mail && id == TerminalCommandId.OpenItem)
+            return "[ID] / CD [ID] / OPEN [ID]";
+        if (layer == TerminalLayer.MailContact && id == TerminalCommandId.OpenItem)
+            return "[ID] / CD [ID] / OPEN [ID] / READ [ID]";
+        if (layer == TerminalLayer.MailContact && id == TerminalCommandId.ReadMessage)
+            return "READ [ID]";
+        if (layer == TerminalLayer.MailContact && id == TerminalCommandId.SendMessage)
+            return "SEND [TEXT]";
+        return defaultAliases;
     }
 
     private void AppendRootSystems()
@@ -637,6 +743,7 @@ public class ComputerTerminalController : MonoBehaviour
         foreach (var line in lines)
             terminalView.AppendLine(line);
 
+        terminalView.SetLiveInputLeadingBlankLine(true);
         terminalView.UpdateLiveInputLine(terminalView.currentPrompt, "");
         terminalView.FocusInput();
     }
@@ -686,5 +793,110 @@ public class ComputerTerminalController : MonoBehaviour
                 _ => "ARCADIA:\\>"
             };
         }
+    }
+
+    private bool MatchesCommand(TerminalCommandId id, string normalizedInput)
+    {
+        if (commandConfig != null)
+            return commandConfig.Matches(id, normalizedInput);
+
+        return FallbackMatches(id, normalizedInput);
+    }
+
+    private bool StartsWithAlias(TerminalCommandId id, string normalizedInput, out string remainingText)
+    {
+        if (commandConfig != null)
+            return commandConfig.StartsWithAlias(id, normalizedInput, out remainingText);
+
+        remainingText = "";
+        return FallbackStartsWithAlias(id, normalizedInput, ref remainingText);
+    }
+
+    private int FindAliasPrefixLength(TerminalCommandId id, string normalizedInput)
+    {
+        if (commandConfig != null)
+        {
+            var entry = commandConfig.GetEntry(id);
+            if (entry == null || entry.aliases == null)
+                return 0;
+
+            foreach (var alias in entry.aliases)
+            {
+                string prefix = alias + " ";
+                if (normalizedInput.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                    return prefix.Length;
+            }
+            if (normalizedInput.Equals("SEND", StringComparison.OrdinalIgnoreCase))
+                return 5;
+            return 0;
+        }
+
+        return FallbackFindAliasPrefixLength(id, normalizedInput);
+    }
+
+    private bool FallbackMatches(TerminalCommandId id, string normalizedInput)
+    {
+        switch (id)
+        {
+            case TerminalCommandId.Help: return normalizedInput == "HELP";
+            case TerminalCommandId.List: return normalizedInput == "DIR" || normalizedInput == "LIST";
+            case TerminalCommandId.OpenMail: return normalizedInput == "MAIL" || normalizedInput == "CD MAIL" || normalizedInput == "OPEN MAIL";
+            case TerminalCommandId.OpenDiary: return normalizedInput == "DIARY" || normalizedInput == "CD DIARY" || normalizedInput == "OPEN DIARY";
+            case TerminalCommandId.Back: return normalizedInput == "BACK" || normalizedInput == "RETURN";
+            case TerminalCommandId.Clear: return normalizedInput == "CLEAR" || normalizedInput == "CLS";
+            case TerminalCommandId.Exit: return normalizedInput == "EXIT" || normalizedInput == "QUIT";
+            case TerminalCommandId.Refresh: return normalizedInput == "REFRESH" || normalizedInput == "RELOAD";
+            case TerminalCommandId.GoRoot: return normalizedInput == "HOME" || normalizedInput == "ROOT" || normalizedInput == "MAIN";
+            case TerminalCommandId.OpenItem: return normalizedInput == "CD" || normalizedInput == "OPEN";
+            case TerminalCommandId.ReadMessage: return normalizedInput == "READ";
+            case TerminalCommandId.SendMessage: return normalizedInput == "SEND";
+        }
+        return false;
+    }
+
+    private bool FallbackStartsWithAlias(TerminalCommandId id, string normalizedInput, ref string remainingText)
+    {
+        switch (id)
+        {
+            case TerminalCommandId.SendMessage:
+                if (normalizedInput.StartsWith("SEND ", StringComparison.OrdinalIgnoreCase))
+                {
+                    remainingText = normalizedInput.Substring(5);
+                    return true;
+                }
+                break;
+            case TerminalCommandId.ReadMessage:
+                if (normalizedInput.StartsWith("READ ", StringComparison.OrdinalIgnoreCase))
+                {
+                    remainingText = normalizedInput.Substring(5);
+                    return true;
+                }
+                break;
+            case TerminalCommandId.OpenItem:
+                if (normalizedInput.StartsWith("CD ", StringComparison.OrdinalIgnoreCase))
+                {
+                    remainingText = normalizedInput.Substring(3);
+                    return true;
+                }
+                if (normalizedInput.StartsWith("OPEN ", StringComparison.OrdinalIgnoreCase))
+                {
+                    remainingText = normalizedInput.Substring(5);
+                    return true;
+                }
+                break;
+        }
+        return false;
+    }
+
+    private int FallbackFindAliasPrefixLength(TerminalCommandId id, string normalizedInput)
+    {
+        switch (id)
+        {
+            case TerminalCommandId.SendMessage:
+                if (normalizedInput.StartsWith("SEND ", StringComparison.OrdinalIgnoreCase))
+                    return 5;
+                break;
+        }
+        return 0;
     }
 }
