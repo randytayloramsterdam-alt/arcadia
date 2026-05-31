@@ -37,6 +37,15 @@ public class ComputerTerminalView : MonoBehaviour
     [Range(10, 200)] public int maxTerminalLines = 80;
     [Range(0.001f, 0.1f)] public float typeCharDelay = 0.012f;
 
+    [Header("Visual Style")]
+    public Color terminalTextColor = new Color(0.77f, 0.78f, 0.77f, 1f);
+    public Color liveInputTextColor = new Color(0.77f, 0.78f, 0.77f, 1f);
+    public Color accentColor = new Color(0.03f, 1f, 1f, 1f);
+    public TMP_FontAsset terminalFont;
+    [Range(12f, 32f)] public float terminalFontSize = 20f;
+    [Range(-20f, 20f)] public float terminalLineSpacing = -8f;
+    [Range(-50f, 200f)] public float terminalCharacterSpacing = 0f;
+
     [Header("Debug")]
     public bool enableDebugLogs = false;
 
@@ -114,6 +123,27 @@ public class ComputerTerminalView : MonoBehaviour
     {
         if (liveInputLineText != null)
             liveInputLineText.gameObject.SetActive(visible);
+    }
+
+    public void ApplyVisualStyle()
+    {
+        if (outputText != null)
+        {
+            outputText.font = terminalFont;
+            outputText.fontSize = terminalFontSize;
+            outputText.color = terminalTextColor;
+            outputText.lineSpacing = terminalLineSpacing;
+            outputText.characterSpacing = terminalCharacterSpacing;
+        }
+
+        if (liveInputLineText != null)
+        {
+            liveInputLineText.font = terminalFont;
+            liveInputLineText.fontSize = terminalFontSize;
+            liveInputLineText.color = liveInputTextColor;
+            liveInputLineText.lineSpacing = terminalLineSpacing;
+            liveInputLineText.characterSpacing = terminalCharacterSpacing;
+        }
     }
 
     public void UpdateLiveInputLine(string prompt, string input)

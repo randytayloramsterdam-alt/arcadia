@@ -42,6 +42,7 @@ public class ComputerBootSequence : MonoBehaviour
             bootComplete = true;
             terminalView.EnableInput(true);
             terminalView.FocusInput();
+            terminalView.ApplyVisualStyle();
             OnBootComplete?.Invoke();
             return;
         }
@@ -62,6 +63,7 @@ public class ComputerBootSequence : MonoBehaviour
         bootComplete = true;
         terminalView.EnableInput(true);
         terminalView.FocusInput();
+        terminalView.ApplyVisualStyle();
         OnBootComplete?.Invoke();
     }
 
@@ -84,6 +86,8 @@ public class ComputerBootSequence : MonoBehaviour
         terminalView.AppendLine("SECURE TERMINAL READY.");
         terminalView.AppendLine("TYPE HELP FOR LOCAL COMMANDS.");
         terminalView.AppendPrompt();
+
+        terminalView.ApplyVisualStyle();
 
         bootComplete = true;
         terminalView.EnableInput(true);
@@ -306,25 +310,12 @@ public class ComputerBootSequence : MonoBehaviour
         {
             if (terminalView.outputText != null)
                 terminalView.outputText.color = textColor;
-
-            if (terminalView.inputField != null)
-            {
-                terminalView.inputField.caretColor = textColor;
-                terminalView.inputField.selectionColor = new Color(textColor.r, textColor.g, textColor.b, 0.28f);
-
-                if (terminalView.inputField.textComponent != null)
-                    terminalView.inputField.textComponent.color = textColor;
-
-                TMP_Text placeholder = terminalView.inputField.placeholder as TMP_Text;
-                if (placeholder != null)
-                    placeholder.color = new Color(textColor.r, textColor.g, textColor.b, 0.42f);
-            }
         }
 
         Graphic[] graphics = GetComponentsInChildren<Graphic>(true);
         foreach (Graphic graphic in graphics)
         {
-            if (terminalView != null && (graphic == terminalView.outputText || graphic.gameObject == terminalView.inputField?.gameObject || graphic.gameObject == terminalView.sendButton?.gameObject))
+            if (terminalView != null && graphic.gameObject == terminalView.sendButton?.gameObject)
                 continue;
 
             Image image = graphic as Image;

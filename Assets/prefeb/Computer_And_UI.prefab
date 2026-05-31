@@ -97,9 +97,9 @@ MonoBehaviour:
   skipBoot: 0
   bootDuration: 3
   bootLineDelay: 0.045
-  bootTextColor: {r: 0.43, g: 0.66, b: 1, a: 1}
+  bootTextColor: {r: 0.77254903, g: 0.7764706, b: 0.77254903, a: 1}
   screenBackgroundColor: {r: 0.005, g: 0.012, b: 0.014, a: 1}
-  completeScreenTextColor: {r: 0.06, g: 0.19, b: 0.36, a: 1}
+  completeScreenTextColor: {r: 0.03137255, g: 1, b: 1, a: 1}
   completeScreenBackgroundColor: {r: 0.7, g: 0.78, b: 0.8, a: 1}
   systemName: ARCADIA LIFE SCIENCES TERMINAL
   enableDebugLogs: 0
@@ -135,6 +135,13 @@ MonoBehaviour:
   currentPrompt: ARCADIA:\>
   maxTerminalLines: 80
   typeCharDelay: 0.012
+  terminalTextColor: {r: 0.77, g: 0.78, b: 0.77, a: 1}
+  liveInputTextColor: {r: 0.77, g: 0.78, b: 0.77, a: 1}
+  accentColor: {r: 0.03, g: 1, b: 1, a: 1}
+  terminalFont: {fileID: 11400000, guid: 99eb0a852bfd194409be182df9a26b63, type: 2}
+  terminalFontSize: 20
+  terminalLineSpacing: -5
+  terminalCharacterSpacing: 0
   enableDebugLogs: 0
 --- !u!114 &4364257883094981511
 MonoBehaviour:
@@ -167,6 +174,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57163affd568d0043bdc7a9af387135c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mailSystemConfig: {fileID: 11400000, guid: 2cae9e8bb7657e34c82c3c380eeb9a2f, type: 2}
   contacts: []
   currentMailDate: 1983-10-07
 --- !u!1 &1364295231636429936
@@ -530,10 +538,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 10
-    m_Right: 10
-    m_Top: 10
-    m_Bottom: 10
+    m_Left: 8
+    m_Right: 8
+    m_Top: 4
+    m_Bottom: 4
   m_ChildAlignment: 0
   m_Spacing: 0
   m_ChildForceExpandWidth: 1
@@ -662,7 +670,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4947621090369747342
 RectTransform:
   m_ObjectHideFlags: 0
@@ -948,8 +956,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 30, y: -30}
-  m_SizeDelta: {x: 900, y: 500}
+  m_AnchoredPosition: {x: 10, y: -10}
+  m_SizeDelta: {x: 900, y: 630}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &8640045101087394588
 CanvasRenderer:
@@ -972,7 +980,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1605,7 +1613,7 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &3444534249243662993
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1724,15 +1732,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: "TEST LINE 001\n      TEST LINE 002\n      TEST LINE 003"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 99eb0a852bfd194409be182df9a26b63, type: 2}
+  m_sharedMaterial: {fileID: 5185673663662245480, guid: 99eb0a852bfd194409be182df9a26b63, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4291151557
+  m_fontColor: {r: 0.77254903, g: 0.7764706, b: 0.77254903, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1749,8 +1757,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
-  m_fontSizeBase: 18
+  m_fontSize: 20
+  m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1761,7 +1769,7 @@ MonoBehaviour:
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: 0
+  m_lineSpacing: -5
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
@@ -1858,15 +1866,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: ARCADIA:\>
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 99eb0a852bfd194409be182df9a26b63, type: 2}
+  m_sharedMaterial: {fileID: 5185673663662245480, guid: 99eb0a852bfd194409be182df9a26b63, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4291151557
+  m_fontColor: {r: 0.77254903, g: 0.7764706, b: 0.77254903, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1883,8 +1891,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
-  m_fontSizeBase: 18
+  m_fontSize: 20
+  m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2149,7 +2157,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 281, y: 0}
   m_SizeDelta: {x: 20, y: -17}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &79560425443989596
@@ -2233,7 +2241,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7291378386370720876}
   m_HandleRect: {fileID: 3300206389555445647}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
