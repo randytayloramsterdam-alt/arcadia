@@ -97,7 +97,7 @@ MonoBehaviour:
   skipBoot: 0
   bootDuration: 3
   clearAfterBoot: 1
-  bootSpeedMultiplier: 1
+  bootSpeedMultiplier: 0.8
   bootCharDelay: 0.035
   bootTextColor: {r: 0.77254903, g: 0.7764706, b: 0.77254903, a: 1}
   screenBackgroundColor: {r: 0.005, g: 0.012, b: 0.014, a: 1}
@@ -178,6 +178,7 @@ MonoBehaviour:
   showBlinkingCursor: 1
   cursorBlinkInterval: 0.5
   hideInputFieldVisuals: 1
+  addBlankLineBeforeLiveInput: 0
   currentPrompt: ARCADIA:\>
   maxTerminalLines: 80
   typeCharDelay: 0.012
@@ -213,8 +214,8 @@ MonoBehaviour:
   backendChatClient: {fileID: 312863822577312133}
   keepInputFocused: 1
   enableDebugLogs: 0
-  rootWelcomeText: "ARCADIA TERMINAL READY.\n\nAVAILABLE SYSTEMS:\n\n  MAIL     
-    SYS\n  DIARY     SYS\n\nTYPE HELP FOR COMMAND LIST."
+  rootWelcomeText: "ARCADIA TERMINAL READY.\n\nAVAILABLE SYSTEMS:\n  MAIL      SYS\n 
+    DIARY     SYS\n\nTYPE HELP FOR COMMAND LIST."
 --- !u!114 &8579560852390436288
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1010,7 +1011,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 10, y: -10}
-  m_SizeDelta: {x: 900, y: 630}
+  m_SizeDelta: {x: 900, y: 574.1511}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &8640045101087394588
 CanvasRenderer:

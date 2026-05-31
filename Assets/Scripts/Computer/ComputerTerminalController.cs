@@ -122,12 +122,20 @@ public class ComputerTerminalController : MonoBehaviour
 
         if (string.IsNullOrEmpty(rawInput))
         {
+            ClearLiveInputLeadingBlank();
             terminalView.UpdateLiveInputLine(CurrentPrompt, "");
             terminalView.FocusInput();
             return;
         }
 
         string displayLine = CurrentPrompt + " " + rawInput.Trim();
+
+        if (terminalView.LiveInputHasLeadingBlankLine())
+        {
+            terminalView.AppendLine("");
+            terminalView.SetLiveInputLeadingBlankLine(false);
+        }
+
         terminalView.AppendLine(displayLine);
 
         string normalized = rawInput.Trim().ToUpperInvariant();
@@ -161,6 +169,7 @@ public class ComputerTerminalController : MonoBehaviour
 
             case "CLEAR":
             case "CLS":
+                ClearLiveInputLeadingBlank();
                 terminalView.Clear();
                 terminalView.UpdateLiveInputLine(CurrentPrompt, "");
                 terminalView.FocusInput();
@@ -202,6 +211,7 @@ public class ComputerTerminalController : MonoBehaviour
         switch (currentLayer)
         {
             case TerminalLayer.Root:
+                ClearLiveInputLeadingBlank();
                 terminalView.UpdateLiveInputLine(terminalView.currentPrompt, "");
                 terminalView.FocusInput();
                 break;
@@ -282,8 +292,7 @@ public class ComputerTerminalController : MonoBehaviour
             if (string.IsNullOrWhiteSpace(sendBody))
             {
                 terminalView.AppendLine("EMPTY MESSAGE BUFFER.");
-                terminalView.UpdateLiveInputLine(CurrentPrompt, "");
-                terminalView.FocusInput();
+                FinishCommandOutput();
                 return;
             }
             HandleSend(sendBody);
@@ -382,8 +391,7 @@ public class ComputerTerminalController : MonoBehaviour
         if (string.IsNullOrEmpty(body))
         {
             terminalView.AppendLine("EMPTY MESSAGE BUFFER.");
-            terminalView.UpdateLiveInputLine(CurrentPrompt, "");
-            terminalView.FocusInput();
+            FinishCommandOutput();
             return;
         }
 
@@ -484,8 +492,7 @@ public class ComputerTerminalController : MonoBehaviour
         if (mailSystem == null)
         {
             terminalView.AppendLine("MAIL SYSTEM NOT AVAILABLE.");
-            terminalView.UpdateLiveInputLine(CurrentPrompt, "");
-            terminalView.FocusInput();
+            FinishCommandOutput();
             return;
         }
 
@@ -494,8 +501,7 @@ public class ComputerTerminalController : MonoBehaviour
         foreach (var line in lines)
             terminalView.AppendLine(line);
 
-        terminalView.UpdateLiveInputLine(CurrentPrompt, "");
-        terminalView.FocusInput();
+        FinishCommandOutput();
     }
 
     private void AppendMessageList()
@@ -511,8 +517,7 @@ public class ComputerTerminalController : MonoBehaviour
         foreach (var line in lines)
             terminalView.AppendLine(line);
 
-        terminalView.UpdateLiveInputLine(CurrentPrompt, "");
-        terminalView.FocusInput();
+        FinishCommandOutput();
     }
 
     private void AppendMessageBody()
@@ -528,8 +533,7 @@ public class ComputerTerminalController : MonoBehaviour
         foreach (var line in lines)
             terminalView.AppendLine(line);
 
-        terminalView.UpdateLiveInputLine(CurrentPrompt, "");
-        terminalView.FocusInput();
+        FinishCommandOutput();
     }
 
     private void AppendRootHelp()
@@ -541,8 +545,7 @@ public class ComputerTerminalController : MonoBehaviour
         terminalView.AppendLine("  DIARY    - OPEN DIARY SYSTEM");
         terminalView.AppendLine("  CLEAR    - CLEAR SCREEN");
         terminalView.AppendLine("  EXIT     - CLOSE TERMINAL");
-        terminalView.UpdateLiveInputLine(CurrentPrompt, "");
-        terminalView.FocusInput();
+        FinishCommandOutput();
     }
 
     private void AppendMailHelp()
@@ -553,8 +556,7 @@ public class ComputerTerminalController : MonoBehaviour
         terminalView.AppendLine("  BACK       - RETURN TO ROOT");
         terminalView.AppendLine("  CLEAR      - CLEAR SCREEN");
         terminalView.AppendLine("  EXIT       - CLOSE TERMINAL");
-        terminalView.UpdateLiveInputLine(CurrentPrompt, "");
-        terminalView.FocusInput();
+        FinishCommandOutput();
     }
 
     private void AppendMailContactHelp()
@@ -565,8 +567,7 @@ public class ComputerTerminalController : MonoBehaviour
         terminalView.AppendLine("  BACK        - RETURN TO MAIL");
         terminalView.AppendLine("  CLEAR       - CLEAR SCREEN");
         terminalView.AppendLine("  EXIT        - CLOSE TERMINAL");
-        terminalView.UpdateLiveInputLine(CurrentPrompt, "");
-        terminalView.FocusInput();
+        FinishCommandOutput();
     }
 
     private void AppendMailMessageHelp()
@@ -576,8 +577,7 @@ public class ComputerTerminalController : MonoBehaviour
         terminalView.AppendLine("  BACK     - RETURN TO CONTACT");
         terminalView.AppendLine("  CLEAR    - CLEAR SCREEN");
         terminalView.AppendLine("  EXIT     - CLOSE TERMINAL");
-        terminalView.UpdateLiveInputLine(CurrentPrompt, "");
-        terminalView.FocusInput();
+        FinishCommandOutput();
     }
 
     private void AppendDiaryHelp()
@@ -586,32 +586,28 @@ public class ComputerTerminalController : MonoBehaviour
         terminalView.AppendLine("  BACK  - RETURN TO ROOT");
         terminalView.AppendLine("  CLEAR - CLEAR SCREEN");
         terminalView.AppendLine("  EXIT  - CLOSE TERMINAL");
-        terminalView.UpdateLiveInputLine(CurrentPrompt, "");
-        terminalView.FocusInput();
+        FinishCommandOutput();
     }
 
     private void AppendRootSystems()
     {
-        terminalView.AppendLine("");
         terminalView.AppendLine("AVAILABLE SYSTEMS:");
         terminalView.AppendLine("");
         terminalView.AppendLine("  MAIL      SYS");
         terminalView.AppendLine("  DIARY     SYS");
-        terminalView.UpdateLiveInputLine(CurrentPrompt, "");
-        terminalView.FocusInput();
+        FinishCommandOutput();
     }
 
     private void AppendDiaryUnavailable()
     {
-        terminalView.AppendLine("");
         terminalView.AppendLine("DIARY SYSTEM NOT AVAILABLE.");
-        terminalView.UpdateLiveInputLine(CurrentPrompt, "");
-        terminalView.FocusInput();
+        FinishCommandOutput();
     }
 
     private void ShowRootMenu()
     {
         terminalView.Clear();
+        ClearLiveInputLeadingBlank();
 
         string normalized = rootWelcomeText.Replace("\r\n", "\n").Replace('\r', '\n');
         string[] lines = normalized.Split(new[] { '\n' }, StringSplitOptions.None);
@@ -625,14 +621,32 @@ public class ComputerTerminalController : MonoBehaviour
     private void BadCommand()
     {
         terminalView.AppendLine("BAD COMMAND OR FILE NAME.");
-        terminalView.UpdateLiveInputLine(CurrentPrompt, "");
-        terminalView.FocusInput();
+        FinishCommandOutput();
     }
 
     private void ExitComputer()
     {
         if (computerUIController != null)
             computerUIController.Close();
+    }
+
+    private void AppendBlankLineIfNeeded()
+    {
+        var lines = terminalView.TerminalLines;
+        if (lines == null || lines.Count == 0 || lines[lines.Count - 1] != "")
+            terminalView.AppendLine("");
+    }
+
+    private void FinishCommandOutput()
+    {
+        terminalView.SetLiveInputLeadingBlankLine(true);
+        terminalView.UpdateLiveInputLine(CurrentPrompt, "");
+        terminalView.FocusInput();
+    }
+
+    private void ClearLiveInputLeadingBlank()
+    {
+        terminalView.SetLiveInputLeadingBlankLine(false);
     }
 
     private string CurrentPrompt

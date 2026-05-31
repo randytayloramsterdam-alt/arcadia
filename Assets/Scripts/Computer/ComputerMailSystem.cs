@@ -313,7 +313,6 @@ public class ComputerMailSystem : MonoBehaviour
     public string RenderContactList()
     {
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
-        sb.AppendLine("");
         sb.AppendLine("MAIL CONTACTS");
         sb.AppendLine("");
 
@@ -335,7 +334,6 @@ public class ComputerMailSystem : MonoBehaviour
             return "";
 
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
-        sb.AppendLine("");
         sb.AppendLine($"CONTACT: {contact.name}");
         sb.AppendLine("");
 
@@ -359,7 +357,6 @@ public class ComputerMailSystem : MonoBehaviour
         bool wasUnread = msg.status == "UNREAD";
 
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
-        sb.AppendLine("");
         sb.AppendLine($"MESSAGE {messageId}");
         sb.AppendLine("");
         sb.AppendLine($"FROM    : {msg.from}");

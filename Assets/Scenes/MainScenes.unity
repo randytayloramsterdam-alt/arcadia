@@ -1467,17 +1467,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1927446148}
   m_SourcePrefab: {fileID: 100100000, guid: 4afa93223158b0741865f310d07b612a, type: 3}
---- !u!114 &405606630 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2736163919283579285, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-  m_PrefabInstance: {fileID: 856948862}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &434062463
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1749,17 +1738,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 694aff3cb269cfc4596ed7275a663445, type: 3}
   m_PrefabInstance: {fileID: 434062463}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &505454291 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5215769506025642374, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-  m_PrefabInstance: {fileID: 856948862}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &543637756 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 07c34e3519bbc5343806b2d2d541fad3, type: 3}
@@ -2315,15 +2293,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 188632342283091209, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 188632342283091209, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 188632342283091209, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: -17
       objectReference: {fileID: 0}
     - target: {fileID: 449131035994217647, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_Value
@@ -2371,11 +2349,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3300206389555445647, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3300206389555445647, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 0.989813
       objectReference: {fileID: 0}
     - target: {fileID: 3300206389555445647, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchorMin.y
@@ -2385,9 +2363,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: Computer_And_UI
       objectReference: {fileID: 0}
+    - target: {fileID: 4706478390962714197, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4874637344341509288, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 86.36
       objectReference: {fileID: 0}
     - target: {fileID: 4874637344341509288, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -2395,239 +2377,51 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5632331333164112383, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5632331333164112383, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5632331333164112383, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 193.16998
       objectReference: {fileID: 0}
     - target: {fileID: 5632331333164112383, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 20.01
       objectReference: {fileID: 0}
     - target: {fileID: 5632331333164112383, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 104.58499
       objectReference: {fileID: 0}
     - target: {fileID: 5632331333164112383, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -72.354996
       objectReference: {fileID: 0}
     - target: {fileID: 5974396258155492681, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5974396258155492681, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5974396258155492681, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 193.16998
       objectReference: {fileID: 0}
     - target: {fileID: 5974396258155492681, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 58.35
       objectReference: {fileID: 0}
     - target: {fileID: 5974396258155492681, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5974396258155492681, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7654846767866409815, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: backgroundImages.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 7654846767866409815, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: backgroundImages.Array.data[0]
-      value: 
-      objectReference: {fileID: 1126431200}
-    - target: {fileID: 7654846767866409815, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: backgroundImages.Array.data[1]
-      value: 
-      objectReference: {fileID: 505454291}
-    - target: {fileID: 7654846767866409815, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: backgroundImages.Array.data[2]
-      value: 
-      objectReference: {fileID: 405606630}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: logoLines.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: logoLines.Array.data[0]
-      value: '        /\'
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: logoLines.Array.data[1]
-      value: '       /  \        ARCADIA'
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: logoLines.Array.data[2]
-      value: '      / /\ \       LIFE SCIENCES'
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: logoLines.Array.data[3]
-      value: '     /_/  \_\      TERMINAL DIVISION'
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: completeLines.Array.size
-      value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: finalizingLines.Array.size
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: floppyReadLines.Array.size
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: completeLines.Array.data[0]
-      value: '        /\'
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: completeLines.Array.data[1]
-      value: '       /  \        ARCADIA'
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: completeLines.Array.data[2]
-      value: '      / /\ \       LIFE SCIENCES'
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: completeLines.Array.data[3]
-      value: '     /_/__\_\'
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: completeLines.Array.data[4]
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: completeLines.Array.data[5]
-      value: '"VITAM EX PROFUNDIS"'
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: completeLines.Array.data[6]
-      value: (LIFE FROM THE DEPTHS)
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: completeLines.Array.data[7]
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: completeLines.Array.data[8]
-      value: SYSTEM READY.
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: completeLines.Array.data[9]
-      value: SYSTEM READY.
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: memoryCheckLines.Array.size
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: completeLines.Array.data[10]
-      value: SYSTEM READY.
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: finalizingLines.Array.data[3]
-      value: '     /_/__\_\'
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: finalizingLines.Array.data[4]
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: finalizingLines.Array.data[5]
-      value: '"VITAM EX PROFUNDIS"'
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: finalizingLines.Array.data[6]
-      value: (LIFE FROM THE DEPTHS)
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: finalizingLines.Array.data[7]
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: finalizingLines.Array.data[8]
-      value: ====--__--====__---___--====
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: finalizingLines.Array.data[9]
-      value: ____----____--__----_____---
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: floppyReadLines.Array.data[0]
-      value: Loading ARCADIA.SYS...
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: floppyReadLines.Array.data[1]
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: floppyReadLines.Array.data[2]
-      value: ARCADIA-86 TERMINAL OPERATING SYSTEM
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: floppyReadLines.Array.data[3]
-      value: VERS. 1.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: floppyReadLines.Array.data[4]
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: floppyReadLines.Array.data[5]
-      value: SYSTEM FILES LOADED.
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: memoryCheckLines.Array.data[0]
-      value: ARCADIA BIOS REV. 1.13
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: memoryCheckLines.Array.data[1]
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: memoryCheckLines.Array.data[2]
-      value: 640K RAM SYSTEM
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: memoryCheckLines.Array.data[3]
-      value: 'MEMORY TEST : 0000-9FFF OK'
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: memoryCheckLines.Array.data[4]
-      value: 'ROM CHECK   : OK'
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: memoryCheckLines.Array.data[5]
-      value: 'CRT ADAPTER : OK'
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: memoryCheckLines.Array.data[6]
-      value: 'KEYBOARD    : DETECTED'
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: memoryCheckLines.Array.data[7]
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: memoryCheckLines.Array.data[8]
-      value: READY.
-      objectReference: {fileID: 0}
-    - target: {fileID: 7853560280062743148, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: memoryCheckLines.Array.data[9]
-      value: "\u2588"
+      value: -4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3241,17 +3035,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1123421339}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &1126431200 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4246690370803259690, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-  m_PrefabInstance: {fileID: 856948862}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1128602012
 GameObject:
   m_ObjectHideFlags: 0

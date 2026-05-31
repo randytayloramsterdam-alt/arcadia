@@ -32,6 +32,10 @@ public class ComputerTerminalView : MonoBehaviour
     [Header("Input Field Visuals")]
     public bool hideInputFieldVisuals = true;
 
+    [Header("Live Input Style")]
+    public bool addBlankLineBeforeLiveInput = false;
+    private bool liveInputNeedsLeadingNewline = false;
+
     [Header("Terminal Settings")]
     public string currentPrompt = "ARCADIA:\\>";
     [Range(10, 200)] public int maxTerminalLines = 80;
@@ -168,12 +172,23 @@ public class ComputerTerminalView : MonoBehaviour
         RefreshLiveInputLine();
     }
 
+    public void SetLiveInputLeadingBlankLine(bool enabled)
+    {
+        liveInputNeedsLeadingNewline = enabled;
+    }
+
+    public bool LiveInputHasLeadingBlankLine()
+    {
+        return liveInputNeedsLeadingNewline;
+    }
+
     private void RefreshLiveInputLine()
     {
         if (liveInputLineText == null || !useInlineInputLine)
             return;
 
-        string display = cachedPrompt + " " + cachedInput;
+        string prefix = liveInputNeedsLeadingNewline ? "\n" : "";
+        string display = prefix + cachedPrompt + " " + cachedInput;
         bool showCursor = showBlinkingCursor ? cursorVisible : true;
         if (showCursor)
             display += cursorSymbol;
