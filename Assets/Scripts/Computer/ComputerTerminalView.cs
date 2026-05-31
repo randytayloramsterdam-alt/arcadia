@@ -41,10 +41,12 @@ public class ComputerTerminalView : MonoBehaviour
     public Color terminalTextColor = new Color(0.77f, 0.78f, 0.77f, 1f);
     public Color liveInputTextColor = new Color(0.77f, 0.78f, 0.77f, 1f);
     public Color accentColor = new Color(0.03f, 1f, 1f, 1f);
+    public Color terminalBackgroundColor = Color.black;
     public TMP_FontAsset terminalFont;
     [Range(12f, 32f)] public float terminalFontSize = 20f;
     [Range(-20f, 20f)] public float terminalLineSpacing = -8f;
     [Range(-50f, 200f)] public float terminalCharacterSpacing = 0f;
+    public Image[] backgroundImages;
 
     [Header("Debug")]
     public bool enableDebugLogs = false;
@@ -143,6 +145,15 @@ public class ComputerTerminalView : MonoBehaviour
             liveInputLineText.color = liveInputTextColor;
             liveInputLineText.lineSpacing = terminalLineSpacing;
             liveInputLineText.characterSpacing = terminalCharacterSpacing;
+        }
+
+        if (backgroundImages != null)
+        {
+            foreach (var img in backgroundImages)
+            {
+                if (img != null)
+                    img.color = terminalBackgroundColor;
+            }
         }
     }
 

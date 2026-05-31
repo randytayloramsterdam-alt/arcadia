@@ -23,6 +23,11 @@ public class ComputerTerminalController : MonoBehaviour
     [Header("Debug")]
     public bool enableDebugLogs = false;
 
+    [Header("Root Welcome")]
+    [TextArea(3, 12)]
+    public string rootWelcomeText =
+        "ARCADIA TERMINAL READY.\n\nAVAILABLE SYSTEMS:\n\n  MAIL      SYS\n  DIARY     SYS\n\nTYPE HELP FOR COMMAND LIST.";
+
     private enum TerminalLayer
     {
         Root,
@@ -607,14 +612,12 @@ public class ComputerTerminalController : MonoBehaviour
     private void ShowRootMenu()
     {
         terminalView.Clear();
-        terminalView.AppendLine("ARCADIA TERMINAL READY.");
-        terminalView.AppendLine("");
-        terminalView.AppendLine("AVAILABLE SYSTEMS:");
-        terminalView.AppendLine("");
-        terminalView.AppendLine("  MAIL      SYS");
-        terminalView.AppendLine("  DIARY     SYS");
-        terminalView.AppendLine("");
-        terminalView.AppendLine("TYPE HELP FOR COMMAND LIST.");
+
+        string normalized = rootWelcomeText.Replace("\r\n", "\n").Replace('\r', '\n');
+        string[] lines = normalized.Split(new[] { '\n' }, StringSplitOptions.None);
+        foreach (var line in lines)
+            terminalView.AppendLine(line);
+
         terminalView.UpdateLiveInputLine(terminalView.currentPrompt, "");
         terminalView.FocusInput();
     }
