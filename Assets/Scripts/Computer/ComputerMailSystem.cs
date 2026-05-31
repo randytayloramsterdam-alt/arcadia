@@ -4,27 +4,76 @@ using UnityEngine;
 
 public class ComputerMailSystem : MonoBehaviour
 {
-    [Header("Contacts")]
+    [Header("Config")]
+    public MailSystemConfig mailSystemConfig;
+
+    [Header("Runtime Data")]
     public List<MailContactData> contacts = new List<MailContactData>();
 
     private Dictionary<string, MailContactData> contactMap;
+    private string localUserName = "LOCAL USER";
 
     public void Initialize()
     {
-        BuildTestData();
+        if (mailSystemConfig != null)
+            LoadFromConfig();
+        else
+            BuildTestData();
+
         contactMap = new Dictionary<string, MailContactData>();
         foreach (var contact in contacts)
             contactMap[contact.id] = contact;
     }
 
+    private void LoadFromConfig()
+    {
+        localUserName = mailSystemConfig.localUserName;
+        currentMailDate = mailSystemConfig.currentMailDate;
+
+        contacts = new List<MailContactData>();
+        foreach (var cfg in mailSystemConfig.contacts)
+        {
+            var contact = new MailContactData
+            {
+                id = cfg.id,
+                name = cfg.displayName,
+                enableAIReply = cfg.enableAIReply,
+                aiProfileName = cfg.aiProfileName,
+                aiSystemPrompt = cfg.aiSystemPrompt,
+                aiMemoryNote = cfg.aiMemoryNote,
+                messages = new List<MailMessageData>()
+            };
+
+            foreach (var msgCfg in cfg.initialMessages)
+            {
+                contact.messages.Add(new MailMessageData
+                {
+                    id = msgCfg.id,
+                    date = msgCfg.date,
+                    from = msgCfg.from,
+                    to = msgCfg.to,
+                    status = msgCfg.status.ToString(),
+                    subject = msgCfg.subject,
+                    body = msgCfg.body
+                });
+            }
+
+            contacts.Add(contact);
+        }
+    }
+
     private void BuildTestData()
     {
+        localUserName = "LOCAL USER";
+        currentMailDate = "1983-10-07";
+
         contacts = new List<MailContactData>
         {
             new MailContactData
             {
                 id = "001",
                 name = "A. MORRISON",
+                enableAIReply = false,
                 messages = new List<MailMessageData>
                 {
                     new MailMessageData
@@ -43,6 +92,7 @@ public class ComputerMailSystem : MonoBehaviour
             {
                 id = "002",
                 name = "L. CARTER",
+                enableAIReply = false,
                 messages = new List<MailMessageData>
                 {
                     new MailMessageData
@@ -61,6 +111,8 @@ public class ComputerMailSystem : MonoBehaviour
             {
                 id = "003",
                 name = "E. BENSON",
+                enableAIReply = true,
+                aiProfileName = "E. BENSON",
                 messages = new List<MailMessageData>
                 {
                     new MailMessageData
@@ -99,6 +151,7 @@ public class ComputerMailSystem : MonoBehaviour
             {
                 id = "004",
                 name = "M. KELLER",
+                enableAIReply = false,
                 messages = new List<MailMessageData>
                 {
                     new MailMessageData
@@ -117,6 +170,7 @@ public class ComputerMailSystem : MonoBehaviour
             {
                 id = "005",
                 name = "J. REED",
+                enableAIReply = false,
                 messages = new List<MailMessageData>
                 {
                     new MailMessageData
@@ -145,6 +199,12 @@ public class ComputerMailSystem : MonoBehaviour
     {
         var contact = GetContact(contactId);
         return contact != null ? contact.name : "";
+    }
+
+    public bool GetContactEnableAIReply(string contactId)
+    {
+        var contact = GetContact(contactId);
+        return contact != null && contact.enableAIReply;
     }
 
     public string ComputeContactStatus(string contactId)
@@ -211,7 +271,7 @@ public class ComputerMailSystem : MonoBehaviour
         {
             id = id,
             date = currentMailDate,
-            from = "LOCAL USER",
+            from = localUserName,
             to = contact.name,
             status = "SENT",
             subject = subject,
@@ -240,7 +300,7 @@ public class ComputerMailSystem : MonoBehaviour
             id = id,
             date = currentMailDate,
             from = fromName,
-            to = "LOCAL USER",
+            to = localUserName,
             status = "UNREAD",
             subject = subject,
             body = body
@@ -324,6 +384,10 @@ public class ComputerMailSystem : MonoBehaviour
     {
         public string id;
         public string name;
+        public bool enableAIReply;
+        public string aiProfileName;
+        public string aiSystemPrompt;
+        public string aiMemoryNote;
         public List<MailMessageData> messages = new List<MailMessageData>();
     }
 

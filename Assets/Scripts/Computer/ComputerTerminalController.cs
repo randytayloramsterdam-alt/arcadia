@@ -393,7 +393,7 @@ public class ComputerTerminalController : MonoBehaviour
 
         AppendMessageList();
 
-        if (contactName == "E. BENSON" && backendChatClient != null)
+        if (mailSystem.GetContactEnableAIReply(currentContactId) && backendChatClient != null)
         {
             StartCoroutine(HandleAIReplyInBackground(currentContactId, contactName, body));
         }
