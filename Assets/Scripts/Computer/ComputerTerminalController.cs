@@ -76,12 +76,28 @@ public class ComputerTerminalController : MonoBehaviour
         public TerminalCommandId commandId;
         public string alias;
         public int priority;
+        public bool isIdCandidate;
+        public string displayText;
+        public string insertText;
 
         public CompletionCandidate(TerminalCommandId commandId, string alias, int priority)
         {
             this.commandId = commandId;
             this.alias = alias;
             this.priority = priority;
+            this.isIdCandidate = false;
+            this.displayText = alias;
+            this.insertText = alias;
+        }
+
+        public CompletionCandidate(string displayText, string insertText, int priority, bool isIdCandidate)
+        {
+            this.commandId = TerminalCommandId.Help;
+            this.alias = "";
+            this.priority = priority;
+            this.isIdCandidate = isIdCandidate;
+            this.displayText = displayText;
+            this.insertText = insertText;
         }
     }
 
@@ -194,8 +210,29 @@ public class ComputerTerminalController : MonoBehaviour
             return;
         }
 
+        var idMatches = GetIdCompletionMatches(input);
+
+        if (idMatches.Count > 0)
+        {
+            string richBody = BuildIdRichBody(input, idMatches);
+            terminalView.SetLiveInputRichBodyOverride(richBody);
+            return;
+        }
+
+        terminalView.ClearLiveInputRichBodyOverride();
+
         string suggestion = GetCompletionSuggestion(input);
-        terminalView.SetCompletionSuggestion(suggestion, completionSuggestionColorHex);
+        if (suggestion.Contains("|"))
+        {
+            string[] parts = suggestion.Split('|');
+            string pre = parts[0];
+            string post = parts.Length > 1 ? parts[1] : "";
+            terminalView.SetCompletionSuggestionParts(pre, post, completionSuggestionColorHex);
+        }
+        else
+        {
+            terminalView.SetCompletionSuggestion(suggestion, completionSuggestionColorHex);
+        }
     }
 
     private string GetCompletionSuggestion(string input)
@@ -204,8 +241,14 @@ public class ComputerTerminalController : MonoBehaviour
             return "";
 
         var matches = GetCompletionMatches(input);
-        if (matches.Count == 0)
-            return "";
+        var idMatches = GetIdCompletionMatches(input);
+
+        bool useIdMatches = idMatches.Count > 0;
+
+        if (useIdMatches)
+        {
+            return BuildIdCompletionSuggestion(input, idMatches);
+        }
 
         var displayParts = new List<string>();
         for (int i = 0; i < matches.Count; i++)
@@ -233,25 +276,108 @@ public class ComputerTerminalController : MonoBehaviour
         return string.Join(" / ", displayParts);
     }
 
-    private string GetEmptyInputSuggestion()
+    private string BuildIdCompletionSuggestion(string rawInput, List<CompletionCandidate> idMatches)
     {
-        var candidates = GetCurrentLayerCompletionCandidates(true);
-        if (candidates.Count == 0)
+        if (idMatches.Count == 0 || !TryGetIdCompletionContext(rawInput, out string prefixBeforeId, out string idQuery))
             return "";
 
-        candidates.Sort((a, b) =>
-        {
-            if (a.priority != b.priority)
-                return a.priority.CompareTo(b.priority);
-            if (a.alias.Length != b.alias.Length)
-                return a.alias.Length.CompareTo(b.alias.Length);
-            return string.Compare(a.alias, b.alias, StringComparison.OrdinalIgnoreCase);
-        });
+        string preSuggestion = "";
+        var postParts = new List<string>();
 
-        var lower = new List<string>();
-        foreach (var c in candidates)
-            lower.Add(c.alias.ToLowerInvariant());
-        return string.Join(" / ", lower);
+        for (int i = 0; i < idMatches.Count; i++)
+        {
+            string fullId = idMatches[i].displayText;
+
+            if (i == 0)
+            {
+                int idQueryIndex = fullId.IndexOf(idQuery, StringComparison.OrdinalIgnoreCase);
+                if (idQueryIndex == 0)
+                {
+                    preSuggestion = "";
+                    postParts.Add(fullId.Substring(idQuery.Length));
+                }
+                else
+                {
+                    preSuggestion = fullId.Substring(0, idQueryIndex);
+                    postParts.Add(fullId.Substring(idQueryIndex + idQuery.Length));
+                }
+            }
+            else
+            {
+                postParts.Add(fullId);
+            }
+        }
+
+        return preSuggestion + "|" + string.Join(" / ", postParts);
+    }
+
+    private string BuildIdRichBody(string rawInput, List<CompletionCandidate> idMatches)
+    {
+        if (idMatches.Count == 0 || !TryGetIdCompletionContext(rawInput, out string prefixBeforeId, out string idQuery))
+            return rawInput;
+
+        string preIdSuggestion = "";
+        var postIdParts = new List<string>();
+
+        for (int i = 0; i < idMatches.Count; i++)
+        {
+            string fullId = idMatches[i].displayText;
+
+            if (i == 0)
+            {
+                int idQueryIndex = fullId.IndexOf(idQuery, StringComparison.OrdinalIgnoreCase);
+                if (idQueryIndex == 0)
+                {
+                    preIdSuggestion = "";
+                    postIdParts.Add(fullId.Substring(idQuery.Length));
+                }
+                else
+                {
+                    preIdSuggestion = fullId.Substring(0, idQueryIndex);
+                    postIdParts.Add(fullId.Substring(idQueryIndex + idQuery.Length));
+                }
+            }
+            else
+            {
+                postIdParts.Add(fullId);
+            }
+        }
+
+        string body = prefixBeforeId;
+        if (!string.IsNullOrEmpty(preIdSuggestion))
+            body += "<color=" + completionSuggestionColorHex + ">" + preIdSuggestion + "</color>";
+        body += idQuery;
+        if (postIdParts.Count > 0 && !string.IsNullOrEmpty(postIdParts[0]))
+            body += "<color=" + completionSuggestionColorHex + ">" + string.Join(" / ", postIdParts) + "</color>";
+
+        return body;
+    }
+
+    private string GetEmptyInputSuggestion()
+    {
+        string suggestion;
+        switch (currentLayer)
+        {
+            case TerminalLayer.Root:
+                suggestion = "mail / diary / dir / refresh / home / help / clear / exit";
+                break;
+            case TerminalLayer.Mail:
+                suggestion = "[id] / open [id] / dir / back / refresh / home / help / clear / exit";
+                break;
+            case TerminalLayer.MailContact:
+                suggestion = "[id] / open [id] / send [text] / dir / back / refresh / home / help / clear / exit";
+                break;
+            case TerminalLayer.MailMessage:
+                suggestion = "dir / back / refresh / home / help / clear / exit";
+                break;
+            case TerminalLayer.Diary:
+                suggestion = "dir / back / refresh / home / help / clear / exit";
+                break;
+            default:
+                suggestion = "";
+                break;
+        }
+        return suggestion;
     }
 
     private int GetCommandPriority(string primaryAlias)
@@ -509,16 +635,21 @@ public class ComputerTerminalController : MonoBehaviour
         {
             AppendMailContactHelp();
         }
-        else if (IsMessageId(verb))
-        {
-            EnterMailMessage(currentContactId, verb);
-        }
-        else if (IsMessageId(arg))
-        {
-            EnterMailMessage(currentContactId, arg);
-        }
         else
         {
+            string openArg;
+            if (StartsWithAlias(TerminalCommandId.OpenItem, normalizedCommand, out openArg) && IsMessageId(openArg))
+            {
+                EnterMailMessage(currentContactId, openArg);
+                return;
+            }
+
+            if (IsMessageId(verb))
+            {
+                EnterMailMessage(currentContactId, verb);
+                return;
+            }
+
             BadCommand();
         }
     }
@@ -771,7 +902,6 @@ public class ComputerTerminalController : MonoBehaviour
         AppendHelpLine(TerminalCommandId.Help);
         AppendHelpLine(TerminalCommandId.List);
         AppendHelpLine(TerminalCommandId.OpenItem);
-        AppendHelpLine(TerminalCommandId.ReadMessage);
         AppendHelpLine(TerminalCommandId.SendMessage);
         AppendHelpLine(TerminalCommandId.Refresh);
         AppendHelpLine(TerminalCommandId.GoRoot);
@@ -853,9 +983,7 @@ public class ComputerTerminalController : MonoBehaviour
         if (layer == TerminalLayer.Mail && id == TerminalCommandId.OpenItem)
             return "[ID] / CD [ID] / OPEN [ID]";
         if (layer == TerminalLayer.MailContact && id == TerminalCommandId.OpenItem)
-            return "[ID] / CD [ID] / OPEN [ID] / READ [ID]";
-        if (layer == TerminalLayer.MailContact && id == TerminalCommandId.ReadMessage)
-            return "READ [ID]";
+            return "[ID] / CD [ID] / OPEN [ID]";
         if (layer == TerminalLayer.MailContact && id == TerminalCommandId.SendMessage)
             return "SEND [TEXT]";
         return defaultAliases;
@@ -1049,8 +1177,20 @@ public class ComputerTerminalController : MonoBehaviour
             return;
 
         string rawInput = terminalView != null ? terminalView.GetInputText() : "";
-        var matches = GetCompletionMatches(rawInput);
+        var idMatches = GetIdCompletionMatches(rawInput);
 
+        if (idMatches.Count > 0)
+        {
+            string insertText = idMatches[0].insertText;
+            terminalView.ClearInput();
+            terminalView.inputField.text = insertText;
+            terminalView.SetCompletionSuggestion("", completionSuggestionColorHex);
+            terminalView.UpdateLiveInputLine(CurrentPrompt, insertText);
+            terminalView.FocusInput();
+            return;
+        }
+
+        var matches = GetCompletionMatches(rawInput);
         if (matches.Count == 0)
             return;
 
@@ -1117,7 +1257,7 @@ public class ComputerTerminalController : MonoBehaviour
             case TerminalLayer.MailContact:
                 ids = new TerminalCommandId[] {
                     TerminalCommandId.Help, TerminalCommandId.List,
-                    TerminalCommandId.OpenItem, TerminalCommandId.ReadMessage,
+                    TerminalCommandId.OpenItem,
                     TerminalCommandId.SendMessage, TerminalCommandId.Refresh,
                     TerminalCommandId.GoRoot, TerminalCommandId.Back,
                     TerminalCommandId.Clear, TerminalCommandId.Exit
@@ -1203,9 +1343,111 @@ public class ComputerTerminalController : MonoBehaviour
         return completion;
     }
 
+    private List<string> GetCurrentLayerIdsForCompletion()
+    {
+        if (mailSystem == null)
+            return new List<string>();
+
+        if (currentLayer == TerminalLayer.Mail)
+        {
+            return mailSystem.GetAllContactIds();
+        }
+
+        if (currentLayer == TerminalLayer.MailContact && !string.IsNullOrEmpty(currentContactId))
+        {
+            return mailSystem.GetMessageIds(currentContactId);
+        }
+
+        return new List<string>();
+    }
+
+    private bool TryGetIdCompletionContext(string rawInput, out string prefixBeforeId, out string idQuery)
+    {
+        prefixBeforeId = "";
+        idQuery = "";
+
+        if (string.IsNullOrEmpty(rawInput))
+            return false;
+
+        if (char.IsDigit(rawInput[0]))
+        {
+            prefixBeforeId = "";
+            idQuery = rawInput;
+            return true;
+        }
+
+        var aliases = GetOpenItemAliases();
+        foreach (var alias in aliases)
+        {
+            string aliasWithSpace = alias + " ";
+            if (rawInput.Length > aliasWithSpace.Length &&
+                rawInput.Substring(0, aliasWithSpace.Length).Equals(aliasWithSpace, StringComparison.OrdinalIgnoreCase))
+            {
+                string remaining = rawInput.Substring(aliasWithSpace.Length);
+                if (IsDigitsOnly(remaining))
+                {
+                    prefixBeforeId = rawInput.Substring(0, aliasWithSpace.Length);
+                    idQuery = remaining;
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private List<string> GetOpenItemAliases()
+    {
+        if (commandConfig != null)
+        {
+            var entry = commandConfig.GetEntry(TerminalCommandId.OpenItem);
+            if (entry != null && entry.aliases != null && entry.aliases.Count > 0)
+                return entry.aliases;
+        }
+        return new List<string> { "CD", "OPEN" };
+    }
+
+    private bool IsDigitsOnly(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return false;
+        foreach (char c in text)
+        {
+            if (!char.IsDigit(c))
+                return false;
+        }
+        return true;
+    }
+
+    private List<CompletionCandidate> GetIdCompletionMatches(string rawInput)
+    {
+        if (!TryGetIdCompletionContext(rawInput, out string prefixBeforeId, out string idQuery))
+            return new List<CompletionCandidate>();
+
+        if (string.IsNullOrEmpty(idQuery))
+            return new List<CompletionCandidate>();
+
+        var availableIds = GetCurrentLayerIdsForCompletion();
+        if (availableIds.Count == 0)
+            return new List<CompletionCandidate>();
+
+        var matches = new List<CompletionCandidate>();
+        for (int i = 0; i < availableIds.Count; i++)
+        {
+            string id = availableIds[i];
+            if (id.Contains(idQuery))
+            {
+                string insertText = prefixBeforeId + id;
+                matches.Add(new CompletionCandidate(id, insertText, i, true));
+            }
+        }
+
+        return matches;
+    }
+
     private bool CompletionShouldEndWithSpace(string completion)
     {
         string upper = completion.ToUpperInvariant().Trim();
-        return upper == "SEND" || upper == "READ" || upper == "OPEN" || upper == "CD";
+        return upper == "SEND" || upper == "OPEN" || upper == "CD";
     }
 }

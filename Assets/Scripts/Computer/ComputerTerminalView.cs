@@ -68,6 +68,9 @@ public class ComputerTerminalView : MonoBehaviour
     private int previousInputLength = 0;
     private string completionSuggestion = "";
     private string completionSuggestionColorHex = "#666666";
+    private string preInputSuggestion = "";
+    private string postInputSuggestion = "";
+    private string liveInputRichBodyOverride = "";
 
     public IReadOnlyList<string> TerminalLines => terminalLines;
 
@@ -228,11 +231,24 @@ public class ComputerTerminalView : MonoBehaviour
             return;
 
         string prefix = liveInputNeedsLeadingNewline ? "\n" : "";
-        string display = prefix + cachedPrompt + " " + cachedInput;
-        if (!string.IsNullOrEmpty(completionSuggestion))
+
+        string display = prefix + cachedPrompt + " ";
+
+        if (!string.IsNullOrEmpty(liveInputRichBodyOverride))
         {
-            display += "<color=" + completionSuggestionColorHex + ">" + completionSuggestion + "</color>";
+            display += liveInputRichBodyOverride;
         }
+        else
+        {
+            if (!string.IsNullOrEmpty(preInputSuggestion))
+                display += "<color=" + completionSuggestionColorHex + ">" + preInputSuggestion + "</color>";
+
+            display += cachedInput;
+
+            if (!string.IsNullOrEmpty(postInputSuggestion))
+                display += "<color=" + completionSuggestionColorHex + ">" + postInputSuggestion + "</color>";
+        }
+
         bool showCursor = showBlinkingCursor ? cursorVisible : true;
         if (showCursor)
             display += cursorSymbol;
@@ -240,9 +256,31 @@ public class ComputerTerminalView : MonoBehaviour
         liveInputLineText.text = display;
     }
 
+    public void SetLiveInputRichBodyOverride(string richBody)
+    {
+        liveInputRichBodyOverride = richBody ?? "";
+        RefreshLiveInputLine();
+    }
+
+    public void ClearLiveInputRichBodyOverride()
+    {
+        liveInputRichBodyOverride = "";
+    }
+
     public void SetCompletionSuggestion(string suggestion, string colorHex)
     {
+        preInputSuggestion = "";
+        postInputSuggestion = suggestion ?? "";
         completionSuggestion = suggestion ?? "";
+        completionSuggestionColorHex = string.IsNullOrWhiteSpace(colorHex) ? "#666666" : colorHex;
+        RefreshLiveInputLine();
+    }
+
+    public void SetCompletionSuggestionParts(string preSuggestion, string postSuggestion, string colorHex)
+    {
+        preInputSuggestion = preSuggestion ?? "";
+        postInputSuggestion = postSuggestion ?? "";
+        completionSuggestion = preSuggestion + postSuggestion;
         completionSuggestionColorHex = string.IsNullOrWhiteSpace(colorHex) ? "#666666" : colorHex;
         RefreshLiveInputLine();
     }
@@ -250,6 +288,9 @@ public class ComputerTerminalView : MonoBehaviour
     public void ClearCompletionSuggestion()
     {
         completionSuggestion = "";
+        preInputSuggestion = "";
+        postInputSuggestion = "";
+        liveInputRichBodyOverride = "";
         RefreshLiveInputLine();
     }
 

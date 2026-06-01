@@ -113,7 +113,7 @@ MonoBehaviour:
     showInHelp: 0
     primaryAlias: READ
     completionPriority: 10
-    showInCompletion: 1
+    showInCompletion: 0
   - commandId: 11
     description: SEND MESSAGE
     aliases:

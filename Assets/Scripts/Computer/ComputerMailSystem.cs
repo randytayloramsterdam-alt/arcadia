@@ -195,6 +195,31 @@ public class ComputerMailSystem : MonoBehaviour
         return contactMap[contactId];
     }
 
+    public List<string> GetAllContactIds()
+    {
+        var result = new List<string>();
+        foreach (var c in contacts)
+        {
+            if (!string.IsNullOrEmpty(c.id))
+                result.Add(c.id);
+        }
+        return result;
+    }
+
+    public List<string> GetMessageIds(string contactId)
+    {
+        var contact = GetContact(contactId);
+        if (contact == null)
+            return new List<string>();
+        var result = new List<string>();
+        foreach (var m in contact.messages)
+        {
+            if (!string.IsNullOrEmpty(m.id))
+                result.Add(m.id);
+        }
+        return result;
+    }
+
     public string GetContactName(string contactId)
     {
         var contact = GetContact(contactId);
