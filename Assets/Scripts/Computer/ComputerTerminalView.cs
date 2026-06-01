@@ -55,12 +55,17 @@ public class ComputerTerminalView : MonoBehaviour
     [Header("Debug")]
     public bool enableDebugLogs = false;
 
+    [Header("Audio")]
+    public ComputerTerminalAudio terminalAudio;
+
     private readonly List<string> terminalLines = new List<string>();
     private Coroutine scrollRoutine;
     private bool cursorVisible = true;
     private float cursorBlinkTimer;
     private string cachedPrompt = "";
     private string cachedInput = "";
+    private bool suppressInputTick = false;
+    private int previousInputLength = 0;
 
     public IReadOnlyList<string> TerminalLines => terminalLines;
 
@@ -69,6 +74,37 @@ public class ComputerTerminalView : MonoBehaviour
         ApplyScrollSettings();
         if (hideInputFieldVisuals)
             ApplyHiddenInputFieldVisuals();
+    }
+
+    private void Start()
+    {
+        if (inputField != null)
+        {
+            inputField.onValueChanged.RemoveListener(OnInputValueChangedAudio);
+            inputField.onValueChanged.AddListener(OnInputValueChangedAudio);
+        }
+    }
+
+    private void OnInputValueChangedAudio(string newText)
+    {
+        if (terminalAudio == null)
+            return;
+        if (suppressInputTick)
+            return;
+        if (newText.Length > previousInputLength)
+            terminalAudio.PlayInputKeyTick();
+        previousInputLength = newText.Length;
+    }
+
+    public void SetSuppressInputTick(bool suppress)
+    {
+        suppressInputTick = suppress;
+    }
+
+    public void ResetTypeTickCounter()
+    {
+        if (terminalAudio != null)
+            terminalAudio.ResetTypeTickCounter();
     }
 
     private void OnEnable()
@@ -402,6 +438,8 @@ public class ComputerTerminalView : MonoBehaviour
             {
                 terminalLines[terminalLines.Count - 1] += line[i];
                 Refresh();
+                if (terminalAudio != null)
+                    terminalAudio.NotifyVisibleCharacter();
                 yield return new WaitForSecondsRealtime(charDelay);
             }
         }
@@ -434,6 +472,8 @@ public class ComputerTerminalView : MonoBehaviour
 
             terminalLines[terminalLines.Count - 1] += line[i];
             Refresh();
+            if (terminalAudio != null)
+                terminalAudio.NotifyVisibleCharacter();
             yield return new WaitForSecondsRealtime(charDelay);
             i++;
         }

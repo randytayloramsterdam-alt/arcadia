@@ -2331,10 +2331,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4364257883094981511, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: commandConfig
-      value: 
-      objectReference: {fileID: 11400000, guid: 5a54f17290b06274c9df7ac4a50b9c2f, type: 2}
     - target: {fileID: 4670098085902529221, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_Name
       value: Computer_And_UI

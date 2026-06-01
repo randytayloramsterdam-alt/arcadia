@@ -13,6 +13,7 @@ public class ComputerUIController : MonoBehaviour
     [Header("Audio")]
     public AudioClip openSound;
     public AudioClip closeSound;
+    public ComputerTerminalAudio terminalAudio;
 
     private AudioSource uiAudioSource;
     private bool isOpen;
@@ -56,6 +57,8 @@ public class ComputerUIController : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         PlaySound(openSound);
+        if (terminalAudio != null)
+            terminalAudio.StartHum();
     }
 
     public void Close()
@@ -67,6 +70,8 @@ public class ComputerUIController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         PlaySound(closeSound);
+        if (terminalAudio != null)
+            terminalAudio.StopHum();
         OnClose?.Invoke();
     }
 

@@ -101,6 +101,9 @@ public class ComputerBootSequence : MonoBehaviour
     [Header("Debug")]
     public bool enableDebugLogs = false;
 
+    [Header("Audio")]
+    public ComputerTerminalAudio terminalAudio;
+
     public event Action OnBootComplete;
 
     private Coroutine bootRoutine;
@@ -127,6 +130,8 @@ public class ComputerBootSequence : MonoBehaviour
 
         bootComplete = false;
         terminalView.EnableInput(false);
+        if (terminalAudio != null)
+            terminalAudio.PlayBootPowerOn();
         bootRoutine = StartCoroutine(BootSequence());
     }
 
@@ -336,10 +341,12 @@ public class ComputerBootSequence : MonoBehaviour
         float scaledCharDelay = ScaleBootTime(charDelay);
         float scaledDuration = ScaleBootTime(duration);
 
+        terminalView.SetSuppressInputTick(true);
         foreach (string line in lines)
         {
             yield return terminalView.TypeLine(line, scaledCharDelay);
         }
+        terminalView.SetSuppressInputTick(false);
 
         float elapsed = Time.unscaledTime - startTime;
         float remaining = scaledDuration - elapsed;
@@ -379,15 +386,13 @@ public class ComputerBootSequence : MonoBehaviour
                 terminalView.outputText.color = textColor;
         }
 
-        Graphic[] graphics = GetComponentsInChildren<Graphic>(true);
-        foreach (Graphic graphic in graphics)
+        if (terminalView != null && terminalView.backgroundImages != null)
         {
-            if (terminalView != null && graphic.gameObject == terminalView.sendButton?.gameObject)
-                continue;
-
-            Image image = graphic as Image;
-            if (image != null)
-                image.color = backgroundColor;
+            foreach (var img in terminalView.backgroundImages)
+            {
+                if (img != null)
+                    img.color = backgroundColor;
+            }
         }
     }
 
