@@ -19,12 +19,18 @@ MonoBehaviour:
     aliases:
     - HELP
     showInHelp: 1
+    primaryAlias: HELP
+    completionPriority: 80
+    showInCompletion: 1
   - commandId: 1
     description: SHOW CURRENT CONTENT
     aliases:
     - DIR
     - LIST
     showInHelp: 0
+    primaryAlias: DIR
+    completionPriority: 30
+    showInCompletion: 1
   - commandId: 2
     description: OPEN MAIL SYSTEM
     aliases:
@@ -32,6 +38,9 @@ MonoBehaviour:
     - CD MAIL
     - OPEN MAIL
     showInHelp: 0
+    primaryAlias: MAIL
+    completionPriority: 10
+    showInCompletion: 1
   - commandId: 3
     description: OPEN DIARY SYSTEM
     aliases:
@@ -39,30 +48,45 @@ MonoBehaviour:
     - CD DIARY
     - OPEN DIARY
     showInHelp: 0
+    primaryAlias: DIARY
+    completionPriority: 20
+    showInCompletion: 1
   - commandId: 4
     description: RETURN TO PREVIOUS LEVEL
     aliases:
     - BACK
     - RETURN
     showInHelp: 0
+    primaryAlias: BACK
+    completionPriority: 50
+    showInCompletion: 1
   - commandId: 5
     description: CLEAR SCREEN
     aliases:
     - CLEAR
     - CLS
     showInHelp: 0
+    primaryAlias: CLEAR
+    completionPriority: 90
+    showInCompletion: 1
   - commandId: 6
     description: CLOSE TERMINAL
     aliases:
     - EXIT
     - QUIT
     showInHelp: 0
+    primaryAlias: EXIT
+    completionPriority: 100
+    showInCompletion: 1
   - commandId: 7
     description: REFRESH CURRENT VIEW
     aliases:
     - REFRESH
     - RELOAD
     showInHelp: 0
+    primaryAlias: REFRESH
+    completionPriority: 40
+    showInCompletion: 1
   - commandId: 8
     description: RETURN TO ROOT
     aliases:
@@ -70,19 +94,31 @@ MonoBehaviour:
     - ROOT
     - MAIN
     showInHelp: 0
+    primaryAlias: HOME
+    completionPriority: 45
+    showInCompletion: 1
   - commandId: 9
     description: OPEN ITEM
     aliases:
     - CD
     - OPEN
     showInHelp: 0
+    primaryAlias: OPEN
+    completionPriority: 30
+    showInCompletion: 1
   - commandId: 10
     description: READ MESSAGE
     aliases:
     - READ
     showInHelp: 0
+    primaryAlias: READ
+    completionPriority: 10
+    showInCompletion: 1
   - commandId: 11
     description: SEND MESSAGE
     aliases:
     - SEND
     showInHelp: 0
+    primaryAlias: SEND
+    completionPriority: 20
+    showInCompletion: 1

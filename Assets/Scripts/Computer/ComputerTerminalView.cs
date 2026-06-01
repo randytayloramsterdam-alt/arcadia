@@ -66,6 +66,8 @@ public class ComputerTerminalView : MonoBehaviour
     private string cachedInput = "";
     private bool suppressInputTick = false;
     private int previousInputLength = 0;
+    private string completionSuggestion = "";
+    private string completionSuggestionColorHex = "#666666";
 
     public IReadOnlyList<string> TerminalLines => terminalLines;
 
@@ -227,11 +229,28 @@ public class ComputerTerminalView : MonoBehaviour
 
         string prefix = liveInputNeedsLeadingNewline ? "\n" : "";
         string display = prefix + cachedPrompt + " " + cachedInput;
+        if (!string.IsNullOrEmpty(completionSuggestion))
+        {
+            display += "<color=" + completionSuggestionColorHex + ">" + completionSuggestion + "</color>";
+        }
         bool showCursor = showBlinkingCursor ? cursorVisible : true;
         if (showCursor)
             display += cursorSymbol;
 
         liveInputLineText.text = display;
+    }
+
+    public void SetCompletionSuggestion(string suggestion, string colorHex)
+    {
+        completionSuggestion = suggestion ?? "";
+        completionSuggestionColorHex = string.IsNullOrWhiteSpace(colorHex) ? "#666666" : colorHex;
+        RefreshLiveInputLine();
+    }
+
+    public void ClearCompletionSuggestion()
+    {
+        completionSuggestion = "";
+        RefreshLiveInputLine();
     }
 
     public void ClearLiveInputLine()

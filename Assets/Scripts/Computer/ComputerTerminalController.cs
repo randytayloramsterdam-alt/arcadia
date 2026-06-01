@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -25,6 +26,12 @@ public class ComputerTerminalController : MonoBehaviour
 
     [Header("Command Config")]
     public TerminalCommandConfig commandConfig;
+
+    [Header("Tab Completion")]
+    public bool enableTabCompletion = true;
+    public string completionSuggestionColorHex = "#666666";
+
+    private bool tabHeldWithEmptyInput;
 
     [Header("Focus Settings")]
     public bool keepInputFocused = true;
@@ -64,6 +71,20 @@ public class ComputerTerminalController : MonoBehaviour
             bootSequence.OnBootComplete -= OnBootComplete;
     }
 
+    private class CompletionCandidate
+    {
+        public TerminalCommandId commandId;
+        public string alias;
+        public int priority;
+
+        public CompletionCandidate(TerminalCommandId commandId, string alias, int priority)
+        {
+            this.commandId = commandId;
+            this.alias = alias;
+            this.priority = priority;
+        }
+    }
+
     private void Update()
     {
         if (!keepInputFocused || computerUIController == null || !computerUIController.IsOpen)
@@ -72,6 +93,39 @@ public class ComputerTerminalController : MonoBehaviour
             return;
         if (!terminalView.inputField.interactable)
             return;
+
+        if (enableTabCompletion)
+        {
+            string rawInput = terminalView != null ? terminalView.GetInputText() : "";
+
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                if (!string.IsNullOrEmpty(rawInput))
+                    HandleTabComplete();
+            }
+            else
+            {
+                bool tabHeld = Input.GetKey(KeyCode.Tab);
+                bool inputEmpty = string.IsNullOrEmpty(rawInput);
+
+                if (tabHeld && inputEmpty)
+                {
+                    tabHeldWithEmptyInput = true;
+                    string suggestion = GetEmptyInputSuggestion();
+                    terminalView.SetCompletionSuggestion(suggestion, completionSuggestionColorHex);
+                }
+                else if (tabHeldWithEmptyInput && !tabHeld)
+                {
+                    tabHeldWithEmptyInput = false;
+                    terminalView.ClearCompletionSuggestion();
+                }
+
+                if (!tabHeld)
+                {
+                    UpdateCompletionSuggestion(rawInput);
+                }
+            }
+        }
 
         GameObject selected = UnityEngine.EventSystems.EventSystem.current?.currentSelectedGameObject;
         if (selected != terminalView.inputField.gameObject)
@@ -129,6 +183,89 @@ public class ComputerTerminalController : MonoBehaviour
         if (!bootComplete || terminalView == null)
             return;
         terminalView.UpdateLiveInputLine(CurrentPrompt, value);
+        UpdateCompletionSuggestion(value);
+    }
+
+    private void UpdateCompletionSuggestion(string input)
+    {
+        if (!enableTabCompletion)
+        {
+            terminalView.ClearCompletionSuggestion();
+            return;
+        }
+
+        string suggestion = GetCompletionSuggestion(input);
+        terminalView.SetCompletionSuggestion(suggestion, completionSuggestionColorHex);
+    }
+
+    private string GetCompletionSuggestion(string input)
+    {
+        if (string.IsNullOrEmpty(input))
+            return "";
+
+        var matches = GetCompletionMatches(input);
+        if (matches.Count == 0)
+            return "";
+
+        var displayParts = new List<string>();
+        for (int i = 0; i < matches.Count; i++)
+        {
+            string full = ApplyInputCaseStyle(matches[i].alias, input);
+            if (CompletionShouldEndWithSpace(matches[i].alias))
+                full += " ";
+
+            if (full.Length <= input.Length)
+                continue;
+
+            if (i == 0)
+            {
+                displayParts.Add(full.Substring(input.Length));
+            }
+            else
+            {
+                displayParts.Add(full);
+            }
+        }
+
+        if (displayParts.Count == 0)
+            return "";
+
+        return string.Join(" / ", displayParts);
+    }
+
+    private string GetEmptyInputSuggestion()
+    {
+        var candidates = GetCurrentLayerCompletionCandidates(true);
+        if (candidates.Count == 0)
+            return "";
+
+        candidates.Sort((a, b) =>
+        {
+            if (a.priority != b.priority)
+                return a.priority.CompareTo(b.priority);
+            if (a.alias.Length != b.alias.Length)
+                return a.alias.Length.CompareTo(b.alias.Length);
+            return string.Compare(a.alias, b.alias, StringComparison.OrdinalIgnoreCase);
+        });
+
+        var lower = new List<string>();
+        foreach (var c in candidates)
+            lower.Add(c.alias.ToLowerInvariant());
+        return string.Join(" / ", lower);
+    }
+
+    private int GetCommandPriority(string primaryAlias)
+    {
+        if (commandConfig == null)
+            return 100;
+
+        foreach (var entry in commandConfig.commands)
+        {
+            string pa = entry.GetPrimaryAlias();
+            if (string.Equals(pa, primaryAlias, StringComparison.OrdinalIgnoreCase))
+                return entry.completionPriority;
+        }
+        return 100;
     }
 
     private void OnInputSubmitted(string _)
@@ -144,6 +281,7 @@ public class ComputerTerminalController : MonoBehaviour
         string rawInput = terminalView.GetInputText();
         terminalView.ClearInput();
         terminalView.ClearLiveInputLine();
+        terminalView.ClearCompletionSuggestion();
 
         if (string.IsNullOrEmpty(rawInput))
         {
@@ -192,6 +330,7 @@ public class ComputerTerminalController : MonoBehaviour
         {
             ClearLiveInputLeadingBlank();
             terminalView.Clear();
+            terminalView.ClearCompletionSuggestion();
             terminalView.UpdateLiveInputLine(CurrentPrompt, "");
             terminalView.FocusInput();
             return;
@@ -242,6 +381,7 @@ public class ComputerTerminalController : MonoBehaviour
         switch (currentLayer)
         {
             case TerminalLayer.Root:
+                terminalView.ClearCompletionSuggestion();
                 ShowRootMenu();
                 break;
             case TerminalLayer.Mail:
@@ -266,6 +406,7 @@ public class ComputerTerminalController : MonoBehaviour
         currentContactId = "";
         currentMessageId = "";
         terminalView.SetPrompt("ARCADIA:\\>");
+        terminalView.ClearCompletionSuggestion();
         FinishCommandOutput();
     }
 
@@ -275,6 +416,7 @@ public class ComputerTerminalController : MonoBehaviour
         {
             case TerminalLayer.Root:
                 ClearLiveInputLeadingBlank();
+                terminalView.ClearCompletionSuggestion();
                 terminalView.UpdateLiveInputLine(terminalView.currentPrompt, "");
                 terminalView.FocusInput();
                 break;
@@ -285,6 +427,7 @@ public class ComputerTerminalController : MonoBehaviour
                 currentContactId = "";
                 currentMessageId = "";
                 terminalView.SetPrompt("ARCADIA:\\>");
+                terminalView.ClearCompletionSuggestion();
                 FinishCommandOutput();
                 break;
 
@@ -898,5 +1041,171 @@ public class ComputerTerminalController : MonoBehaviour
                 break;
         }
         return 0;
+    }
+
+    private void HandleTabComplete()
+    {
+        if (!enableTabCompletion)
+            return;
+
+        string rawInput = terminalView != null ? terminalView.GetInputText() : "";
+        var matches = GetCompletionMatches(rawInput);
+
+        if (matches.Count == 0)
+            return;
+
+        string completion = matches[0].alias;
+        string styled = ApplyInputCaseStyle(completion, rawInput);
+        if (CompletionShouldEndWithSpace(completion))
+            styled += " ";
+
+        terminalView.ClearInput();
+        terminalView.inputField.text = styled;
+        terminalView.SetCompletionSuggestion("", completionSuggestionColorHex);
+        terminalView.UpdateLiveInputLine(CurrentPrompt, styled);
+        terminalView.FocusInput();
+    }
+
+    private List<CompletionCandidate> GetCompletionMatches(string input)
+    {
+        var candidates = GetCurrentLayerCompletionCandidates(false);
+        if (string.IsNullOrEmpty(input))
+            return new List<CompletionCandidate>();
+
+        var resultMatches = new List<CompletionCandidate>();
+        foreach (var c in candidates)
+        {
+            if (c.alias.StartsWith(input, StringComparison.OrdinalIgnoreCase))
+                resultMatches.Add(c);
+        }
+
+        resultMatches.Sort((a, b) =>
+        {
+            if (a.priority != b.priority)
+                return a.priority.CompareTo(b.priority);
+            if (a.alias.Length != b.alias.Length)
+                return a.alias.Length.CompareTo(b.alias.Length);
+            return string.Compare(a.alias, b.alias, StringComparison.OrdinalIgnoreCase);
+        });
+
+        return resultMatches;
+    }
+
+    private List<CompletionCandidate> GetCurrentLayerCompletionCandidates(bool primaryOnly)
+    {
+        var result = new List<CompletionCandidate>();
+        TerminalCommandId[] ids;
+
+        switch (currentLayer)
+        {
+            case TerminalLayer.Root:
+                ids = new TerminalCommandId[] {
+                    TerminalCommandId.Help, TerminalCommandId.List,
+                    TerminalCommandId.OpenMail, TerminalCommandId.OpenDiary,
+                    TerminalCommandId.Refresh, TerminalCommandId.GoRoot,
+                    TerminalCommandId.Clear, TerminalCommandId.Exit
+                };
+                break;
+            case TerminalLayer.Mail:
+                ids = new TerminalCommandId[] {
+                    TerminalCommandId.Help, TerminalCommandId.List,
+                    TerminalCommandId.OpenItem, TerminalCommandId.Refresh,
+                    TerminalCommandId.GoRoot, TerminalCommandId.Back,
+                    TerminalCommandId.Clear, TerminalCommandId.Exit
+                };
+                break;
+            case TerminalLayer.MailContact:
+                ids = new TerminalCommandId[] {
+                    TerminalCommandId.Help, TerminalCommandId.List,
+                    TerminalCommandId.OpenItem, TerminalCommandId.ReadMessage,
+                    TerminalCommandId.SendMessage, TerminalCommandId.Refresh,
+                    TerminalCommandId.GoRoot, TerminalCommandId.Back,
+                    TerminalCommandId.Clear, TerminalCommandId.Exit
+                };
+                break;
+            case TerminalLayer.MailMessage:
+                ids = new TerminalCommandId[] {
+                    TerminalCommandId.Help, TerminalCommandId.List,
+                    TerminalCommandId.Refresh, TerminalCommandId.GoRoot,
+                    TerminalCommandId.Back, TerminalCommandId.Clear,
+                    TerminalCommandId.Exit
+                };
+                break;
+            case TerminalLayer.Diary:
+                ids = new TerminalCommandId[] {
+                    TerminalCommandId.Help, TerminalCommandId.List,
+                    TerminalCommandId.Refresh, TerminalCommandId.GoRoot,
+                    TerminalCommandId.Back, TerminalCommandId.Clear,
+                    TerminalCommandId.Exit
+                };
+                break;
+            default:
+                return result;
+        }
+
+        var seenAliases = new HashSet<string>();
+
+        foreach (var id in ids)
+        {
+            var entry = commandConfig != null ? commandConfig.GetEntry(id) : null;
+            if (entry == null)
+                continue;
+            if (!entry.showInCompletion)
+                continue;
+
+            List<string> aliasesToUse;
+            if (primaryOnly)
+            {
+                string pa = entry.GetPrimaryAlias();
+                if (string.IsNullOrEmpty(pa))
+                    continue;
+                aliasesToUse = new List<string> { pa };
+            }
+            else
+            {
+                if (entry.aliases == null || entry.aliases.Count == 0)
+                {
+                    string pa = entry.GetPrimaryAlias();
+                    if (!string.IsNullOrEmpty(pa))
+                        aliasesToUse = new List<string> { pa };
+                    else
+                        continue;
+                }
+                else
+                {
+                    aliasesToUse = entry.aliases;
+                }
+            }
+
+            foreach (var a in aliasesToUse)
+            {
+                string upper = a.ToUpperInvariant();
+                if (seenAliases.Contains(upper))
+                    continue;
+                seenAliases.Add(upper);
+                result.Add(new CompletionCandidate(id, upper, entry.completionPriority));
+            }
+        }
+
+        return result;
+    }
+
+    private string ApplyInputCaseStyle(string completion, string input)
+    {
+        if (string.IsNullOrEmpty(input))
+            return completion;
+
+        char first = input[0];
+        if (char.IsLower(first))
+            return completion.ToLowerInvariant();
+        if (char.IsUpper(first))
+            return completion.ToUpperInvariant();
+        return completion;
+    }
+
+    private bool CompletionShouldEndWithSpace(string completion)
+    {
+        string upper = completion.ToUpperInvariant().Trim();
+        return upper == "SEND" || upper == "READ" || upper == "OPEN" || upper == "CD";
     }
 }

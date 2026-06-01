@@ -223,6 +223,8 @@ MonoBehaviour:
   mailNotification: {fileID: 2217479003439508266}
   minAIReplyDelay: 3
   commandConfig: {fileID: 11400000, guid: 5a54f17290b06274c9df7ac4a50b9c2f, type: 2}
+  enableTabCompletion: 1
+  completionSuggestionColorHex: '#666666'
   keepInputFocused: 1
   enableDebugLogs: 0
   rootWelcomeText: "<color=#08FFFF>ARCADIA TERMINAL READY.</color>\n\nAVAILABLE SYSTEMS:\n 

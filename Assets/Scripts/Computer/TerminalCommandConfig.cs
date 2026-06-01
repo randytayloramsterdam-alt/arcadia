@@ -85,84 +85,120 @@ public class TerminalCommandConfig : ScriptableObject
                 commandId = TerminalCommandId.Help,
                 description = "SHOW THIS LIST",
                 aliases = new List<string> { "HELP" },
-                showInHelp = true
+                primaryAlias = "HELP",
+                completionPriority = 80,
+                showInHelp = true,
+                showInCompletion = true
             },
             new TerminalCommandEntry
             {
                 commandId = TerminalCommandId.List,
                 description = "SHOW CURRENT CONTENT",
                 aliases = new List<string> { "DIR", "LIST" },
-                showInHelp = true
+                primaryAlias = "DIR",
+                completionPriority = 30,
+                showInHelp = true,
+                showInCompletion = true
             },
             new TerminalCommandEntry
             {
                 commandId = TerminalCommandId.OpenMail,
                 description = "OPEN MAIL SYSTEM",
                 aliases = new List<string> { "CD MAIL", "MAIL", "OPEN MAIL" },
-                showInHelp = true
+                primaryAlias = "MAIL",
+                completionPriority = 10,
+                showInHelp = true,
+                showInCompletion = true
             },
             new TerminalCommandEntry
             {
                 commandId = TerminalCommandId.OpenDiary,
                 description = "OPEN DIARY SYSTEM",
                 aliases = new List<string> { "CD DIARY", "DIARY", "OPEN DIARY" },
-                showInHelp = true
+                primaryAlias = "DIARY",
+                completionPriority = 20,
+                showInHelp = true,
+                showInCompletion = true
             },
             new TerminalCommandEntry
             {
                 commandId = TerminalCommandId.Back,
                 description = "RETURN TO PREVIOUS LEVEL",
                 aliases = new List<string> { "BACK", "RETURN" },
-                showInHelp = true
+                primaryAlias = "BACK",
+                completionPriority = 50,
+                showInHelp = true,
+                showInCompletion = true
             },
             new TerminalCommandEntry
             {
                 commandId = TerminalCommandId.Clear,
                 description = "CLEAR SCREEN",
                 aliases = new List<string> { "CLEAR", "CLS" },
-                showInHelp = true
+                primaryAlias = "CLEAR",
+                completionPriority = 90,
+                showInHelp = true,
+                showInCompletion = true
             },
             new TerminalCommandEntry
             {
                 commandId = TerminalCommandId.Exit,
                 description = "CLOSE TERMINAL",
                 aliases = new List<string> { "EXIT", "QUIT" },
-                showInHelp = true
+                primaryAlias = "EXIT",
+                completionPriority = 100,
+                showInHelp = true,
+                showInCompletion = true
             },
             new TerminalCommandEntry
             {
                 commandId = TerminalCommandId.Refresh,
                 description = "REFRESH CURRENT VIEW",
                 aliases = new List<string> { "REFRESH", "RELOAD" },
-                showInHelp = true
+                primaryAlias = "REFRESH",
+                completionPriority = 40,
+                showInHelp = true,
+                showInCompletion = true
             },
             new TerminalCommandEntry
             {
                 commandId = TerminalCommandId.GoRoot,
                 description = "RETURN TO ROOT",
                 aliases = new List<string> { "HOME", "ROOT", "MAIN" },
-                showInHelp = true
+                primaryAlias = "HOME",
+                completionPriority = 45,
+                showInHelp = true,
+                showInCompletion = true
             },
             new TerminalCommandEntry
             {
                 commandId = TerminalCommandId.OpenItem,
                 description = "OPEN ITEM",
                 aliases = new List<string> { "CD", "OPEN" },
-                showInHelp = false
+                primaryAlias = "OPEN",
+                completionPriority = 10,
+                showInHelp = false,
+                showInCompletion = true
             },
             new TerminalCommandEntry
             {
                 commandId = TerminalCommandId.ReadMessage,
                 description = "READ MESSAGE",
                 aliases = new List<string> { "READ" },
-                showInHelp = false
+                primaryAlias = "READ",
+                completionPriority = 10,
+                showInHelp = false,
+                showInCompletion = true
             },
             new TerminalCommandEntry
             {
                 commandId = TerminalCommandId.SendMessage,
                 description = "SEND MESSAGE",
                 aliases = new List<string> { "SEND" },
-                showInHelp = false
+                primaryAlias = "SEND",
+                completionPriority = 20,
+                showInHelp = false,
+                showInCompletion = true
             }
         };
     }
@@ -175,4 +211,15 @@ public class TerminalCommandEntry
     public string description;
     public List<string> aliases;
     public bool showInHelp = true;
+
+    public string primaryAlias;
+    public int completionPriority = 100;
+    public bool showInCompletion = true;
+
+    public string GetPrimaryAlias()
+    {
+        if (!string.IsNullOrEmpty(primaryAlias))
+            return primaryAlias;
+        return aliases != null && aliases.Count > 0 ? aliases[0] : "";
+    }
 }
