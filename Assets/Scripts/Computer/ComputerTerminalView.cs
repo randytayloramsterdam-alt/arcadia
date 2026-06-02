@@ -25,7 +25,7 @@ public class ComputerTerminalView : MonoBehaviour
 
     [Header("Inline Input Settings")]
     public bool useInlineInputLine = true;
-    public string cursorSymbol = "█";
+    public string cursorSymbol = "|";
     public bool showBlinkingCursor = true;
     [Range(0.1f, 2f)] public float cursorBlinkInterval = 0.5f;
 
