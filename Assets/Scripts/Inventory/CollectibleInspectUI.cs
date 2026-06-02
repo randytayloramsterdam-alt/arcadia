@@ -14,6 +14,7 @@ public class CollectibleInspectUI : MonoBehaviour
     [Range(0.25f, 0.7f)] public float modelRatio = 0.58f;
 
     [Header("Text Styles")]
+    public Font font;  // null = uses built-in LegacyRuntime.ttf
     public Color titleColor = new Color(0.92f, 0.88f, 0.72f);
     public int titleFontSize = 36;
     public Color descColor = new Color(0.68f, 0.68f, 0.68f);
@@ -111,13 +112,6 @@ public class CollectibleInspectUI : MonoBehaviour
             rig.transform.Rotate(previewCam.transform.right, my, Space.World);
         }
 
-        // Scroll to zoom
-        float scroll = Input.GetAxis("Mouse ScrollWheel");
-        if (Mathf.Abs(scroll) > 0.01f)
-            currentZoom = Mathf.Clamp(currentZoom - scroll * zoomSpeed, minZoom, maxZoom);
-
-        // Keep rig at correct distance
-        rig.transform.position = previewCam.transform.position + previewCam.transform.forward * currentZoom;
     }
 
     void LateUpdate()
@@ -191,7 +185,7 @@ public class CollectibleInspectUI : MonoBehaviour
 
     void BuildUI()
     {
-        Font font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        Font font = this.font != null ? this.font : Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
 
         // ── Canvas ──
         var cgo = new GameObject("CollectibleInspectCanvas");

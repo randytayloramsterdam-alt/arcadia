@@ -616,6 +616,7 @@ MonoBehaviour:
   itemDescription: 
   inspectModelScale: 1
   inspectModelRotation: {x: 0, y: 0, z: 0}
+  inspectSound: {fileID: 0}
   collectSound: {fileID: 0}
 --- !u!64 &135893908
 MeshCollider:
@@ -1228,6 +1229,7 @@ MonoBehaviour:
   itemDescription: 
   inspectModelScale: 1
   inspectModelRotation: {x: 0, y: 0, z: 0}
+  inspectSound: {fileID: 0}
   collectSound: {fileID: 8300000, guid: 537872bc9b6e7d743b52fedcd3954b0b, type: 3}
 --- !u!65 &245670614
 BoxCollider:
@@ -3893,6 +3895,7 @@ MonoBehaviour:
   itemDescription: 
   inspectModelScale: 1
   inspectModelRotation: {x: 0, y: 0, z: 0}
+  inspectSound: {fileID: 0}
   collectSound: {fileID: 0}
 --- !u!65 &1498075351
 BoxCollider:
@@ -4003,14 +4006,15 @@ MonoBehaviour:
   contentWidth: 0.9
   contentHeight: 0.82
   modelRatio: 0.58
+  font: {fileID: 12800000, guid: 370c1e49740143a458858a1a699aa557, type: 3}
   titleColor: {r: 0.92, g: 0.88, b: 0.72, a: 1}
-  titleFontSize: 28
+  titleFontSize: 50
   descColor: {r: 0.68, g: 0.68, b: 0.68, a: 1}
-  descFontSize: 16
+  descFontSize: 30
   dividerColor: {r: 0.35, g: 0.35, b: 0.35, a: 1}
-  dividerHeight: 2
+  dividerHeight: 15
   exitColor: {r: 0.55, g: 0.55, b: 0.55, a: 1}
-  exitFontSize: 18
+  exitFontSize: 50
   referenceHeight: 1080
   rotationSpeed: 5
   zoomSpeed: 2.5
@@ -5506,6 +5510,7 @@ MonoBehaviour:
   itemDescription: "\u6765\u81EA\u963F\u5361\u72C4\u4E9A\u7684\u4FE1\u5F92"
   inspectModelScale: 1
   inspectModelRotation: {x: 0, y: -90, z: 90}
+  inspectSound: {fileID: 0}
   collectSound: {fileID: 8300000, guid: 537872bc9b6e7d743b52fedcd3954b0b, type: 3}
 --- !u!4 &2009633677 stripped
 Transform:
@@ -5701,6 +5706,7 @@ MonoBehaviour:
   itemDescription: "\u5C01\u76AE\u6709\u7740\u5947\u602A\u7684\u8D28\u611F\uFF0C\u6C89\u7538\u7538\u5730\u5F88\u6709\u5206\u91CF\u3002\u91CC\u9762\u7684\u5185\u5BB9\u547C\u4E4B\u6B32\u51FA\u3002"
   inspectModelScale: 5
   inspectModelRotation: {x: -25, y: 155, z: 90}
+  inspectSound: {fileID: 8300000, guid: ad1ca076fb0da574f8132182b35529ff, type: 3}
   collectSound: {fileID: 0}
 --- !u!64 &2084231950
 MeshCollider:
@@ -6107,6 +6113,7 @@ MonoBehaviour:
   itemDescription: "\u4FDD\u62A4\u81EA\u5DF1\u7684\u6218\u4E89\u5236\u54C1\uFF0C\u907F\u514D\u8BA9\u81EA\u5DF1\u91D1\u5C5E\u4E2D\u6BD2"
   inspectModelScale: 1
   inspectModelRotation: {x: -20, y: -30, z: 30}
+  inspectSound: {fileID: 0}
   collectSound: {fileID: 8300000, guid: 537872bc9b6e7d743b52fedcd3954b0b, type: 3}
 --- !u!65 &2125273541
 BoxCollider:

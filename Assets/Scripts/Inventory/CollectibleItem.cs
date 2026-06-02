@@ -12,6 +12,8 @@ public class CollectibleItem : InteractableObject
     [Range(0.1f, 5f)] public float inspectModelScale = 1f;
     [Tooltip("Per-item initial rotation (Euler angles) for the 3D preview. Added to the global initialRotation on CollectibleInspectUI.")]
     public Vector3 inspectModelRotation = Vector3.zero;
+    [Tooltip("Sound played when the item is first picked up for inspection.")]
+    public AudioClip inspectSound;
     public AudioClip collectSound;
 
     private bool isCollected;
@@ -21,7 +23,11 @@ public class CollectibleItem : InteractableObject
         base.OnStartInteract();
 
         if (!isCollected && CollectibleInspectUI.Instance != null)
+        {
+            if (inspectSound != null)
+                AudioSource.PlayClipAtPoint(inspectSound, transform.position);
             CollectibleInspectUI.Instance.Show(this);
+        }
     }
 
     public override void OnStopInteract()
