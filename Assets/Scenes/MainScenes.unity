@@ -3396,6 +3396,7 @@ MonoBehaviour:
   subtitleBgColor: {r: 0, g: 0, b: 0, a: 0.75}
   subtitleTextColor: {r: 1, g: 1, b: 1, a: 1}
   subtitleFontSize: 16
+  subtitleFont: {fileID: 12800000, guid: 370c1e49740143a458858a1a699aa557, type: 3}
 --- !u!1 &1297077545
 GameObject:
   m_ObjectHideFlags: 0

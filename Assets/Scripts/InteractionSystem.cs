@@ -24,6 +24,7 @@ public class InteractionSystem : MonoBehaviour
     public Color subtitleBgColor = new Color(0, 0, 0, 0.75f);
     public Color subtitleTextColor = Color.white;
     public int subtitleFontSize = 16;
+    public Font subtitleFont;                  // null = uses built-in LegacyRuntime.ttf
 
     private Camera cam;
     private FirstPersonController fpsController;
@@ -106,6 +107,7 @@ public class InteractionSystem : MonoBehaviour
         subtitleText = NewText("Text", subtitlePanel, "");
         subtitleText.fontSize = subtitleFontSize;
         subtitleText.color = subtitleTextColor;
+        if (subtitleFont != null) subtitleText.font = subtitleFont;
         subtitleText.alignment = TextAnchor.MiddleCenter;
         var sRect = subtitleText.rectTransform;
         sRect.anchorMin = Vector2.zero;
