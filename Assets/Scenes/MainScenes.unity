@@ -4026,6 +4026,7 @@ MonoBehaviour:
   previewBgColor: {r: 0.12, g: 0.12, b: 0.12, a: 1}
   previewLayer: 25
   initialRotation: {x: 0, y: 0, z: 0}
+  inspectReach: 5
 --- !u!21 &1560833120
 Material:
   serializedVersion: 8
@@ -5502,7 +5503,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   description: A mysterious card with strange markings.
-  showDescription: 0
+  showDescription: 1
   interactDistance: 3
   interactionPoint: {fileID: 0}
   itemData: {fileID: 11400000, guid: 3eab17c9a62a0524eb8e0db78c2998ea, type: 2}
@@ -5698,7 +5699,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   description: "\u5C01\u76AE\u6709\u7740\u5947\u602A\u7684\u8D28\u611F\uFF0C\u6C89\u7538\u7538\u5730\u5F88\u6709\u5206\u91CF\u3002\u91CC\u9762\u7684\u5185\u5BB9\u547C\u4E4B\u6B32\u51FA\u3002"
-  showDescription: 0
+  showDescription: 1
   interactDistance: 3
   interactionPoint: {fileID: 0}
   itemData: {fileID: 0}
@@ -6104,8 +6105,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23033bb66dacd054d8e194a9998552c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  description: 
-  showDescription: 0
+  description: "\u4FDD\u62A4\u81EA\u5DF1\u7684\u6218\u4E89\u5236\u54C1\uFF0C\u907F\u514D\u8BA9\u81EA\u5DF1\u91D1\u5C5E\u4E2D\u6BD2"
+  showDescription: 1
   interactDistance: 3
   interactionPoint: {fileID: 0}
   itemData: {fileID: 11400000, guid: a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d7, type: 2}

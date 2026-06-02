@@ -41,6 +41,8 @@ public class CollectibleInspectUI : MonoBehaviour
     public int previewLayer = 25;                  // reuse existing "Inspect" layer
     [Tooltip("Initial rotation (Euler angles) for the preview model. Per-item inspectModelRotation is added to this.")]
     public Vector3 initialRotation = Vector3.zero;
+    [Tooltip("Max distance for G-key inspect raycast.")]
+    public float inspectReach = 5f;
 
     private Canvas canvas;
     private GameObject panel;
@@ -84,9 +86,33 @@ public class CollectibleInspectUI : MonoBehaviour
 
     void Update()
     {
+        // G key toggle: open or close 3D inspect UI
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            if (!isShowing)
+            {
+                // Open: raycast from camera to find a CollectibleItem
+                if (mainCam != null)
+                {
+                    Ray ray = new Ray(mainCam.transform.position, mainCam.transform.forward);
+                    if (Physics.Raycast(ray, out RaycastHit hit, inspectReach))
+                    {
+                        var item = hit.collider.GetComponentInParent<CollectibleItem>();
+                        if (item != null)
+                            Show(item);
+                    }
+                }
+            }
+            else
+            {
+                Hide();
+                return;
+            }
+        }
+
         if (!isShowing) return;
 
-        // ESC cancels without collecting
+        // ESC also closes the UI
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             Hide();
@@ -111,7 +137,6 @@ public class CollectibleInspectUI : MonoBehaviour
             rig.transform.Rotate(previewCam.transform.up, -mx, Space.World);
             rig.transform.Rotate(previewCam.transform.right, my, Space.World);
         }
-
     }
 
     void LateUpdate()
@@ -174,11 +199,12 @@ public class CollectibleInspectUI : MonoBehaviour
         canvas.gameObject.SetActive(false);
         currentItem = null;
 
-        // Restore FPS-style cursor lock
+        // Restore FPS controls (we bypassed InteractionSystem, so handle it ourselves)
+        if (fpsController != null)
+            fpsController.SetControlEnabled(true);
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-
-        // Controls are restored by InteractionSystem.CleanupInspect
     }
 
     // ── UI Construction ──
@@ -275,7 +301,7 @@ public class CollectibleInspectUI : MonoBehaviour
         drr.offsetMax = Vector2.zero;
 
         // Exit hint (bottom-right of right panel)
-        exitText = NewText("ExitHint", rightPanel, "Press [E] to exit", font, exitFontSize, exitColor);
+        exitText = NewText("ExitHint", rightPanel, "Press [G] to exit", font, exitFontSize, exitColor);
         exitText.alignment = TextAnchor.LowerRight;
         var er = exitText.rectTransform;
         er.anchorMin = new Vector2(0f, 0f);

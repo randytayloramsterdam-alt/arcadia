@@ -22,12 +22,8 @@ public class CollectibleItem : InteractableObject
     {
         base.OnStartInteract();
 
-        if (!isCollected && CollectibleInspectUI.Instance != null)
-        {
-            if (inspectSound != null)
-                AudioSource.PlayClipAtPoint(inspectSound, transform.position);
-            CollectibleInspectUI.Instance.Show(this);
-        }
+        if (!isCollected && inspectSound != null)
+            AudioSource.PlayClipAtPoint(inspectSound, transform.position);
     }
 
     public override void OnStopInteract()
