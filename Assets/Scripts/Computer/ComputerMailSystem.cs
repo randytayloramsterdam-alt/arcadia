@@ -399,9 +399,10 @@ public class ComputerMailSystem : MonoBehaviour
             string lastDate = ComputeContactLastDate(contact.id);
             string name = FitText(contact.name, contactNameWidth);
             string stat = FitText(status, contactStatusWidth);
-            string line = $"[{contact.id}] {name} {stat} LAST: {lastDate}";
+            string line = $"  [{contact.id}] {name} {stat} LAST: {lastDate}";
             if (highlightUnreadContacts && status == "UNREAD")
                 line = Colorize(line, unreadHighlightColorHex);
+            line = $"<link=\"CONTACT:{contact.id}\">{line}</link>";
             sb.AppendLine(line);
         }
 
@@ -423,12 +424,22 @@ public class ComputerMailSystem : MonoBehaviour
             var msg = contact.messages[i];
             string from = FitText(msg.from, messageFromWidth);
             string stat = FitText(msg.status, messageStatusWidth);
-            string headerLine = $"[{msg.id}] {msg.date}    FROM: {from} {stat}";
-            string subjectLine = Spaces(subjectIndentSpaces) + $"SUBJECT: {msg.subject}";
-            string block = headerLine + "\n" + subjectLine;
+            string headerLine = $"  [{msg.id}] {msg.date}    FROM: {from} {stat}";
+            string subjectLine = Spaces(2 + subjectIndentSpaces) + $"SUBJECT: {msg.subject}";
+            string linkId = $"MESSAGE:{contactId}:{msg.id}";
+
             if (highlightUnreadMessages && msg.status == "UNREAD")
-                block = Colorize(block, unreadHighlightColorHex);
-            sb.AppendLine(block);
+            {
+                string coloredHeader = Colorize(headerLine, unreadHighlightColorHex);
+                string coloredSubject = Colorize(subjectLine, unreadHighlightColorHex);
+                sb.AppendLine($"<link=\"{linkId}\">{coloredHeader}</link>");
+                sb.AppendLine($"<link=\"{linkId}\">{coloredSubject}</link>");
+            }
+            else
+            {
+                sb.AppendLine($"<link=\"{linkId}\">{headerLine}</link>");
+                sb.AppendLine($"<link=\"{linkId}\">{subjectLine}</link>");
+            }
 
             if (showBlankLineBetweenMessages && i < contact.messages.Count - 1)
                 sb.AppendLine("");

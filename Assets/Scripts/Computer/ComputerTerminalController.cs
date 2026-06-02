@@ -405,6 +405,16 @@ public class ComputerTerminalController : MonoBehaviour
             return;
 
         string rawInput = terminalView.GetInputText();
+        SubmitCommand(rawInput);
+    }
+
+    public void SubmitShortcutCommand(string command)
+    {
+        SubmitCommand(command);
+    }
+
+    private void SubmitCommand(string rawInput)
+    {
         terminalView.ClearInput();
         terminalView.ClearLiveInputLine();
         terminalView.ClearCompletionSuggestion();
@@ -438,6 +448,90 @@ public class ComputerTerminalController : MonoBehaviour
             sendBody = rawInput.Substring(FindAliasPrefixLength(TerminalCommandId.SendMessage, normalized)).Trim();
 
         ProcessGlobalCommand(verb, arg, normalizedCommand, sendBody);
+    }
+
+    public void HandleTerminalLinkClicked(string linkId)
+    {
+        if (string.IsNullOrEmpty(linkId))
+            return;
+
+        if (linkId.StartsWith("SYSTEM:", StringComparison.OrdinalIgnoreCase))
+        {
+            string systemName = linkId.Substring(7);
+            SubmitShortcutCommand(systemName);
+            return;
+        }
+
+        if (linkId.StartsWith("CONTACT:", StringComparison.OrdinalIgnoreCase))
+        {
+            string contactId = linkId.Substring(8);
+            if (currentLayer != TerminalLayer.Mail)
+                SubmitShortcutCommand("MAIL");
+            SubmitShortcutCommand(contactId);
+            return;
+        }
+
+        if (linkId.StartsWith("MESSAGE:", StringComparison.OrdinalIgnoreCase))
+        {
+            string remaining = linkId.Substring(8);
+            string[] parts = remaining.Split(':');
+            if (parts.Length != 2)
+                return;
+            string contactId = parts[0];
+            string messageId = parts[1];
+
+            if (currentLayer != TerminalLayer.Mail)
+                SubmitShortcutCommand("MAIL");
+            if (currentLayer != TerminalLayer.MailContact || currentContactId != contactId)
+                SubmitShortcutCommand(contactId);
+            SubmitShortcutCommand(messageId);
+            return;
+        }
+
+        BadCommand();
+    }
+
+    public Color GetHoverColorForLink(string linkId, Color normalColor, Color unreadColor)
+    {
+        if (string.IsNullOrEmpty(linkId))
+            return normalColor;
+
+        if (linkId.StartsWith("SYSTEM:", StringComparison.OrdinalIgnoreCase))
+        {
+            return normalColor;
+        }
+
+        if (linkId.StartsWith("CONTACT:", StringComparison.OrdinalIgnoreCase))
+        {
+            string contactId = linkId.Substring(8);
+            if (mailSystem != null)
+            {
+                string status = mailSystem.ComputeContactStatus(contactId);
+                if (status == "UNREAD")
+                    return unreadColor;
+            }
+            return normalColor;
+        }
+
+        if (linkId.StartsWith("MESSAGE:", StringComparison.OrdinalIgnoreCase))
+        {
+            string remaining = linkId.Substring(8);
+            string[] parts = remaining.Split(':');
+            if (parts.Length != 2)
+                return normalColor;
+            string contactId = parts[0];
+            string messageId = parts[1];
+
+            if (mailSystem != null)
+            {
+                var msg = mailSystem.GetMessage(contactId, messageId);
+                if (msg != null && msg.status == "UNREAD")
+                    return unreadColor;
+            }
+            return normalColor;
+        }
+
+        return normalColor;
     }
 
     private void ProcessGlobalCommand(string verb, string arg, string normalizedCommand, string sendBody = "")
@@ -993,8 +1087,8 @@ public class ComputerTerminalController : MonoBehaviour
     {
         terminalView.AppendLine("AVAILABLE SYSTEMS:");
         terminalView.AppendLine("");
-        terminalView.AppendLine("  MAIL      SYS");
-        terminalView.AppendLine("  DIARY     SYS");
+        terminalView.AppendLine("<link=\"SYSTEM:MAIL\">  MAIL      SYS</link>");
+        terminalView.AppendLine("<link=\"SYSTEM:DIARY\">  DIARY     SYS</link>");
         FinishCommandOutput();
     }
 
