@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -79,16 +80,20 @@ public class ComputerTerminalLinkHandler : MonoBehaviour, IPointerClickHandler
 
     private int FindAnchorLinkIndex(string linkId, int currentLinkIndex)
     {
-        if (targetText == null || targetText.textInfo == null)
+        if (string.IsNullOrEmpty(linkId))
             return currentLinkIndex;
 
-        var linkInfos = targetText.textInfo.linkInfo;
-        int linkCount = targetText.textInfo.linkCount;
-        for (int i = 0; i < linkCount; i++)
+        if (!linkId.StartsWith("MESSAGE:", StringComparison.OrdinalIgnoreCase))
+            return currentLinkIndex;
+
+        int previousIndex = currentLinkIndex - 1;
+        if (previousIndex >= 0 && previousIndex < targetText.textInfo.linkCount)
         {
-            if (linkInfos[i].GetLinkID() == linkId)
-                return i;
+            var previousLink = targetText.textInfo.linkInfo[previousIndex];
+            if (previousLink.GetLinkID() == linkId)
+                return previousIndex;
         }
+
         return currentLinkIndex;
     }
 
