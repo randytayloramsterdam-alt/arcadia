@@ -2331,14 +2331,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4364257883094981511, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
-      propertyPath: rootWelcomeText
-      value: "<color=#08FFFF>ARCADIA TERMINAL READY.</color>\r\n\r\nAVAILABLE SYSTEMS:\r\n<link=\"SYSTEM:MAIL\"> 
-        <color=#08FFFF>MAIL      SYS</color></link>\r\n<link=\"SYSTEM:DIARY\">  <color=#08FFFF>DIARY    
-        SYS</color></link>\r\n\r\nINTERFACE READY.\r\n\r\nSELECT ENTRY WITH <color=#08FFFF>POINTER</color>\r\nUSE
-        <color=#08FFFF>TAB</color> FOR INPUT COMPLETION\r\nTYPE <color=#08FFFF>HELP</color>
-        FOR COMMAND LIST.\r"
-      objectReference: {fileID: 0}
     - target: {fileID: 4670098085902529221, guid: 7cc6a183f8a2e7d4595606bf73cc320a, type: 3}
       propertyPath: m_Name
       value: Computer_And_UI

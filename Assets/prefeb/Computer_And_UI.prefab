@@ -16,6 +16,8 @@ GameObject:
   - component: {fileID: 4364257883094981511}
   - component: {fileID: 8579560852390436288}
   - component: {fileID: 3334190553918773800}
+  - component: {fileID: 271201720393552488}
+  - component: {fileID: 8791025405875059609}
   m_Layer: 5
   m_Name: ComputerPanel
   m_TagString: Untagged
@@ -178,7 +180,7 @@ MonoBehaviour:
   autoScrollToBottom: 1
   smoothAutoScroll: 1
   forceInstantScrollSameFrame: 0
-  autoScrollSpeed: 40
+  autoScrollSpeed: 45
   mouseWheelScrollSensitivity: 40
   useInlineInputLine: 1
   cursorSymbol: "\u2588"
@@ -227,23 +229,11 @@ MonoBehaviour:
   completionSuggestionColorHex: '#666666'
   keepInputFocused: 1
   enableDebugLogs: 0
-  rootWelcomeText: '<color=#08FFFF>ARCADIA TERMINAL READY.</color>
-
-    
-
-    AVAILABLE
-    SYSTEMS:
-
-    
-
-    <link="SYSTEM:MAIL">  MAIL      SYS</link>
-
-    <link="SYSTEM:DIARY"> 
-    DIARY     SYS</link>
-
-    
-
-    TYPE HELP FOR COMMAND LIST.'
+  rootWelcomeText: "<color=#08FFFF>ARCADIA TERMINAL READY.</color>\r\n\r\nAVAILABLE
+    SYSTEMS:\r\n<link=\"SYSTEM:MAIL\">  <color=#08FFFF>MAIL      SYS</color></link>\r\n<link=\"SYSTEM:DIARY\"> 
+    <color=#08FFFF>DIARY     SYS</color></link>\r\n\r\nINTERFACE READY.\r\n\r\nSELECT
+    ENTRY WITH <color=#08FFFF>POINTER</color>\r\nUSE <color=#08FFFF>TAB</color> FOR
+    INPUT COMPLETION\r\nTYPE <color=#08FFFF>HELP</color> FOR COMMAND LIST.\r"
 --- !u!114 &8579560852390436288
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -289,7 +279,7 @@ MonoBehaviour:
   typeTickClip: {fileID: 8300000, guid: 75d94bb76bfe6db478fcea37067dfdb0, type: 3}
   humLoopClip: {fileID: 8300000, guid: 303c6a13ec72a294c975598438e14830, type: 3}
   bootVolume: 0.7
-  humVolume: 0.16
+  humVolume: 0.24
   enableSystemTypeTick: 1
   systemTypeVolume: 0.04
   systemTypeEveryNVisibleCharacters: 6
@@ -303,6 +293,36 @@ MonoBehaviour:
   playerInputPitchRange: {x: 0.92, y: 1.08}
   enableHum: 1
   humFadeDuration: 0.4
+  enableDebugLogs: 0
+--- !u!225 &271201720393552488
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 581581012374290135}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &8791025405875059609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 581581012374290135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7961e01fd9621a84aa9c2492b0b31b9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetCanvasGroup: {fileID: 271201720393552488}
+  fadeInDuration: 0.18
+  fadeOutDuration: 0.12
+  useUnscaledTime: 1
+  startHidden: 1
   enableDebugLogs: 0
 --- !u!1 &1364295231636429936
 GameObject:
@@ -2139,6 +2159,9 @@ MonoBehaviour:
   openSound: {fileID: 0}
   closeSound: {fileID: 0}
   terminalAudio: {fileID: 3334190553918773800}
+  fadeController: {fileID: 8791025405875059609}
+  useFadeIn: 1
+  useFadeOut: 0
 --- !u!1 &6846150420929783192
 GameObject:
   m_ObjectHideFlags: 0

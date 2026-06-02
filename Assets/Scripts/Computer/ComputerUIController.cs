@@ -15,6 +15,11 @@ public class ComputerUIController : MonoBehaviour
     public AudioClip closeSound;
     public ComputerTerminalAudio terminalAudio;
 
+    [Header("Fade")]
+    public ComputerUIFadeController fadeController;
+    public bool useFadeIn = true;
+    public bool useFadeOut = false;
+
     private AudioSource uiAudioSource;
     private bool isOpen;
 
@@ -40,6 +45,9 @@ public class ComputerUIController : MonoBehaviour
 
         if (computerUICanvas != null)
             computerUICanvas.SetActive(false);
+
+        if (useFadeIn && fadeController != null)
+            fadeController.HideInstant();
     }
 
     void Update()
@@ -59,20 +67,52 @@ public class ComputerUIController : MonoBehaviour
         PlaySound(openSound);
         if (terminalAudio != null)
             terminalAudio.StartHum();
+
+        if (useFadeIn && fadeController != null)
+        {
+            fadeController.HideInstant();
+            fadeController.FadeIn(null);
+        }
+        else
+        {
+            if (fadeController != null)
+                fadeController.ShowInstant();
+        }
     }
 
     public void Close()
     {
         if (!isOpen) return;
+        if (useFadeOut && fadeController != null && fadeController.IsFading)
+            return;
+
         isOpen = false;
-        if (computerUICanvas != null)
-            computerUICanvas.SetActive(false);
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-        PlaySound(closeSound);
+
         if (terminalAudio != null)
             terminalAudio.StopHum();
-        OnClose?.Invoke();
+        PlaySound(closeSound);
+
+        if (useFadeOut && fadeController != null)
+        {
+            fadeController.FadeOut(() =>
+            {
+                if (computerUICanvas != null)
+                    computerUICanvas.SetActive(false);
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+                OnClose?.Invoke();
+            });
+        }
+        else
+        {
+            if (fadeController != null)
+                fadeController.HideInstant();
+            if (computerUICanvas != null)
+                computerUICanvas.SetActive(false);
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            OnClose?.Invoke();
+        }
     }
 
     void PlaySound(AudioClip clip)
