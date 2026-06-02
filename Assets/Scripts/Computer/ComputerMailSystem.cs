@@ -387,6 +387,21 @@ public class ComputerMailSystem : MonoBehaviour
         return $"<color={colorHex}>{text}</color>";
     }
 
+    private string ColorizeWithCyanGlow(string text, string colorHex)
+    {
+        if (!useRichTextHighlight)
+            return text;
+        if (string.IsNullOrWhiteSpace(colorHex))
+            return text;
+
+        bool isCyan = colorHex.Equals("#08FFFF", StringComparison.OrdinalIgnoreCase)
+                   || colorHex.Equals("#08ffff", StringComparison.OrdinalIgnoreCase);
+
+        if (isCyan)
+            return $"<color={colorHex}>{text}</color>";
+        return $"<color={colorHex}>{text}</color>";
+    }
+
     public string RenderContactList()
     {
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
@@ -401,7 +416,7 @@ public class ComputerMailSystem : MonoBehaviour
             string stat = FitText(status, contactStatusWidth);
             string line = $"  [{contact.id}] {name} {stat} LAST: {lastDate}";
             if (highlightUnreadContacts && status == "UNREAD")
-                line = Colorize(line, unreadHighlightColorHex);
+                line = ColorizeWithCyanGlow(line, unreadHighlightColorHex);
             line = $"<link=\"CONTACT:{contact.id}\">{line}</link>";
             sb.AppendLine(line);
         }
@@ -430,8 +445,8 @@ public class ComputerMailSystem : MonoBehaviour
 
             if (highlightUnreadMessages && msg.status == "UNREAD")
             {
-                string coloredHeader = Colorize(headerLine, unreadHighlightColorHex);
-                string coloredSubject = Colorize(subjectLine, unreadHighlightColorHex);
+                string coloredHeader = ColorizeWithCyanGlow(headerLine, unreadHighlightColorHex);
+                string coloredSubject = ColorizeWithCyanGlow(subjectLine, unreadHighlightColorHex);
                 sb.AppendLine($"<link=\"{linkId}\">{coloredHeader}</link>");
                 sb.AppendLine($"<link=\"{linkId}\">{coloredSubject}</link>");
             }

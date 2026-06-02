@@ -58,7 +58,6 @@ public class ComputerTerminalController : MonoBehaviour
     private bool mailInitialized = false;
     private string currentContactId = "";
     private string currentMessageId = "";
-    private bool suppressNextLeadingBlankAppend = false;
 
     private void OnEnable()
     {
@@ -432,11 +431,8 @@ public class ComputerTerminalController : MonoBehaviour
 
         if (terminalView.LiveInputHasLeadingBlankLine())
         {
-            if (!suppressNextLeadingBlankAppend)
-                terminalView.AppendLine("");
-
+            terminalView.AppendLine("");
             terminalView.SetLiveInputLeadingBlankLine(false);
-            suppressNextLeadingBlankAppend = false;
         }
 
         terminalView.AppendLine(displayLine);
@@ -1113,7 +1109,6 @@ public class ComputerTerminalController : MonoBehaviour
             terminalView.AppendLine(line);
 
         terminalView.SetLiveInputLeadingBlankLine(true);
-        suppressNextLeadingBlankAppend = true;
         terminalView.UpdateLiveInputLine(terminalView.currentPrompt, "");
         terminalView.FocusInput();
     }

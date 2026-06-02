@@ -52,6 +52,18 @@ public class ComputerTerminalView : MonoBehaviour
     [Range(-50f, 200f)] public float terminalCharacterSpacing = 0f;
     public Image[] backgroundImages;
 
+    [Header("Font Settings")]
+    [Tooltip("If true, ApplyVisualStyle() will set font asset from terminalFont field. Turn off to preserve runtime glow materials.")]
+    public bool applyFontAssetFromScript = true;
+
+    [Header("Cyan Glow Overlay")]
+    [Tooltip("DEPRECATED - Cyan overlay is no longer used. Glow is now unified. Set enableCyanGlowOverlay=false to disable.")]
+    public TMP_Text cyanGlowOutputText;
+    public TMP_Text cyanGlowLiveInputText;
+    [Tooltip("Set to false to disable the obsolete cyan overlay layer.")]
+    public bool enableCyanGlowOverlay = false;
+    public string cyanColorHex = "#08FFFF";
+
     [Header("Debug")]
     public bool enableDebugLogs = false;
 
@@ -176,7 +188,8 @@ public class ComputerTerminalView : MonoBehaviour
     {
         if (outputText != null)
         {
-            outputText.font = terminalFont;
+            if (applyFontAssetFromScript && terminalFont != null)
+                outputText.font = terminalFont;
             outputText.fontSize = terminalFontSize;
             outputText.color = terminalTextColor;
             outputText.lineSpacing = terminalLineSpacing;
@@ -186,7 +199,8 @@ public class ComputerTerminalView : MonoBehaviour
 
         if (liveInputLineText != null)
         {
-            liveInputLineText.font = terminalFont;
+            if (applyFontAssetFromScript && terminalFont != null)
+                liveInputLineText.font = terminalFont;
             liveInputLineText.fontSize = terminalFontSize;
             liveInputLineText.color = liveInputTextColor;
             liveInputLineText.lineSpacing = terminalLineSpacing;
@@ -202,6 +216,14 @@ public class ComputerTerminalView : MonoBehaviour
                     img.color = terminalBackgroundColor;
             }
         }
+    }
+
+    public string CyanHighlight(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return "";
+
+        return $"<color={cyanColorHex}>{text}</color>";
     }
 
     public void UpdateLiveInputLine(string prompt, string input)
@@ -254,6 +276,9 @@ public class ComputerTerminalView : MonoBehaviour
             display += cursorSymbol;
 
         liveInputLineText.text = display;
+
+        if (enableCyanGlowOverlay && cyanGlowLiveInputText != null)
+            cyanGlowLiveInputText.text = BuildCyanOnlyText(display);
     }
 
     public void SetLiveInputRichBodyOverride(string richBody)
@@ -336,6 +361,9 @@ public class ComputerTerminalView : MonoBehaviour
         if (outputText == null)
             return;
         outputText.text = string.Join(Environment.NewLine, terminalLines);
+
+        if (enableCyanGlowOverlay && cyanGlowOutputText != null)
+            cyanGlowOutputText.text = BuildCyanOnlyText(outputText.text);
 
         if (!autoScrollToBottom || terminalScrollRect == null)
             return;
@@ -560,5 +588,61 @@ public class ComputerTerminalView : MonoBehaviour
         int overflow = terminalLines.Count - maxTerminalLines;
         if (overflow > 0)
             terminalLines.RemoveRange(0, overflow);
+    }
+
+    private bool IsCyanColorTag(string tag)
+    {
+        if (string.IsNullOrEmpty(tag))
+            return false;
+        string lower = tag.ToLowerInvariant();
+        return lower.Contains("#08ffff");
+    }
+
+    public string BuildCyanOnlyText(string source)
+    {
+        if (string.IsNullOrEmpty(source))
+            return "";
+
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        bool inCyan = false;
+        int i = 0;
+
+        while (i < source.Length)
+        {
+            if (source[i] == '<')
+            {
+                int close = source.IndexOf('>', i);
+                if (close >= 0)
+                {
+                    string tag = source.Substring(i, close - i + 1);
+
+                    if (IsCyanColorTag(tag))
+                    {
+                        inCyan = true;
+                    }
+                    else if (tag.Equals("</color>", StringComparison.OrdinalIgnoreCase))
+                    {
+                        inCyan = false;
+                    }
+                    // link tags and other tags are silently ignored
+
+                    i = close + 1;
+                    continue;
+                }
+            }
+
+            if (inCyan)
+            {
+                sb.Append(source[i]);
+            }
+            else
+            {
+                sb.Append(' ');
+            }
+
+            i++;
+        }
+
+        return sb.ToString();
     }
 }

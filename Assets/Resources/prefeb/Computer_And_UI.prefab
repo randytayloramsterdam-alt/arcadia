@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 3334190553918773800}
   - component: {fileID: 271201720393552488}
   - component: {fileID: 8791025405875059609}
+  - component: {fileID: 2623506047767438388}
   m_Layer: 5
   m_Name: ComputerPanel
   m_TagString: Untagged
@@ -187,7 +188,7 @@ MonoBehaviour:
   showBlinkingCursor: 1
   cursorBlinkInterval: 0.5
   hideInputFieldVisuals: 1
-  addBlankLineBeforeLiveInput: 0
+  addBlankLineBeforeLiveInput: 1
   currentPrompt: ARCADIA:\>
   maxTerminalLines: 80
   typeCharDelay: 0.012
@@ -203,6 +204,11 @@ MonoBehaviour:
   - {fileID: 4246690370803259690}
   - {fileID: 5215769506025642374}
   - {fileID: 2736163919283579285}
+  applyFontAssetFromScript: 1
+  cyanGlowOutputText: {fileID: 0}
+  cyanGlowLiveInputText: {fileID: 0}
+  enableCyanGlowOverlay: 0
+  cyanColorHex: '#08FFFF'
   enableDebugLogs: 0
   terminalAudio: {fileID: 3334190553918773800}
 --- !u!114 &4364257883094981511
@@ -230,10 +236,10 @@ MonoBehaviour:
   keepInputFocused: 1
   enableDebugLogs: 0
   rootWelcomeText: "<color=#08FFFF>ARCADIA TERMINAL READY.</color>\r\n\r\nAVAILABLE
-    SYSTEMS:\r\n<link=\"SYSTEM:MAIL\">  <color=#08FFFF>MAIL      SYS</color></link>\r\n<link=\"SYSTEM:DIARY\"> 
-    <color=#08FFFF>DIARY     SYS</color></link>\r\n\r\nINTERFACE READY.\r\n\r\nSELECT
-    ENTRY WITH <color=#08FFFF>POINTER</color>\r\nUSE <color=#08FFFF>TAB</color> FOR
-    INPUT COMPLETION\r\nTYPE <color=#08FFFF>HELP</color> FOR COMMAND LIST.\r"
+    SYSTEMS:\r\n<link=\"SYSTEM:MAIL\">  MAIL      SYS</link>\r\n<link=\"SYSTEM:DIARY\"> 
+    DIARY     SYS</link>\r\n\r\nINTERFACE READY.\r\n\r\n  SELECT ENTRY WITH <color=#08FFFF>POINTER</color>\r\n 
+    USE <color=#08FFFF>TAB</color> FOR INPUT COMPLETION\r\n  TYPE <color=#08FFFF>HELP</color>
+    FOR COMMAND LIST."
 --- !u!114 &8579560852390436288
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -323,6 +329,37 @@ MonoBehaviour:
   fadeOutDuration: 0.12
   useUnscaledTime: 1
   startHidden: 1
+  enableDebugLogs: 0
+--- !u!114 &2623506047767438388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 581581012374290135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6cd24d39f4315d74bac846f45c6d5e63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetTexts:
+  - {fileID: 5911394051237721892}
+  - {fileID: 74958316026948751}
+  - {fileID: 6067159981222956815}
+  enableDynamicGlow: 1
+  glowColor: {r: 0.77254903, g: 0.7764706, b: 0.77254903, a: 1}
+  baseGlowPower: 0.18
+  glowPowerAmplitude: 0.08
+  glowPulseSpeed: 0.7
+  baseGlowOuter: 0.32
+  glowOuterAmplitude: 0.04
+  glowOuterPulseSpeed: 0.8
+  glowInner: 0.03
+  glowOffset: 0
+  enableRandomFlicker: 1
+  randomFlickerAmount: 0.06
+  randomFlickerSpeed: 6
+  useUnscaledTime: 1
   enableDebugLogs: 0
 --- !u!1 &1364295231636429936
 GameObject:
@@ -526,8 +563,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: '>'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 99eb0a852bfd194409be182df9a26b63, type: 2}
+  m_sharedMaterial: {fileID: 5185673663662245480, guid: 99eb0a852bfd194409be182df9a26b63, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -957,7 +994,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.00018310547}
+  m_AnchoredPosition: {x: 0, y: 0.000061035156}
   m_SizeDelta: {x: -673.83, y: 133.16}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &6180837482018893550
@@ -3088,7 +3125,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1070481361040878046
 RectTransform:
   m_ObjectHideFlags: 0
