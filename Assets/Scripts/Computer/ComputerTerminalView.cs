@@ -47,7 +47,7 @@ public class ComputerTerminalView : MonoBehaviour
     public Color accentColor = new Color(0.03f, 1f, 1f, 1f);
     public Color terminalBackgroundColor = Color.black;
     public TMP_FontAsset terminalFont;
-    [Range(12f, 32f)] public float terminalFontSize = 20f;
+    [Range(12f, 40f)] public float terminalFontSize = 20f;
     [Range(-20f, 20f)] public float terminalLineSpacing = -8f;
     [Range(-50f, 200f)] public float terminalCharacterSpacing = 0f;
     public Image[] backgroundImages;
