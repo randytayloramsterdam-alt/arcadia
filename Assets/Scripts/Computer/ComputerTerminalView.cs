@@ -25,20 +25,50 @@ public class ComputerTerminalView : MonoBehaviour
 
     [Header("Inline Input Settings")]
     public bool useInlineInputLine = true;
-    public string cursorSymbol = "|";
+    public string cursorSymbol = "█";
     public bool showBlinkingCursor = true;
     [Range(0.1f, 2f)] public float cursorBlinkInterval = 0.5f;
 
     [Header("Input Field Visuals")]
     public bool hideInputFieldVisuals = true;
 
+    [Header("Live Input Style")]
+    public bool addBlankLineBeforeLiveInput = false;
+    private bool liveInputNeedsLeadingNewline = false;
+
     [Header("Terminal Settings")]
     public string currentPrompt = "ARCADIA:\\>";
     [Range(10, 200)] public int maxTerminalLines = 80;
     [Range(0.001f, 0.1f)] public float typeCharDelay = 0.012f;
 
+    [Header("Visual Style")]
+    public Color terminalTextColor = new Color(0.77f, 0.78f, 0.77f, 1f);
+    public Color liveInputTextColor = new Color(0.77f, 0.78f, 0.77f, 1f);
+    public Color accentColor = new Color(0.03f, 1f, 1f, 1f);
+    public Color terminalBackgroundColor = Color.black;
+    public TMP_FontAsset terminalFont;
+    [Range(12f, 40f)] public float terminalFontSize = 20f;
+    [Range(-20f, 20f)] public float terminalLineSpacing = -8f;
+    [Range(-50f, 200f)] public float terminalCharacterSpacing = 0f;
+    public Image[] backgroundImages;
+
+    [Header("Font Settings")]
+    [Tooltip("If true, ApplyVisualStyle() will set font asset from terminalFont field. Turn off to preserve runtime glow materials.")]
+    public bool applyFontAssetFromScript = true;
+
+    [Header("Cyan Glow Overlay")]
+    [Tooltip("DEPRECATED - Cyan overlay is no longer used. Glow is now unified. Set enableCyanGlowOverlay=false to disable.")]
+    public TMP_Text cyanGlowOutputText;
+    public TMP_Text cyanGlowLiveInputText;
+    [Tooltip("Set to false to disable the obsolete cyan overlay layer.")]
+    public bool enableCyanGlowOverlay = false;
+    public string cyanColorHex = "#08FFFF";
+
     [Header("Debug")]
     public bool enableDebugLogs = false;
+
+    [Header("Audio")]
+    public ComputerTerminalAudio terminalAudio;
 
     private readonly List<string> terminalLines = new List<string>();
     private Coroutine scrollRoutine;
@@ -46,6 +76,13 @@ public class ComputerTerminalView : MonoBehaviour
     private float cursorBlinkTimer;
     private string cachedPrompt = "";
     private string cachedInput = "";
+    private bool suppressInputTick = false;
+    private int previousInputLength = 0;
+    private string completionSuggestion = "";
+    private string completionSuggestionColorHex = "#666666";
+    private string preInputSuggestion = "";
+    private string postInputSuggestion = "";
+    private string liveInputRichBodyOverride = "";
 
     public IReadOnlyList<string> TerminalLines => terminalLines;
 
@@ -54,6 +91,37 @@ public class ComputerTerminalView : MonoBehaviour
         ApplyScrollSettings();
         if (hideInputFieldVisuals)
             ApplyHiddenInputFieldVisuals();
+    }
+
+    private void Start()
+    {
+        if (inputField != null)
+        {
+            inputField.onValueChanged.RemoveListener(OnInputValueChangedAudio);
+            inputField.onValueChanged.AddListener(OnInputValueChangedAudio);
+        }
+    }
+
+    private void OnInputValueChangedAudio(string newText)
+    {
+        if (terminalAudio == null)
+            return;
+        if (suppressInputTick)
+            return;
+        if (newText.Length > previousInputLength)
+            terminalAudio.PlayInputKeyTick();
+        previousInputLength = newText.Length;
+    }
+
+    public void SetSuppressInputTick(bool suppress)
+    {
+        suppressInputTick = suppress;
+    }
+
+    public void ResetTypeTickCounter()
+    {
+        if (terminalAudio != null)
+            terminalAudio.ResetTypeTickCounter();
     }
 
     private void OnEnable()
@@ -116,6 +184,48 @@ public class ComputerTerminalView : MonoBehaviour
             liveInputLineText.gameObject.SetActive(visible);
     }
 
+    public void ApplyVisualStyle()
+    {
+        if (outputText != null)
+        {
+            if (applyFontAssetFromScript && terminalFont != null)
+                outputText.font = terminalFont;
+            outputText.fontSize = terminalFontSize;
+            outputText.color = terminalTextColor;
+            outputText.lineSpacing = terminalLineSpacing;
+            outputText.characterSpacing = terminalCharacterSpacing;
+            outputText.richText = true;
+        }
+
+        if (liveInputLineText != null)
+        {
+            if (applyFontAssetFromScript && terminalFont != null)
+                liveInputLineText.font = terminalFont;
+            liveInputLineText.fontSize = terminalFontSize;
+            liveInputLineText.color = liveInputTextColor;
+            liveInputLineText.lineSpacing = terminalLineSpacing;
+            liveInputLineText.characterSpacing = terminalCharacterSpacing;
+            liveInputLineText.richText = true;
+        }
+
+        if (backgroundImages != null)
+        {
+            foreach (var img in backgroundImages)
+            {
+                if (img != null)
+                    img.color = terminalBackgroundColor;
+            }
+        }
+    }
+
+    public string CyanHighlight(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return "";
+
+        return $"<color={cyanColorHex}>{text}</color>";
+    }
+
     public void UpdateLiveInputLine(string prompt, string input)
     {
         if (!useInlineInputLine || liveInputLineText == null)
@@ -127,17 +237,86 @@ public class ComputerTerminalView : MonoBehaviour
         RefreshLiveInputLine();
     }
 
+    public void SetLiveInputLeadingBlankLine(bool enabled)
+    {
+        liveInputNeedsLeadingNewline = enabled;
+    }
+
+    public bool LiveInputHasLeadingBlankLine()
+    {
+        return liveInputNeedsLeadingNewline;
+    }
+
     private void RefreshLiveInputLine()
     {
         if (liveInputLineText == null || !useInlineInputLine)
             return;
 
-        string display = cachedPrompt + " " + cachedInput;
+        string prefix = liveInputNeedsLeadingNewline ? "\n" : "";
+
+        string display = prefix + cachedPrompt + " ";
+
+        if (!string.IsNullOrEmpty(liveInputRichBodyOverride))
+        {
+            display += liveInputRichBodyOverride;
+        }
+        else
+        {
+            if (!string.IsNullOrEmpty(preInputSuggestion))
+                display += "<color=" + completionSuggestionColorHex + ">" + preInputSuggestion + "</color>";
+
+            display += cachedInput;
+
+            if (!string.IsNullOrEmpty(postInputSuggestion))
+                display += "<color=" + completionSuggestionColorHex + ">" + postInputSuggestion + "</color>";
+        }
+
         bool showCursor = showBlinkingCursor ? cursorVisible : true;
         if (showCursor)
             display += cursorSymbol;
 
         liveInputLineText.text = display;
+
+        if (enableCyanGlowOverlay && cyanGlowLiveInputText != null)
+            cyanGlowLiveInputText.text = BuildCyanOnlyText(display);
+    }
+
+    public void SetLiveInputRichBodyOverride(string richBody)
+    {
+        liveInputRichBodyOverride = richBody ?? "";
+        RefreshLiveInputLine();
+    }
+
+    public void ClearLiveInputRichBodyOverride()
+    {
+        liveInputRichBodyOverride = "";
+    }
+
+    public void SetCompletionSuggestion(string suggestion, string colorHex)
+    {
+        preInputSuggestion = "";
+        postInputSuggestion = suggestion ?? "";
+        completionSuggestion = suggestion ?? "";
+        completionSuggestionColorHex = string.IsNullOrWhiteSpace(colorHex) ? "#666666" : colorHex;
+        RefreshLiveInputLine();
+    }
+
+    public void SetCompletionSuggestionParts(string preSuggestion, string postSuggestion, string colorHex)
+    {
+        preInputSuggestion = preSuggestion ?? "";
+        postInputSuggestion = postSuggestion ?? "";
+        completionSuggestion = preSuggestion + postSuggestion;
+        completionSuggestionColorHex = string.IsNullOrWhiteSpace(colorHex) ? "#666666" : colorHex;
+        RefreshLiveInputLine();
+    }
+
+    public void ClearCompletionSuggestion()
+    {
+        completionSuggestion = "";
+        preInputSuggestion = "";
+        postInputSuggestion = "";
+        liveInputRichBodyOverride = "";
+        RefreshLiveInputLine();
     }
 
     public void ClearLiveInputLine()
@@ -182,6 +361,9 @@ public class ComputerTerminalView : MonoBehaviour
         if (outputText == null)
             return;
         outputText.text = string.Join(Environment.NewLine, terminalLines);
+
+        if (enableCyanGlowOverlay && cyanGlowOutputText != null)
+            cyanGlowOutputText.text = BuildCyanOnlyText(outputText.text);
 
         if (!autoScrollToBottom || terminalScrollRect == null)
             return;
@@ -336,14 +518,52 @@ public class ComputerTerminalView : MonoBehaviour
             yield break;
         }
 
+        if (line.IndexOf('<') < 0)
+        {
+            terminalLines.Add("");
+            TrimLines();
+            for (int i = 0; i < line.Length; i++)
+            {
+                terminalLines[terminalLines.Count - 1] += line[i];
+                Refresh();
+                if (terminalAudio != null)
+                    terminalAudio.NotifyVisibleCharacter();
+                yield return new WaitForSecondsRealtime(charDelay);
+            }
+        }
+        else
+        {
+            yield return TypeLineRichText(line, charDelay);
+        }
+    }
+
+    private IEnumerator TypeLineRichText(string line, float charDelay)
+    {
         terminalLines.Add("");
         TrimLines();
 
-        for (int i = 0; i < line.Length; i++)
+        int i = 0;
+        while (i < line.Length)
         {
+            if (line[i] == '<')
+            {
+                int close = line.IndexOf('>', i);
+                if (close >= 0)
+                {
+                    string tag = line.Substring(i, close - i + 1);
+                    terminalLines[terminalLines.Count - 1] += tag;
+                    i = close + 1;
+                    Refresh();
+                    continue;
+                }
+            }
+
             terminalLines[terminalLines.Count - 1] += line[i];
             Refresh();
+            if (terminalAudio != null)
+                terminalAudio.NotifyVisibleCharacter();
             yield return new WaitForSecondsRealtime(charDelay);
+            i++;
         }
     }
 
@@ -368,5 +588,61 @@ public class ComputerTerminalView : MonoBehaviour
         int overflow = terminalLines.Count - maxTerminalLines;
         if (overflow > 0)
             terminalLines.RemoveRange(0, overflow);
+    }
+
+    private bool IsCyanColorTag(string tag)
+    {
+        if (string.IsNullOrEmpty(tag))
+            return false;
+        string lower = tag.ToLowerInvariant();
+        return lower.Contains("#08ffff");
+    }
+
+    public string BuildCyanOnlyText(string source)
+    {
+        if (string.IsNullOrEmpty(source))
+            return "";
+
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        bool inCyan = false;
+        int i = 0;
+
+        while (i < source.Length)
+        {
+            if (source[i] == '<')
+            {
+                int close = source.IndexOf('>', i);
+                if (close >= 0)
+                {
+                    string tag = source.Substring(i, close - i + 1);
+
+                    if (IsCyanColorTag(tag))
+                    {
+                        inCyan = true;
+                    }
+                    else if (tag.Equals("</color>", StringComparison.OrdinalIgnoreCase))
+                    {
+                        inCyan = false;
+                    }
+                    // link tags and other tags are silently ignored
+
+                    i = close + 1;
+                    continue;
+                }
+            }
+
+            if (inCyan)
+            {
+                sb.Append(source[i]);
+            }
+            else
+            {
+                sb.Append(' ');
+            }
+
+            i++;
+        }
+
+        return sb.ToString();
     }
 }

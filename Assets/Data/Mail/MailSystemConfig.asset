@@ -1,0 +1,116 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5761aa680adf56b4dab6f574f6b92d8c, type: 3}
+  m_Name: MailSystemConfig
+  m_EditorClassIdentifier: 
+  currentMailDate: 1983-10-07
+  localUserName: LOCAL USER
+  contacts:
+  - id: 001
+    displayName: Test
+    enableAIReply: 0
+    aiProfileName: A. MORRISON
+    aiSystemPrompt: 
+    aiMemoryNote: 
+    initialMessages:
+    - id: 001
+      date: 1983-10-02
+      from: A. MORRISON
+      to: LOCAL USER
+      status: 0
+      subject: Test
+      body: 'There is something wrong with the sealed door in sector 7.
+
+        Do
+        not open it.'
+  - id: 002
+    displayName: L. CARTER
+    enableAIReply: 0
+    aiProfileName: L. CARTER
+    aiSystemPrompt: 
+    aiMemoryNote: 
+    initialMessages:
+    - id: 001
+      date: 1983-10-05
+      from: L. CARTER
+      to: LOCAL USER
+      status: 1
+      subject: 'RE: YOUR REQUEST'
+      body: 'I have not heard back from you since the incident.
+
+        Please confirm
+        you are safe.'
+  - id: 003
+    displayName: E. BENSON
+    enableAIReply: 1
+    aiProfileName: E. BENSON
+    aiSystemPrompt: 
+    aiMemoryNote: 
+    initialMessages:
+    - id: 001
+      date: 1983-10-02
+      from: E. BENSON
+      to: LOCAL USER
+      status: 0
+      subject: ARE YOU SAFE?
+      body: 'Are you still there?
+
+        Please respond when you can.'
+    - id: 002
+      date: 1983-10-03
+      from: LOCAL USER
+      to: E. BENSON
+      status: 2
+      subject: 'RE: ARE YOU SAFE?'
+      body: I am here. What happened?
+    - id: 003
+      date: 1983-10-07
+      from: E. BENSON
+      to: LOCAL USER
+      status: 1
+      subject: PLEASE ANSWER
+      body: 'Please answer me.
+
+        I know you are still there.'
+  - id: 004
+    displayName: M. KELLER
+    enableAIReply: 0
+    aiProfileName: M. KELLER
+    aiSystemPrompt: 
+    aiMemoryNote: 
+    initialMessages:
+    - id: 001
+      date: 1983-09-29
+      from: M. KELLER
+      to: LOCAL USER
+      status: 0
+      subject: STORAGE PROTOCOL
+      body: 'All personnel must follow the new storage protocol.
+
+        Report
+        any anomalies to sector 3.'
+  - id: 005
+    displayName: J. REED
+    enableAIReply: 0
+    aiProfileName: J. REED
+    aiSystemPrompt: 
+    aiMemoryNote: 
+    initialMessages:
+    - id: 001
+      date: 1983-09-18
+      from: J. REED
+      to: LOCAL USER
+      status: 0
+      subject: SHIFT REMINDER
+      body: 'Your shift starts at 06:00.
+
+        Do not be late.'

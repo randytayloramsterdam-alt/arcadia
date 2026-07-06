@@ -3,7 +3,92 @@ guid: 67b89893221c00f42a42f66369ae2c8d
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: "ChatGPT Image 2026\u5E745\u670821\u65E5 19_56_26"
+    second: {fileID: 2800000, guid: 015688e975a03bf45951ac448d69f04b, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Snipaste_2026-05-11_16-14-45
+    second: {fileID: 2800000, guid: 049e5621f91723847aadef5763a54d0e, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: office-door
+    second: {fileID: 2800000, guid: 0578864ee1d1219438c94db9676f3271, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: sofa
+    second: {fileID: 2800000, guid: ac9043a6b16f192409bc9e589e1d7fdf, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: texture_pbr_20250901
+    second: {fileID: 2800000, guid: f71e2c78447f4e9418b6a94c946a6d2c, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: texture_pbr_20250901_metallic
+    second: {fileID: 2800000, guid: 2571e32c66fbaa248907576b7ffec8c8, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: texture_pbr_20250901_normal
+    second: {fileID: 2800000, guid: cd08c362054588b498714ebc11708432, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: texture_pbr_20250901_roughness
+    second: {fileID: 2800000, guid: a20900f163e7d0f499cf6f83aeadf45c, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: "\u4E66\u67B6"
+    second: {fileID: 2800000, guid: 536bef56cfa74ed4a8bb1129e0086e46, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: "\u5730\u9762"
+    second: {fileID: 2800000, guid: 976048e59bee0c44e9563689c7b47296, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: "\u5899"
+    second: {fileID: 2800000, guid: 49d4482d1781c074eafa9d01b8658a90, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: "\u5929\u82B1\u677F"
+    second: {fileID: 2800000, guid: dce8439faecb32d4d8ec22f6395c0896, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: "\u5FAE\u4FE1\u56FE\u7247_20260511141321_261_63"
+    second: {fileID: 2800000, guid: b37367c15d7189e48bffd07fb72c2568, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: "\u6587\u4EF61"
+    second: {fileID: 2800000, guid: aae486282fdffe84da93e4ff3aab5fca, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: "\u684C\u5B50"
+    second: {fileID: 2800000, guid: 2686de9ac602a344481366a83fbc7b5e, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: "\u8D29\u5356\u673A"
+    second: {fileID: 2800000, guid: 39647a279314ccf4385ed77f0801b1b3, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: "\u9694\u677F"
+    second: {fileID: 2800000, guid: a0b3098f1d1a5b141bc34c8d6dcbf283, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0
